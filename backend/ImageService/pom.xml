@@ -8,11 +8,11 @@
         <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>ImageCatalog</artifactId>
+    <groupId>ImageService</groupId>
+    <artifactId>ImageService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ImageCatalog</name>
-    <description>ImageCatalog</description>
+    <name>ImageService</name>
+    <description>ImageService</description>
     <url/>
     <licenses>
         <license/>

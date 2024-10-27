@@ -1,13 +1,13 @@
-package com.artOfTheDay.imageCatalog;
+package imageservice.imageservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ImageCatalogApplication {
+public class ImageServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ImageCatalogApplication.class, args);
+        SpringApplication.run(ImageServiceApplication.class, args);
     }
 
 }

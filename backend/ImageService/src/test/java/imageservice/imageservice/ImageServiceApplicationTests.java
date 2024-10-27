@@ -1,10 +1,10 @@
-package com.artOfTheDay.imageCatalog;
+package imageservice.imageservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ImageCatalogApplicationTests {
+class ImageServiceApplicationTests {
 
     @Test
     void contextLoads() {
