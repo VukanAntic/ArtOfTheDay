@@ -2,19 +2,53 @@ import os
 import json
 import random
 from pprint import pprint
+import requests
+import time
+
+def check_if_path_is_invalid(path) :
+    response = requests.get(path)
+    print(path)
+    print(response.status_code)
+
+    if response.status_code == 429:
+        print("Too many requests in a short period of time, need to cool off...")
+        time.sleep(60)
+        response = requests.get(path)
+    if response.status_code == 200:
+        return False
+
+    print("Found an error code!")
+    return True
 
 def parse_single_artwork(data):
     id = data["id"]
     title = data["title"]
     description = data["description"]
     date_display = data["date_display"]
+    style_id = data["style_id"]
     style_title = data["style_title"]
+    artist_id = data["artist_id"]
+    artist_title = data["artist_title"]
     artwork_type_id = data["artwork_type_id"]
-    # TODO: This could be a 404, should have a test case for this
+    # these are the ids of all the artwork types we want, 1 is representing Paintings, checkout
+    # the Chicago Insitute of Art data dump to see all the different types they have to offer
+    artworked_wanted_indicies = [1]
     path = f'https://www.artic.edu/iiif/2/{data["image_id"]}/full/843,/0/default.jpg'
-    if title is None or description is None or date_display is None or style_title is None or artwork_type_id != 1:
+    if title is None or description is None or date_display is None \
+    or style_title is None or artwork_type_id not in artworked_wanted_indicies or \
+    check_if_path_is_invalid(path) :
         return None
-    return (id, title, description, date_display, path, style_title)
+    return {
+            "id" : id, 
+            "title" : title,
+            "description" : description, 
+            "date_display" : date_display,
+            "path" : path, 
+            "style_title" : style_title, 
+            "style_id" : style_id, 
+            "artist_title" : artist_title,
+            "artist_id" : artist_id
+            }
                    
 
 def parse_json_folder(folder_path):
@@ -23,7 +57,7 @@ def parse_json_folder(folder_path):
         print(f"Folder '{folder_path}' does not exist.")
         return parsed_artworks
 
-    # number_of_artworks_needed = 200
+    #number_of_artworks_needed = 10
     number_of_artworks_parsed = 0
     items = os.listdir(folder_path)
     random.shuffle(items)
@@ -43,8 +77,8 @@ def parse_json_folder(folder_path):
                     parsed_artworks.append(artwork_parsed)
                     number_of_artworks_parsed += 1
 
-                    # if number_of_artworks_parsed > number_of_artworks_needed:
-                    #    break
+                    #if number_of_artworks_parsed > number_of_artworks_needed:
+                    #   break
                     if number_of_artworks_parsed % 1000 == 0:
                         print(f"Parsed {number_of_artworks_parsed} artworks.")
 
@@ -54,6 +88,7 @@ def parse_json_folder(folder_path):
                 print(f"Error processing file {filename}: {e}")
 
     return parsed_artworks
+
 
 parsed_artworks = parse_json_folder("../../artworks") 
 random.shuffle(parsed_artworks)
