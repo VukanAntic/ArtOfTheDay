@@ -5,6 +5,54 @@ from pprint import pprint
 import requests
 import time
 
+from sqlalchemy import create_engine, Column, Integer, String, Text, Table, ForeignKey
+from sqlalchemy.orm import relationship, sessionmaker
+import sqlalchemy.orm
+from sqlalchemy.dialects.postgresql import insert
+
+
+Base = sqlalchemy.orm.declarative_base()
+
+artwork_genre_association = Table(
+    'artwork_genre', Base.metadata,
+    Column('artwork_id', Integer, ForeignKey('artworks.id')),
+    Column('genre_id', String(20), ForeignKey('genres.id'))
+)
+
+
+class Artwork(Base):
+    __tablename__ = 'artworks'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(255), nullable=False)
+    date_display = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
+    path_to_artwork = Column(String(255), nullable=False)
+    artist_id = Column(Integer, ForeignKey('artists.id'), nullable=False)
+
+    # Relationships
+    genres = relationship('Genre', secondary=artwork_genre_association, back_populates='artworks')
+    artist = relationship('Artist', back_populates='artworks')
+
+class Artist(Base):
+    __tablename__ = 'artists'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    # Unknown artist!
+    name = Column(String(255), nullable=True)
+
+    artworks = relationship('Artwork', back_populates='artist')
+
+class Genre(Base):
+    __tablename__ = 'genres'
+
+    id = Column(String(20), primary_key=True)
+    name = Column(String(255), nullable=False)
+
+    # Define the relationship to Artwork
+    artworks = relationship('Artwork', secondary=artwork_genre_association, back_populates='genres')
+
+
+
 def check_if_path_is_invalid(path) :
     response = requests.get(path)
     print(path)
@@ -89,8 +137,84 @@ def parse_json_folder(folder_path):
 
     return parsed_artworks
 
+def add_to_database(artworks):
+    # PostgreSQL connection URI (update with your credentials)
+
+    with open("url.txt", "r") as f:
+        DATABASE_URI = f.read()
+
+    # Connect to the PostgreSQL database
+    engine = create_engine(DATABASE_URI)
+
+    # Create the database and tables
+    Base.metadata.create_all(engine)
+
+    # Create a session
+    Session = sessionmaker(bind=engine)
+    session = Session() 
+
+    artworks_data = []
+    artists_data = []
+    genres_data = []
+
+    artwork_ids = set()
+    genre_ids = set()
+    artist_ids = set()
+
+    for artwork in artworks:
+        # pprint(artwork)
+        artwork_data = Artwork(**{
+                        "id" : artwork["id"], 
+                        "title": artwork["title"],
+                        "date_display": artwork["date_display"],
+                        "description": artwork["description"],
+                        "path_to_artwork": artwork["path"],
+                        "artist_id": artwork["artist_id"]
+                        })
+        
+        artist_id = artwork["artist_id"] if artwork["artist_id"] is not None else -1 
+        artist_name = artwork["artist_title"] if artwork["artist_title"] is not None else "Unknown" 
+
+
+        artist_data = Artist(**{
+            "id" : artist_id,
+            "name" : artist_name
+        })
+
+        genre_data = Genre(**{
+            "id" : artwork["style_id"],
+            "name" : artwork["style_title"]
+        })
+
+        if artist_id not in artist_ids:  
+            artists_data.append(artist_data)
+        if artwork["style_id"] not in genre_ids:
+            genres_data.append(genre_data)
+
+        new_artist_data = list(filter(lambda elem : elem.id == artist_id, artists_data))
+        new_genre_data = list(filter(lambda elem : elem.id == artwork["style_id"], genres_data))
+        print(new_artist_data)
+        artwork_data.artist = new_artist_data[0]
+        artwork_data.genres.append(new_genre_data[0])
+
+        artwork_ids.add(artwork["id"])
+        artist_ids.add(artist_id)
+        genre_ids.add(artwork["style_id"])
+
+
+    session.add_all(artists_data)
+    session.add_all(genres_data)
+    print('ovo sranje')
+    session.add_all(artworks_data)
+    session.commit()
+        
+        
+
+
 
 parsed_artworks = parse_json_folder("../../artworks") 
 random.shuffle(parsed_artworks)
+add_to_database(parsed_artworks)
+
 pprint(parsed_artworks)
-print(len(parsed_artworks))
+
