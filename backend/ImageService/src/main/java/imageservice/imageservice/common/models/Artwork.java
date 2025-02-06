@@ -6,20 +6,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class Image {
+public class Artwork {
 
     @Id
     @GeneratedValue
     private Long id;
     private String title;
     private String description;
-    // TODO : This could be a model for itself, so that we can display the info of the artist!
     private String artist;
     private String imageUrl;
 
 
-    public Image() {}
-    public Image(String title, String description, String artist, String imageUrl) {
+    public Artwork() {}
+    public Artwork(String title, String description, String artist, String imageUrl) {
         this.title = title;
         this.description = description;
         this.artist = artist;

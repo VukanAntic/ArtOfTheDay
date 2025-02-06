@@ -1,4 +1,7 @@
 package imageservice.imageservice.common.repositories;
 
-public interface ImageRepository extends JpaRepository<Image, long> {
+import imageservice.imageservice.common.models.Artwork;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ImageRepository extends JpaRepository<Artwork, Long> {
 }
