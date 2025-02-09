@@ -1,7 +1,7 @@
 package imageservice.imageservice.common.services;
 
-import imageservice.imageservice.common.models.Artwork;
-import imageservice.imageservice.common.repositories.ImageRepository;
+import imageservice.imageservice.common.enitites.Artwork;
+import imageservice.imageservice.common.repositories.ArtworkRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,14 +9,14 @@ import java.util.List;
 @Service
 public class ImageService {
 
-    private final ImageRepository imageRepository;
+    private final ArtworkRepository imageRepository;
 
-    public ImageService(ImageRepository imageRepository) {
+    public ImageService(ArtworkRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
 
     public List<Artwork> getAllImages() {
-        return imageRepository.findAll();
+        return imageRepository.findByGenres_Name("Impressionism");
     }
 
 }
