@@ -1,4 +1,4 @@
-package imageservice.imageservice.common.enitites;
+package imageservice.imageservice.infra.enitites;
 
 import jakarta.persistence.*;
 import lombok.*;

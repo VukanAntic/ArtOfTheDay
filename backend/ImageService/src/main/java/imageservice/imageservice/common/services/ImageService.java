@@ -1,7 +1,7 @@
 package imageservice.imageservice.common.services;
 
-import imageservice.imageservice.common.enitites.Artwork;
-import imageservice.imageservice.common.repositories.ArtworkRepository;
+import imageservice.imageservice.infra.enitites.Artwork;
+import imageservice.imageservice.infra.enitites.repositories.ArtworkRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

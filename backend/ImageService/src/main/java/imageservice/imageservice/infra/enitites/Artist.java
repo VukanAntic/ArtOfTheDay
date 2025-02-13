@@ -1,9 +1,8 @@
-package imageservice.imageservice.common.enitites;
+package imageservice.imageservice.infra.enitites;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,6 +10,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class Artist {
+    // prb should be using dtos when sending the data!
     @Id
     private Long id;
     private String name;

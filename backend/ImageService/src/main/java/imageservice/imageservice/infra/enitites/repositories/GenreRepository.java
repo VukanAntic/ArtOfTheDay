@@ -1,6 +1,6 @@
-package imageservice.imageservice.common.repositories;
+package imageservice.imageservice.infra.enitites.repositories;
 
-import imageservice.imageservice.common.enitites.Genre;
+import imageservice.imageservice.infra.enitites.Genre;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

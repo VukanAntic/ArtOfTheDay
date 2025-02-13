@@ -1,6 +1,6 @@
-package imageservice.imageservice.common.repositories;
+package imageservice.imageservice.infra.enitites.repositories;
 
-import imageservice.imageservice.common.enitites.Artwork;
+import imageservice.imageservice.infra.enitites.Artwork;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

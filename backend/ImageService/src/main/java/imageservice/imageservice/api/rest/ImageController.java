@@ -1,6 +1,6 @@
 package imageservice.imageservice.api.rest;
 
-import imageservice.imageservice.common.enitites.Artwork;
+import imageservice.imageservice.infra.enitites.Artwork;
 import imageservice.imageservice.common.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

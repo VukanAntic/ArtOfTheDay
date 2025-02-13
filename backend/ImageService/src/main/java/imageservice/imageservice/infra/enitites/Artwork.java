@@ -1,4 +1,4 @@
-package imageservice.imageservice.common.enitites;
+package imageservice.imageservice.infra.enitites;
 
 
 import jakarta.persistence.*;
@@ -17,7 +17,7 @@ public class Artwork {
     @Id
     private Long id;
     private String title;
-    @Column(length = 20000)
+    @Column(length = 10000)
     private String description;
     private String imageUrl;
 
