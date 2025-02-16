@@ -1,5 +1,6 @@
 package imageservice.imageservice.api.rest;
 
+import imageservice.imageservice.common.DTOs.Artwork.ArtworkDTO;
 import imageservice.imageservice.infra.enitites.Artwork;
 import imageservice.imageservice.common.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class ImageController {
     }
 
     @GetMapping("/get-all")
-    public List<Artwork> getMessage() {
+    public List<ArtworkDTO> getMessage() {
         return imageService.getAllImages();
     }
 
