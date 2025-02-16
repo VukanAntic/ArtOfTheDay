@@ -27,7 +27,7 @@ public class Artwork {
     @Setter
     private Artist artist;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "artwork_genre",
             joinColumns = @JoinColumn(name = "artwork_id"),
