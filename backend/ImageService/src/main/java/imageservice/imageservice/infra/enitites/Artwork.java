@@ -19,6 +19,7 @@ public class Artwork {
     private String title;
     @Column(length = 10000)
     private String description;
+    @Column(name = "path_to_artwork")
     private String imageUrl;
 
     @ManyToOne
