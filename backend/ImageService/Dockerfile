@@ -1,15 +1,11 @@
-FROM maven as build
+FROM eclipse-temurin:21-jdk-ubi9-minimal
 
-WORKDIR /app/image-service
+WORKDIR /app
 
-COPY . .
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN ./mvnw dependency:go-offline
 
-RUN mvn clean package
+COPY src ./src
 
-FROM openjdk:11-slim
-
-WORKDIR ./app
-
-COPY --from=build /app/image-service/target/ImageService*.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["./mvnw", "spring-boot:run"]
