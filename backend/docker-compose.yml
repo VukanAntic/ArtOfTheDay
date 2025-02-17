@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  image_service:
+    image: ${DOCKER_REGISTRY-}image_service
+    build:
+      context: .
+      dockerfile: ImageService/Dockerfile
+    env_file: db_cred.env
+    ports:
+      - 8080:8080
+
+
