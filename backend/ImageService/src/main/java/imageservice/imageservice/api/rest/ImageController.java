@@ -6,6 +6,7 @@ import imageservice.imageservice.common.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,8 +27,12 @@ public class ImageController {
     }
 
     @GetMapping("/get-all")
-    public List<ArtworkDTO> getMessage() {
+    public List<ArtworkDTO> getAllImages() {
         return imageService.getAllImages();
     }
 
+    @GetMapping("/get")
+    public List<ArtworkDTO> getAllImagesOfGenre(@RequestParam String genreId) {
+        return imageService.getAllImagesOfGenre(genreId);
+    }
 }

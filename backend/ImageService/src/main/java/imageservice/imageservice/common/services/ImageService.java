@@ -21,10 +21,17 @@ public class ImageService {
     }
 
     public List<ArtworkDTO> getAllImages() {
-        return imageRepository.findByGenres_Name("Impressionism")
+        return imageRepository.findAll()
                 .stream().map(artwork -> modelMapper.map(artwork, ArtworkDTO.class))
                 .collect(Collectors.toList());
     }
+
+    public List<ArtworkDTO> getAllImagesOfGenre(String genreId) {
+        return imageRepository.findByGenres_Id(genreId)
+                .stream().map(artwork -> modelMapper.map(artwork, ArtworkDTO.class))
+                .collect(Collectors.toList());
+    }
+
 
 }
 
