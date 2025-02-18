@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
     List<Artwork> findByGenres_Name(String genreName);
+    List<Artwork> findByGenres_Id(String genreId);
+
 }
