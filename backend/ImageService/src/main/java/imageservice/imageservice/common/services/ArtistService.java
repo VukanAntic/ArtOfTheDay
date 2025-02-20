@@ -1,6 +1,7 @@
 package imageservice.imageservice.common.services;
 
 import imageservice.imageservice.common.DTOs.Artwork.ArtworkDTO;
+import imageservice.imageservice.common.DTOs.Artwork.IdentityArtworkDTO;
 import imageservice.imageservice.infra.repositories.ArtistRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,12 @@ public class ArtistService {
     }
 
 
-    public List<ArtworkDTO> GetAllArtworksFromArtist(Long artistId) {
+    public List<IdentityArtworkDTO> getAllArtworksFromArtist(Long artistId) {
         var artist = artistRepository.findById(artistId);
         if (artist.isEmpty()) {return List.of();}
 
-        return artist.get().getArtworks().stream().map(artwork -> modelMapper.map(artwork, ArtworkDTO.class)).toList();
+        return artist.get().getArtworks().stream()
+                .map(artwork -> modelMapper.map(artwork, IdentityArtworkDTO.class)).toList();
 
     }
 }
