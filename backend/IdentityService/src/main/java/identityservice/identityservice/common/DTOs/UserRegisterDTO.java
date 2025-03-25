@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserCreateDTO {
+public class UserRegisterDTO {
     @Email(message = "Field must be email!")
     @NotNull(message = "Email must not be null!")
     private String email;

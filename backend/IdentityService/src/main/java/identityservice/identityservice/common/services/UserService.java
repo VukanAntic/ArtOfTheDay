@@ -1,6 +1,10 @@
 package identityservice.identityservice.common.services;
 
+import identityservice.identityservice.common.DTOs.UserLoginDTO;
+import identityservice.identityservice.common.DTOs.UserRegisterDTO;
+import identityservice.identityservice.infra.entities.UserEntity;
 import identityservice.identityservice.infra.repositories.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.*;
 
@@ -9,9 +13,17 @@ import lombok.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(User user) {}
+    public UserEntity registerUser(UserRegisterDTO userRegisterDTO) {
+        UserEntity user = new UserEntity();
+        user.setEmail(userRegisterDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        return userRepository.save(user);
+    }
 
-    public void loginUser(User user) {}
+    public void loginUser(UserLoginDTO userLoginDTO) {
+
+    }
 
 }
