@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: ImageService/Dockerfile
-    env_file: db_cred.env
+    env_file: ImageService/db_cred.env
     ports:
       - 8080:8080
 
