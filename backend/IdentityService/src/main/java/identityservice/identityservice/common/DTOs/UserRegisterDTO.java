@@ -18,4 +18,10 @@ public class UserRegisterDTO {
     @NotNull(message = "ConfirmPassword must not be null!")
     @NotEmpty(message = "ConfirmPassword must not be empty!")
     private String confirmPassword;
+    @NotNull(message = "FirstName must not be null!")
+    @NotEmpty(message = "FirstName must not be empty!")
+    private String firstName;
+    @NotNull(message = "LastName must not be null!")
+    @NotEmpty(message = "LastName must not be empty!")
+    private String lastName;
 }
