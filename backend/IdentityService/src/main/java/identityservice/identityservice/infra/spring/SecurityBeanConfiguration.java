@@ -18,4 +18,18 @@ public class SecurityBeanConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable()) // Disable CSRF (for APIs)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/authentication/**").permitAll() // Allow authentication endpoints
+                        .anyRequest().authenticated() // Require authentication for other endpoints
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session
+                .httpBasic(httpBasic -> httpBasic.disable()); // Disable basic auth (use JWT instead)
+
+        return http.build();
+    }
 }
