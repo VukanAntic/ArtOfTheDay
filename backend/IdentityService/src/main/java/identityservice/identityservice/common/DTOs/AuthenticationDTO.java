@@ -4,7 +4,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RefreshModelToken {
-    public String email;
+public class AuthenticationDTO {
+    public String accessToken;
     public String refreshToken;
 }

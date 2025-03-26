@@ -1,7 +1,7 @@
 package identityservice.identityservice.common.services;
 
-import identityservice.identityservice.common.DTOs.AuthenticationModel;
-import identityservice.identityservice.common.DTOs.RefreshModelToken;
+import identityservice.identityservice.common.DTOs.AuthenticationDTO;
+import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
 import identityservice.identityservice.infra.entities.UserEntity;
@@ -30,7 +30,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<AuthenticationModel> loginUser(UserLoginDTO userLoginDTO) {
+    public Optional<AuthenticationDTO> loginUser(UserLoginDTO userLoginDTO) {
 
         var user = userRepository.findByEmail(userLoginDTO.getEmail());
         if (!checkIfIsCorrectUser(userLoginDTO, user)){
@@ -40,18 +40,20 @@ public class UserService {
         return jwtComponent.generateNewTokens(userLoginDTO.getEmail());
     }
 
-    public Optional<AuthenticationModel> refreshTokens(RefreshModelToken refreshModelToken) {
+    public Optional<AuthenticationDTO> refreshTokens(RefreshTokenDTO refreshTokenDTO) {
 
-        var user = userRepository.findByEmail(refreshModelToken.getEmail());
+        var userEmail = jwtComponent.extractEmail(refreshTokenDTO.getRefreshToken());
+
+        var user = userRepository.findByEmail(userEmail);
         if (user.isEmpty()) {
             return Optional.empty();
         }
 
-        if (!jwtComponent.validateToken(refreshModelToken.getRefreshToken())) {
+        if (!jwtComponent.validateToken(refreshTokenDTO.getRefreshToken())) {
             return Optional.empty();
         }
 
-        return jwtComponent.generateNewTokens(refreshModelToken.getEmail());
+        return jwtComponent.generateNewTokens(userEmail);
     }
 
     private boolean checkIfIsCorrectUser(UserLoginDTO attemptedUserData, Optional<UserEntity> realUserData) {

@@ -1,6 +1,6 @@
 package identityservice.identityservice.api.rest;
 
-import identityservice.identityservice.common.DTOs.RefreshModelToken;
+import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.services.UserService;
 import lombok.AllArgsConstructor;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/authentication", produces = {
@@ -34,8 +32,8 @@ public class LoginController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody RefreshModelToken refreshModelToken) {
-        var loginResult = userService.refreshTokens(refreshModelToken);
+    public ResponseEntity<?> refresh(@RequestBody RefreshTokenDTO refreshTokenDTO) {
+        var loginResult = userService.refreshTokens(refreshTokenDTO);
         if (loginResult.isEmpty()) {
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect credentials!");
         }

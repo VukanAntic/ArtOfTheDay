@@ -1,7 +1,7 @@
 package identityservice.identityservice.infra.spring;
 
 
-import identityservice.identityservice.common.DTOs.AuthenticationModel;
+import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,10 +20,10 @@ public class JwtComponent {
     private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L; // 15 min
     private final long REFRESH_TOKEN_EXPIRATION = 2 * 30 * 24 * 60 * 60 * 1000L; // 2 months
 
-    public Optional<AuthenticationModel> generateNewTokens(String email) {
+    public Optional<AuthenticationDTO> generateNewTokens(String email) {
         var accessToken = generateAccessToken(email);
         var refreshToken = generateRefreshToken(email);
-        return Optional.of(new AuthenticationModel(accessToken, refreshToken));
+        return Optional.of(new AuthenticationDTO(accessToken, refreshToken));
     }
 
     private String generateAccessToken(String email) {
