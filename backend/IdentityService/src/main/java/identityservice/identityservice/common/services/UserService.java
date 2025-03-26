@@ -4,14 +4,13 @@ import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
-import identityservice.identityservice.infra.entities.UserEntity;
+import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import identityservice.identityservice.infra.spring.JwtComponent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.*;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -22,8 +21,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtComponent jwtComponent;
 
-    public Optional<UserEntity> registerUser(UserRegisterDTO userRegisterDTO) {
-        UserEntity user = new UserEntity();
+    public Optional<User> registerUser(UserRegisterDTO userRegisterDTO) {
+        User user = new User();
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return Optional.empty();
         }
@@ -60,7 +59,7 @@ public class UserService {
         return jwtComponent.generateNewTokens(userEmail);
     }
 
-    private boolean checkIfIsCorrectUser(UserLoginDTO attemptedUserData, Optional<UserEntity> realUserData) {
+    private boolean checkIfIsCorrectUser(UserLoginDTO attemptedUserData, Optional<User> realUserData) {
 
         if (realUserData.isEmpty()) {
             return false;

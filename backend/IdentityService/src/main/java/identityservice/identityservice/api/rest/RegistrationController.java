@@ -2,7 +2,6 @@ package identityservice.identityservice.api.rest;
 
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
 import identityservice.identityservice.common.services.UserService;
-import identityservice.identityservice.infra.entities.UserEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
