@@ -1,6 +1,7 @@
 package identityservice.identityservice.infra.spring;
 
 
+import identityservice.identityservice.common.DTOs.AuthenticationModel;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtComponent {
@@ -18,22 +20,24 @@ public class JwtComponent {
     private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L; // 15 min
     private final long REFRESH_TOKEN_EXPIRATION = 2 * 30 * 24 * 60 * 60 * 1000L; // 2 months
 
-    private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+    public Optional<AuthenticationModel> generateNewTokens(String email) {
+        var accessToken = generateAccessToken(email);
+        var refreshToken = generateRefreshToken(email);
+        return Optional.of(new AuthenticationModel(accessToken, refreshToken));
     }
 
-    public String generateAccessToken(String username) {
+    private String generateAccessToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateRefreshToken(String username) {
+    private String generateRefreshToken(String email) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -50,11 +54,14 @@ public class JwtComponent {
         }
     }
 
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
 }
