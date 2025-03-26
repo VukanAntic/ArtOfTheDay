@@ -1,9 +1,7 @@
 package identityservice.identityservice.common.DTOs;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -14,9 +12,10 @@ public class UserRegisterDTO {
     private String email;
     @NotNull(message = "Password must not be null!")
     @NotEmpty(message = "Password must not be empty!")
+    @Size(min = 6, max = 20)
+    @Pattern(regexp = "(?=.*[A-Z])(?=.*\\d)[A-Z\\d]{6,20}",
+            message = "Password must be between 6 and 20 characters, and contain at least one uppercase letter and one digit!")
     private String password;
-    @NotNull(message = "ConfirmPassword must not be null!")
-    @NotEmpty(message = "ConfirmPassword must not be empty!")
     private String confirmPassword;
     @NotNull(message = "FirstName must not be null!")
     @NotEmpty(message = "FirstName must not be empty!")

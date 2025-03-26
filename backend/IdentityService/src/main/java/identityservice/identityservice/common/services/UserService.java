@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -21,13 +22,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtComponent jwtComponent;
 
-    public UserEntity registerUser(UserRegisterDTO userRegisterDTO) {
+    public Optional<UserEntity> registerUser(UserRegisterDTO userRegisterDTO) {
         UserEntity user = new UserEntity();
+        if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
+            return Optional.empty();
+        }
         user.setEmail(userRegisterDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
         user.setFirstName(userRegisterDTO.getFirstName());
         user.setLastName(userRegisterDTO.getLastName());
-        return userRepository.save(user);
+        return Optional.of(userRepository.save(user));
     }
 
     public Optional<AuthenticationDTO> loginUser(UserLoginDTO userLoginDTO) {

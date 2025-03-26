@@ -4,6 +4,7 @@ import identityservice.identityservice.common.DTOs.UserRegisterDTO;
 import identityservice.identityservice.common.services.UserService;
 import identityservice.identityservice.infra.entities.UserEntity;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,11 @@ public class RegistrationController {
 
 
     @PostMapping("/register")
-    public UserEntity register(@RequestBody UserRegisterDTO userRegisterDTO) {
-        return userService.registerUser(userRegisterDTO);
+    public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO) {
+        var user = userService.registerUser(userRegisterDTO);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("Something is incorrect");
+        }
+        return ResponseEntity.ok(user);
     }
 }
