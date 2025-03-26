@@ -19,6 +19,8 @@ public class UserService {
         UserEntity user = new UserEntity();
         user.setEmail(userRegisterDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+        user.setFirstName(userRegisterDTO.getFirstName());
+        user.setLastName(userRegisterDTO.getLastName());
         return userRepository.save(user);
     }
 
