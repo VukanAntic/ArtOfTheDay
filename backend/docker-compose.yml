@@ -8,6 +8,14 @@ services:
       dockerfile: ImageService/Dockerfile
     env_file: ImageService/db_cred.env
     ports:
-      - 8080:8080
+      - "8080:8080"
+  identity_service:
+    image: ${DOCKER_REGISTRY-}identity_service
+    build:
+      context: .
+      dockerfile: IdentityService/Dockerfile
+    env_file: IdentityService/default.env
+    ports:
+      - "8081:8081"
 
 
