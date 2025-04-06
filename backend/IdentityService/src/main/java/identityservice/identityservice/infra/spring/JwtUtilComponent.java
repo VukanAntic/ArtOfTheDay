@@ -2,6 +2,7 @@ package identityservice.identityservice.infra.spring;
 
 
 import identityservice.identityservice.common.DTOs.AuthenticationDTO;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,7 +14,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Component
-public class JwtComponent {
+public class JwtUtilComponent {
 
     @Value("${jwt.secret}")
     private String secret;
@@ -45,12 +46,25 @@ public class JwtComponent {
     }
 
 
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException e) {
+    public boolean validateToken(String token, String email) {
+
+        var extractedEmail = extractEmail(token);
+        if (!extractedEmail.equals(email)) {
             return false;
+        }
+
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey()) // Ensure this method returns a valid Key
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            // Ensure the token is not expired
+            return !claims.getExpiration().before(new Date());
+
+        } catch (JwtException | IllegalArgumentException e) {
+            return false; // Invalid token
         }
     }
 

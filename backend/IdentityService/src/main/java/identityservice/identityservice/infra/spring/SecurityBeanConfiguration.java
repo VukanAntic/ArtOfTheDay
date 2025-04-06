@@ -1,5 +1,6 @@
 package identityservice.identityservice.infra.spring;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,9 +11,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@AllArgsConstructor
 public class SecurityBeanConfiguration {
+
+    private final JwtFilterComponent jwtFilterComponent;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -22,13 +27,15 @@ public class SecurityBeanConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF (for APIs)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/authentication/**").permitAll() // Allow authentication endpoints
-                        .anyRequest().authenticated() // Require authentication for other endpoints
+//                        .requestMatchers("/api/authentication/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session
-                .httpBasic(httpBasic -> httpBasic.disable()); // Disable basic auth (use JWT instead)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtFilterComponent, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
+
 
         return http.build();
     }

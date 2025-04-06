@@ -6,7 +6,7 @@ import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
 import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
-import identityservice.identityservice.infra.spring.JwtComponent;
+import identityservice.identityservice.infra.spring.JwtUtilComponent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import lombok.*;
@@ -19,7 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtComponent jwtComponent;
+    private final JwtUtilComponent jwtUtilComponent;
 
     public Optional<User> registerUser(UserRegisterDTO userRegisterDTO) {
         User user = new User();
@@ -40,23 +40,23 @@ public class UserService {
             return Optional.empty();
         }
 
-        return jwtComponent.generateNewTokens(userLoginDTO.getEmail());
+        return jwtUtilComponent.generateNewTokens(userLoginDTO.getEmail());
     }
 
     public Optional<AuthenticationDTO> refreshTokens(RefreshTokenDTO refreshTokenDTO) {
 
-        var userEmail = jwtComponent.extractEmail(refreshTokenDTO.getRefreshToken());
+        var userEmail = jwtUtilComponent.extractEmail(refreshTokenDTO.getRefreshToken());
 
         var user = userRepository.findByEmail(userEmail);
         if (user.isEmpty()) {
             return Optional.empty();
         }
 
-        if (!jwtComponent.validateToken(refreshTokenDTO.getRefreshToken())) {
+        if (!jwtUtilComponent.validateToken(refreshTokenDTO.getRefreshToken(), refreshTokenDTO.getEmail())) {
             return Optional.empty();
         }
 
-        return jwtComponent.generateNewTokens(userEmail);
+        return jwtUtilComponent.generateNewTokens(userEmail);
     }
 
     private boolean checkIfIsCorrectUser(UserLoginDTO attemptedUserData, Optional<User> realUserData) {
