@@ -19,7 +19,7 @@ public class JwtUtilComponent {
     @Value("${jwt.secret}")
     private String secret;
     private final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L; // 15 min
-    private final long REFRESH_TOKEN_EXPIRATION = 2 * 30 * 24 * 60 * 60 * 1000L; // 2 months
+    private final long REFRESH_TOKEN_EXPIRATION =  30 * 24 * 60 * 60 * 1000L; // 1 months
 
     public Optional<AuthenticationDTO> generateNewTokens(String email) {
         var accessToken = generateAccessToken(email);
