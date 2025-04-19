@@ -1,9 +1,6 @@
 package identityservice.identityservice.common.services;
 
-import identityservice.identityservice.common.DTOs.AuthenticationDTO;
-import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
-import identityservice.identityservice.common.DTOs.UserLoginDTO;
-import identityservice.identityservice.common.DTOs.UserRegisterDTO;
+import identityservice.identityservice.common.DTOs.*;
 import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import identityservice.identityservice.infra.spring.JwtUtilComponent;
@@ -26,6 +23,7 @@ public class UserService {
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return Optional.empty();
         }
+        user.setUsername(userRegisterDTO.getUsername());
         user.setEmail(userRegisterDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
         user.setFirstName(userRegisterDTO.getFirstName());
@@ -35,28 +33,28 @@ public class UserService {
 
     public Optional<AuthenticationDTO> loginUser(UserLoginDTO userLoginDTO) {
 
-        var user = userRepository.findByEmail(userLoginDTO.getEmail());
+        var user = userRepository.findByUsername(userLoginDTO.getUsername());
         if (!checkIfIsCorrectUser(userLoginDTO, user)){
             return Optional.empty();
         }
 
-        return jwtUtilComponent.generateNewTokens(userLoginDTO.getEmail());
+        return jwtUtilComponent.generateNewTokens(userLoginDTO.getUsername());
     }
 
     public Optional<AuthenticationDTO> refreshTokens(RefreshTokenDTO refreshTokenDTO) {
 
-        var userEmail = jwtUtilComponent.extractEmail(refreshTokenDTO.getRefreshToken());
+        var username = jwtUtilComponent.extractUsername(refreshTokenDTO.getRefreshToken());
 
-        var user = userRepository.findByEmail(userEmail);
+        var user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             return Optional.empty();
         }
 
-        if (!jwtUtilComponent.validateToken(refreshTokenDTO.getRefreshToken(), refreshTokenDTO.getEmail())) {
+        if (!jwtUtilComponent.validateToken(refreshTokenDTO.getRefreshToken(), refreshTokenDTO.getUsername())) {
             return Optional.empty();
         }
 
-        return jwtUtilComponent.generateNewTokens(userEmail);
+        return jwtUtilComponent.generateNewTokens(username);
     }
 
     private boolean checkIfIsCorrectUser(UserLoginDTO attemptedUserData, Optional<User> realUserData) {

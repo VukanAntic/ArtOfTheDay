@@ -1,7 +1,5 @@
 package identityservice.identityservice.infra.spring;
 
-import identityservice.identityservice.common.services.UserService;
-import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,21 +28,21 @@ public class JwtFilterComponent extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
 
-        String email = null;
+        String username = null;
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            email = jwtUtilComponent.extractEmail(jwt);
+            username = jwtUtilComponent.extractUsername(jwt);
         }
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            var user = userRepository.findByEmail(email);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            var user = userRepository.findByUsername(username);
 
             if (user.isEmpty()) return;
 
-            // makes no sense, we take the email from the jwt, and validate it?
-            if (jwtUtilComponent.validateToken(jwt, user.get().getEmail())) {
+            // makes no sense, we take the username from the jwt, and validate it?
+            if (jwtUtilComponent.validateToken(jwt, user.get().getUsername())) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

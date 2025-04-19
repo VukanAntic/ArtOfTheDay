@@ -7,6 +7,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class UserRegisterDTO {
+    @NotEmpty(message = "Password must not be empty!")
+    @NotNull(message = "Email must not be null!")
+    @Size(min = 6, max = 20)
+    private String username;
     @Email(message = "Field must be email!")
     @NotNull(message = "Email must not be null!")
     private String email;

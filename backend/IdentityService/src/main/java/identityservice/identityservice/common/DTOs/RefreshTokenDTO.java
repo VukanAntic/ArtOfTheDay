@@ -6,5 +6,5 @@ import lombok.*;
 @AllArgsConstructor
 public class RefreshTokenDTO {
     public String refreshToken;
-    public String email;
+    public String username;
 }

@@ -1,6 +1,7 @@
 package identityservice.identityservice.api.rest;
 
 import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
+import identityservice.identityservice.common.DTOs.UserChangePasswordDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.services.UserService;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,4 @@ public class LoginController {
 
         return ResponseEntity.ok(loginResult.get());
     }
-
-    // TODO [vukana] : If i dont store the refresh tokens, can i even implement the logout?
-
 }
