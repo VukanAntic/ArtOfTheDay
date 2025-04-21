@@ -1,6 +1,7 @@
 package identityservice.identityservice.api.rest;
 
 import identityservice.identityservice.common.DTOs.UserChangeEmailDTO;
+import identityservice.identityservice.common.DTOs.UserChangePasswordDTO;
 import identityservice.identityservice.common.Tokens.CurrentUser;
 import identityservice.identityservice.common.services.UserService;
 import lombok.AllArgsConstructor;
@@ -38,8 +39,14 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@AuthenticationPrincipal CurrentUser user) {
-        System.out.println(user.getUsername());
-        return user.toString();
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CurrentUser currentUser, @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
+        var updatedUser = userService.changePassword(currentUser,
+                userChangePasswordDTO.getOldPassword(),
+                userChangePasswordDTO.getNewPassword()
+        );
+        if (updatedUser.isEmpty()) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to change password!");
+        }
+        return ResponseEntity.ok(updatedUser.get());
     }
 }
