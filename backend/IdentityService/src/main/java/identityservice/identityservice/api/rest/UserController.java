@@ -6,10 +6,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "/api/authentication", produces = {
@@ -22,8 +25,8 @@ public class UserController {
 
     private final UserService userService;
 
-//    @PostMapping("/change-password")
-//    public ResponseEntity<?> changePassword( @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
-//        SecurityContextHolder.getContext().getAuthentication().getCredentials().
-//    }
+    @PostMapping("/change-password")
+    public String changePassword(Principal principal) {
+        return ((UserDetails) principal).toString();
+    }
 }
