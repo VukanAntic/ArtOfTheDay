@@ -32,6 +32,7 @@ public class SecurityBeanConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/authentication/login").permitAll()
                         .requestMatchers("/api/authentication/register").permitAll()
+                        .requestMatchers("/api/authentication/refresh").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

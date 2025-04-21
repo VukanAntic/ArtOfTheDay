@@ -1,5 +1,6 @@
 package identityservice.identityservice.api.rest;
 
+import identityservice.identityservice.common.DTOs.DeleteUserDTO;
 import identityservice.identityservice.common.DTOs.UserChangeEmailDTO;
 import identityservice.identityservice.common.DTOs.UserChangePasswordDTO;
 import identityservice.identityservice.common.Tokens.CurrentUser;
@@ -39,7 +40,9 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CurrentUser currentUser, @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CurrentUser currentUser,
+                                            @RequestBody UserChangePasswordDTO userChangePasswordDTO)
+    {
         var updatedUser = userService.changePassword(currentUser,
                 userChangePasswordDTO.getOldPassword(),
                 userChangePasswordDTO.getNewPassword()
@@ -49,4 +52,17 @@ public class UserController {
         }
         return ResponseEntity.ok(updatedUser.get());
     }
+
+    // missing delete, change first/last name
+    @DeleteMapping("/delete-user")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CurrentUser currentUser,
+                                        @RequestBody DeleteUserDTO deleteUserDTO)
+    {
+        var user = userService.deleteUser(currentUser.getUsername(), deleteUserDTO.getUsername());
+        if (user.isEmpty()) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to delete user!");
+        }
+        return ResponseEntity.ok(user);
+    }
+
 }

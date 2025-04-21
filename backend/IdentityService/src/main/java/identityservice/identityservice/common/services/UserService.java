@@ -22,16 +22,16 @@ public class UserService {
     }
 
     public Optional<User> changePassword(CurrentUser currentUser, String oldPassword, String newPassword) {
-        var possibleUserData = userRepository.findByEmail(currentUser.getEmail());
-        if (possibleUserData.isEmpty()) {
+        var optionalUser = userRepository.findByEmail(currentUser.getEmail());
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
 
-        if (!passwordEncoder.matches(oldPassword, possibleUserData.get().getPassword())) {
+        if (!passwordEncoder.matches(oldPassword, optionalUser.get().getPassword())) {
             return Optional.empty();
         }
 
-        var user = possibleUserData.get();
+        var user = optionalUser.get();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return Optional.of(user);
@@ -39,18 +39,37 @@ public class UserService {
 
 
     public Optional<User> changeEmail(CurrentUser currentUser, String newEmail) {
-        var possibleUserData = userRepository.findByEmail(currentUser.getEmail());
-        if (possibleUserData.isEmpty()) {
+        var optionalUser = userRepository.findByEmail(currentUser.getEmail());
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
 
         try {
-            var user = possibleUserData.get();
+            var user = optionalUser.get();
             user.setEmail(newEmail);
             userRepository.save(user);
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<User> deleteUser(String principalUsername, String sentUsername) {
+        var optionalUser = userRepository.findByUsername(sentUsername);
+        var isDeletionValid = principalUsername != null && principalUsername.equals(sentUsername) && optionalUser.isPresent();
+        if (!isDeletionValid) {
+            return Optional.empty();
+        }
+
+        var user = optionalUser.get();
+
+        try {
+            userRepository.delete(user);
+            return optionalUser;
+        }
+        catch (DataIntegrityViolationException e) {
+            System.out.println(e.getMessage());
             return Optional.empty();
         }
     }
