@@ -21,6 +21,8 @@ public class IdentityService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtilComponent jwtUtilComponent;
 
+    // TODO [vukana] : Should these methods take in dtos?
+    //  When we do other ways of client/backend communication it would be cool to use all the same methods
     public Optional<User> registerUser(UserRegisterDTO userRegisterDTO) {
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return Optional.empty();
