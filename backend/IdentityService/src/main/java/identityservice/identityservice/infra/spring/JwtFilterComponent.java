@@ -1,5 +1,6 @@
 package identityservice.identityservice.infra.spring;
 
+import identityservice.identityservice.common.Tokens.CurrentUser;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,6 +34,7 @@ public class JwtFilterComponent extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
+            // extract username also does the validation, so no need for validating the jwt at least here!
             username = jwtUtilComponent.extractUsername(jwt);
         }
 
@@ -41,13 +43,12 @@ public class JwtFilterComponent extends OncePerRequestFilter {
 
             if (user.isEmpty()) return;
 
-            // makes no sense, we take the username from the jwt, and validate it?
-            if (jwtUtilComponent.validateToken(jwt, user.get().getUsername())) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            CurrentUser currentUser = new CurrentUser(user.get());
+            UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(currentUser, null, new ArrayList<>());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
         }
 
         filterChain.doFilter(request, response);

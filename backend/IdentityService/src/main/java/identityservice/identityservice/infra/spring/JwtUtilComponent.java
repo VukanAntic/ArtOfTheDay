@@ -2,10 +2,7 @@ package identityservice.identityservice.infra.spring;
 
 
 import identityservice.identityservice.common.DTOs.AuthenticationDTO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -50,32 +47,23 @@ public class JwtUtilComponent {
         return Map.of("username", username);
     }
 
-
-    public boolean validateToken(String token, String username) {
-
-        var extractUsername = extractUsername(token);
-        if (!extractUsername.equals(username)) {
-            return false;
-        }
-
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey()) // Ensure this method returns a valid Key
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            // Ensure the token is not expired
-            return !claims.getExpiration().before(new Date());
-
-        } catch (JwtException | IllegalArgumentException e) {
-            return false; // Invalid token
-        }
-    }
-
     public String extractUsername(String token) {
-        return extractClaims(token)
-                .get("username", String.class);
+        try {
+            return extractClaims(token)
+                    .get("username", String.class);
+        }
+        catch (MalformedJwtException e) {
+            System.out.println("Malformed jwt");
+            return null;
+        }
+        catch (ExpiredJwtException e) {
+            System.out.println("Expired jwt");
+            return null;
+        }
+        catch (JwtException e) {
+            System.out.println("Some jwt exception");
+            return null;
+        }
     }
 
 

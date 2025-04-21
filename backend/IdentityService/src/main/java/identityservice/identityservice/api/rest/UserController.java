@@ -1,7 +1,9 @@
 package identityservice.identityservice.api.rest;
 
 import identityservice.identityservice.common.DTOs.UserChangePasswordDTO;
+import identityservice.identityservice.common.Tokens.CurrentUser;
 import identityservice.identityservice.common.services.UserService;
+import identityservice.identityservice.infra.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,7 +28,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/change-password")
-    public String changePassword(Principal principal) {
-        return ((UserDetails) principal).toString();
+    public String changePassword(@AuthenticationPrincipal CurrentUser user) {
+        System.out.println(user.getUsername());
+        return user.toString();
     }
 }
