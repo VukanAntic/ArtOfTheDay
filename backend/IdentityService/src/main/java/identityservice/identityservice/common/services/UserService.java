@@ -21,8 +21,9 @@ public class UserService {
         return userRepository.findByUsername(currentUser.getUsername());
     }
 
-    public Optional<User> changePassword(CurrentUser currentUser, String oldPassword, String newPassword) {
-        var optionalUser = userRepository.findByEmail(currentUser.getEmail());
+    public Optional<User> changePassword(CurrentUser principalUser,
+                                         String oldPassword, String newPassword) {
+        var optionalUser = userRepository.findByUsername(principalUser.getUsername());
         if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
@@ -38,8 +39,8 @@ public class UserService {
     }
 
 
-    public Optional<User> changeEmail(CurrentUser currentUser, String newEmail) {
-        var optionalUser = userRepository.findByEmail(currentUser.getEmail());
+    public Optional<User> changeEmail(CurrentUser principalUser, String newEmail) {
+        var optionalUser = userRepository.findByUsername(principalUser.getUsername());
         if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
@@ -55,8 +56,27 @@ public class UserService {
         }
     }
 
-    public Optional<User> deleteUser(String principalUsername, String sentUsername) {
+    public Optional<User> changeFirstAndLastName(CurrentUser principalUser, String newFirstName, String newLastName) {
+        var optionalUser = userRepository.findByUsername(principalUser.getUsername());
+        if (optionalUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        try {
+            var user = optionalUser.get();
+            user.setFirstName(newFirstName);
+            user.setLastName(newLastName);
+            userRepository.save(user);
+            return Optional.of(user);
+        }
+        catch (DataIntegrityViolationException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<User> deleteUser(CurrentUser principalUser, String sentUsername) {
         var optionalUser = userRepository.findByUsername(sentUsername);
+        var principalUsername = principalUser.getUsername();
         var isDeletionValid = principalUsername != null && principalUsername.equals(sentUsername) && optionalUser.isPresent();
         if (!isDeletionValid) {
             return Optional.empty();

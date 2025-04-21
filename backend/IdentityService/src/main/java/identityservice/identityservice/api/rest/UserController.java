@@ -2,6 +2,7 @@ package identityservice.identityservice.api.rest;
 
 import identityservice.identityservice.common.DTOs.DeleteUserDTO;
 import identityservice.identityservice.common.DTOs.UserChangeEmailDTO;
+import identityservice.identityservice.common.DTOs.UserChangeFirstAndLastNameDTO;
 import identityservice.identityservice.common.DTOs.UserChangePasswordDTO;
 import identityservice.identityservice.common.Tokens.CurrentUser;
 import identityservice.identityservice.common.services.UserService;
@@ -25,14 +26,14 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/get-current-user")
-    public ResponseEntity<?> GetCurrentUser(@AuthenticationPrincipal CurrentUser currentUser) {
-        return ResponseEntity.ok(userService.getCurrentUser(currentUser));
+    public ResponseEntity<?> GetCurrentUser(@AuthenticationPrincipal CurrentUser principalUser) {
+        return ResponseEntity.ok(userService.getCurrentUser(principalUser));
     }
 
     @PostMapping("/change-email")
-    public ResponseEntity<?> changeEmail(@AuthenticationPrincipal CurrentUser currentUser, @RequestBody UserChangeEmailDTO userChangeEmailDTO) {
+    public ResponseEntity<?> changeEmail(@AuthenticationPrincipal CurrentUser principalUser, @RequestBody UserChangeEmailDTO userChangeEmailDTO) {
         // need to update the securityContext
-        var updatedUser = userService.changeEmail(currentUser, userChangeEmailDTO.getNewEmail());
+        var updatedUser = userService.changeEmail(principalUser, userChangeEmailDTO.getNewEmail());
         if (updatedUser.isEmpty()) {
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to change email!");
         }
@@ -40,10 +41,10 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CurrentUser currentUser,
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal CurrentUser principalUser,
                                             @RequestBody UserChangePasswordDTO userChangePasswordDTO)
     {
-        var updatedUser = userService.changePassword(currentUser,
+        var updatedUser = userService.changePassword(principalUser,
                 userChangePasswordDTO.getOldPassword(),
                 userChangePasswordDTO.getNewPassword()
         );
@@ -53,12 +54,26 @@ public class UserController {
         return ResponseEntity.ok(updatedUser.get());
     }
 
+    @PostMapping("/change-first-and-last-name")
+    public ResponseEntity<?> changeFirstAndLastName(@AuthenticationPrincipal CurrentUser principalUser,
+                                            @RequestBody UserChangeFirstAndLastNameDTO changeFirstAndLastNameDTO)
+    {
+        var updatedUser = userService.changeFirstAndLastName(principalUser,
+                changeFirstAndLastNameDTO.getNewFirstName(),
+                changeFirstAndLastNameDTO.getNewLastName()
+        );
+        if (updatedUser.isEmpty()) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to change first and last name!");
+        }
+        return ResponseEntity.ok(updatedUser.get());
+    }
+
     // missing delete, change first/last name
     @DeleteMapping("/delete-user")
-    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CurrentUser currentUser,
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal CurrentUser principalUser,
                                         @RequestBody DeleteUserDTO deleteUserDTO)
     {
-        var user = userService.deleteUser(currentUser.getUsername(), deleteUserDTO.getUsername());
+        var user = userService.deleteUser(principalUser, deleteUserDTO.getUsername());
         if (user.isEmpty()) {
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to delete user!");
         }

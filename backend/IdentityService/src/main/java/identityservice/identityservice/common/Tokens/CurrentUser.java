@@ -11,14 +11,8 @@ import lombok.*;
 @ToString
 public class CurrentUser {
     private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
 
     public CurrentUser(User user) {
         username = user.getUsername();
-        email = user.getEmail();
-        firstName = user.getFirstName();
-        lastName = user.getLastName();
     }
 }
