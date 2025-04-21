@@ -17,8 +17,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Optional<User> getCurrentUser(CurrentUser currentUser) {
-        return userRepository.findByUsername(currentUser.getUsername());
+    public Optional<User> getCurrentUser(CurrentUser principalUser) {
+        return userRepository.findByUsername(principalUser.getUsername());
     }
 
     public Optional<User> changePassword(CurrentUser principalUser,
