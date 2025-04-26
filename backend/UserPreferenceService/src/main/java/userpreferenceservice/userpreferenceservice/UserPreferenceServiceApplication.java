@@ -1,13 +1,13 @@
-package userinfoservice.userinfoservice;
+package userpreferenceservice.userpreferenceservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserInfoServiceApplication {
+public class UserPreferenceServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserInfoServiceApplication.class, args);
+        SpringApplication.run(UserPreferenceServiceApplication.class, args);
     }
 
 }

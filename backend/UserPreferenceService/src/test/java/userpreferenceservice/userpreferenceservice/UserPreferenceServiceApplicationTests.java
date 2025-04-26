@@ -1,10 +1,10 @@
-package userinfoservice.userinfoservice;
+package userpreferenceservice.userpreferenceservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class UserInfoServiceApplicationTests {
+class UserPreferenceServiceApplicationTests {
 
     @Test
     void contextLoads() {
