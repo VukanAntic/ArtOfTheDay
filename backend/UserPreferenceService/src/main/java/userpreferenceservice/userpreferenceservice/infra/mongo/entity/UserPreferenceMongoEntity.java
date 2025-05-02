@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collation = "user_preferences")
+@Document(collection = "user_preferences")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -13,3 +13,4 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class UserPreferenceMongoEntity {
     @Id
     private String userId;
+}
