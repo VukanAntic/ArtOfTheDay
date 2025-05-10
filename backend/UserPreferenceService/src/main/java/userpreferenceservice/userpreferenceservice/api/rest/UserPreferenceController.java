@@ -21,7 +21,7 @@ public class UserPreferenceController {
 
     @GetMapping("/test")
     public String test() {
-        mongoRepository.insert(new UserPreferenceMongoEntity("1234"));
+        mongoRepository.insert(new UserPreferenceMongoEntity());
         return "all g";
     }
 
