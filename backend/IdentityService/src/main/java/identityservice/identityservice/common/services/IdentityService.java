@@ -1,5 +1,6 @@
 package identityservice.identityservice.common.services;
 
+import common.common.events.UserCreatedEvent;
 import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
@@ -8,6 +9,9 @@ import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import identityservice.identityservice.infra.spring.JwtUtilComponent;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,7 @@ public class IdentityService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtilComponent jwtUtilComponent;
+    private RabbitTemplate rabbitTemplate;
 
     // TODO [vukana] : Should these methods take in dtos?
     //  When we do other ways of client/backend communication it would be cool to use all the same methods
@@ -28,6 +33,8 @@ public class IdentityService {
             return Optional.empty();
         }
 
+        // TODO [vukana] : We should make a User class, that isnt connected to grpc, this way, if i were to
+        //  change the db, it would be tricky!
         User user = User.builder()
                 .username(userRegisterDTO.getUsername())
                 .email(userRegisterDTO.getEmail())
@@ -37,12 +44,22 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
+            SendUserCreatedEvent(user.getId());
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
             System.out.println(e.getMessage());
             return Optional.empty();
         }
+    }
+
+    private void SendUserCreatedEvent(Long userId) {
+        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(userId);
+        // TODO [vukana] : TThis is awful, update this
+        var exchange =  "my-exchange";
+        var userCreatedQueue = "user_created_queue";
+        rabbitTemplate.convertAndSend(exchange, userCreatedQueue , userCreatedEvent);
+        System.out.println("Message sent successfully!: " + userCreatedEvent);
     }
 
     public Optional<AuthenticationDTO> loginUser(UserLoginDTO userLoginDTO) {
