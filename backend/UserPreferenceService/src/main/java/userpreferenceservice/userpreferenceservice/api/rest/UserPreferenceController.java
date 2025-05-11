@@ -1,6 +1,10 @@
 package userpreferenceservice.userpreferenceservice.api.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +25,9 @@ public class UserPreferenceController {
 
     @GetMapping("/test")
     public String test() {
-        mongoRepository.insert(new UserPreferenceMongoEntity());
+        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        System.out.println(jwt.getClaims());
         return "all g";
     }
 

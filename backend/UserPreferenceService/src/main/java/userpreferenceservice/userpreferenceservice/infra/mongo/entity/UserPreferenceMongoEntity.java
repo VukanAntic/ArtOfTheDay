@@ -15,9 +15,15 @@ import java.util.Set;
 @Setter
 public class UserPreferenceMongoEntity {
     @Id
-    private Long userId;
+    private String username;
     @Builder.Default
     private Set<String> favoriteArtworkIds = new HashSet<>();
     @Builder.Default
     private Set<String> favouriteGenreIds = new HashSet<>();
+    // TODO [vukana] : do we store this?
+    @Builder.Default
+    private Set<String> favouriteArtistIds = new HashSet<>();
+    @Builder.Default
+    private Set<String> allArtworksSeen = new HashSet<>();
+
 }

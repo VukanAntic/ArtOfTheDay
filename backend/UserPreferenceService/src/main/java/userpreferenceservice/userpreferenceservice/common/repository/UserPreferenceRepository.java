@@ -11,9 +11,11 @@ public class UserPreferenceRepository {
 
     private final UserPreferenceMongoRepository userPreferenceMongoRepository;
 
-    public void persist(Long userId) {
+    public void persist(String username) {
         try {
-            var userEntity = UserPreferenceMongoEntity.builder().userId(userId).build();
+            var userEntity = UserPreferenceMongoEntity.builder()
+                    .username(username)
+                    .build();
             userPreferenceMongoRepository.save(userEntity);
         } catch (Exception e) {
             System.out.println(e.getMessage());

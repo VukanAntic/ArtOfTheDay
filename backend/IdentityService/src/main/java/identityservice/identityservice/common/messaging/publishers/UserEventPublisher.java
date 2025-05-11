@@ -21,8 +21,8 @@ public class UserEventPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void SendUserCreatedEvent(Long userId) {
-        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(userId);
+    public void SendUserCreatedEvent(String username) {
+        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(username);
         rabbitTemplate.convertAndSend(exchange, userCreatedQueue , userCreatedEvent);
         System.out.println("Message sent successfully!: " + userCreatedEvent);
     }

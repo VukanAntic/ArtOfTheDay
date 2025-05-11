@@ -45,7 +45,7 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
-            userEventPublisher.SendUserCreatedEvent(user.getId());
+            userEventPublisher.SendUserCreatedEvent(user.getUsername());
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
