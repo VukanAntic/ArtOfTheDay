@@ -1,5 +1,6 @@
 package userpreferenceservice.userpreferenceservice.api.rest;
 
+import common.common.authentication.AuthenticatedUser;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +26,8 @@ public class UserPreferenceController {
 
     @GetMapping("/test")
     public String test() {
-        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        System.out.println(jwt.getClaims());
+        var username = AuthenticatedUser.getUsername();
+        System.out.println(username);
         return "all g";
     }
 
