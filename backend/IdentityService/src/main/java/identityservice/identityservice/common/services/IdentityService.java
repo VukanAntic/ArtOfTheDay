@@ -5,6 +5,7 @@ import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
+import identityservice.identityservice.common.messaging.publishers.UserEventPublisher;
 import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import identityservice.identityservice.infra.spring.JwtUtilComponent;
@@ -24,7 +25,7 @@ public class IdentityService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtilComponent jwtUtilComponent;
-    private RabbitTemplate rabbitTemplate;
+    private final UserEventPublisher userEventPublisher;
 
     // TODO [vukana] : Should these methods take in dtos?
     //  When we do other ways of client/backend communication it would be cool to use all the same methods
@@ -44,7 +45,7 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
-            SendUserCreatedEvent(user.getId());
+            userEventPublisher.SendUserCreatedEvent(user.getId());
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
@@ -53,14 +54,7 @@ public class IdentityService {
         }
     }
 
-    private void SendUserCreatedEvent(Long userId) {
-        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(userId);
-        // TODO [vukana] : TThis is awful, update this
-        var exchange =  "my-exchange";
-        var userCreatedQueue = "user_created_queue";
-        rabbitTemplate.convertAndSend(exchange, userCreatedQueue , userCreatedEvent);
-        System.out.println("Message sent successfully!: " + userCreatedEvent);
-    }
+
 
     public Optional<AuthenticationDTO> loginUser(UserLoginDTO userLoginDTO) {
 
