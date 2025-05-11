@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "user_preferences")
@@ -14,7 +15,9 @@ import java.util.Set;
 @Setter
 public class UserPreferenceMongoEntity {
     @Id
-    private String userId;
-    private Set<String> favoriteArtworkIds;
-    private Set<String> favouriteGenreIds;
+    private Long userId;
+    @Builder.Default
+    private Set<String> favoriteArtworkIds = new HashSet<>();
+    @Builder.Default
+    private Set<String> favouriteGenreIds = new HashSet<>();
 }
