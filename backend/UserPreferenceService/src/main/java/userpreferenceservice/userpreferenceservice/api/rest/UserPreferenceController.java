@@ -25,13 +25,25 @@ public class UserPreferenceController {
         return userPreferenceService.getUserPreferences(username);
     }
 
-    @PutMapping("/like-artwork")
-    public void likeArtwork(@RequestBody LikeArtworkDTO likeArtworkDTO) {
+    @PutMapping("/add-liked-artwork")
+    public void likeArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
+        var username = AuthenticatedUser.getUsername();
+        userPreferenceService.addToLikedArtworks(username, addLikedArtworksDTO.getArtworkId());
     }
 
-    @PutMapping("/dislike-artwork")
-    public void dislikeArtwork(@RequestParam DislikeArtworkDTO dislikeArtworkDTO) {
+    @PutMapping("/remove-liked-artwork")
+    public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
+        var username = AuthenticatedUser.getUsername();
+        userPreferenceService.removeFromLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
     }
+
+
+    // have a list of all the artworks the user disliked, so we can show smth not similar
+//    @PutMapping("/add-disliked-artwork")
+//    public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
+//        var username = AuthenticatedUser.getUsername();
+//        userPreferenceService.removeFromLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
+//    }
 
     @PutMapping("/add-favorite-genre")
     public void addFavoriteGenre(@RequestParam AddFavouriteGenreDTO addFavouriteGenreDTO) {
@@ -40,7 +52,4 @@ public class UserPreferenceController {
     @PutMapping("/remove-favorite-genre")
     public void removeFavoriteGenre(@RequestParam RemoveFavouriteGenreDTO removeFavouriteGenre) {
     }
-
-    // TODO [vukana] : Artworks seen as well
-
 }

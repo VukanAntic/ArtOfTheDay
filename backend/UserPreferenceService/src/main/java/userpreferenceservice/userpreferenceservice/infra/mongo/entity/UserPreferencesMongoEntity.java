@@ -17,12 +17,10 @@ public class UserPreferencesMongoEntity {
     @Id
     private String username;
     @Builder.Default
-    private Set<String> favoriteArtworkIds = new HashSet<>();
+    private Set<Long> likedArtworkIds = new HashSet<>();
     @Builder.Default
-    private Set<String> favouriteGenreIds = new HashSet<>();
+    private Set<String> likedGenreIds = new HashSet<>();
     // TODO [vukana] : do we store this?
     @Builder.Default
-    private Set<String> favouriteArtistIds = new HashSet<>();
-    @Builder.Default
-    private Set<String> allArtworksSeen = new HashSet<>();
+    private Set<Long> likedArtistIds = new HashSet<>();
 }

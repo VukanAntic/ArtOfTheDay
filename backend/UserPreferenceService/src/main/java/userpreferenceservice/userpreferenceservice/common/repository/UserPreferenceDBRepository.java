@@ -25,6 +25,34 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         }
     }
 
+    @Override
+    public void addLikedArtwork(String username, Long artworkId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedArtworkIds = userEntity.getLikedArtworkIds();
+        likedArtworkIds.add(artworkId);
+        userEntity.setLikedArtworkIds(likedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+    }
+
+    @Override
+    public void removeFromLikedArtworks(String username, Long artworkId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedArtworkIds = userEntity.getLikedArtworkIds();
+        likedArtworkIds.remove(artworkId);
+        userEntity.setLikedArtworkIds(likedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+    }
+
     public Optional<UserPreferences> getUserPreferences(String username) {
         var userPreferencesEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userPreferencesEntityOptional.isEmpty()) {
@@ -37,10 +65,9 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
                 UserPreferences
                 .builder()
                 .username(userPreferencesEntity.getUsername())
-                .allArtworksSeen(userPreferencesEntity.getAllArtworksSeen())
-                .favoriteArtworkIds(userPreferencesEntity.getFavoriteArtworkIds())
-                .favouriteArtistIds(userPreferencesEntity.getFavouriteArtistIds())
-                .favouriteGenreIds(userPreferencesEntity.getFavouriteGenreIds())
+                .favoriteArtworkIds(userPreferencesEntity.getLikedArtworkIds())
+                .favouriteArtistIds(userPreferencesEntity.getLikedArtistIds())
+                .favouriteGenreIds(userPreferencesEntity.getLikedGenreIds())
                 .build()
         );
     }
