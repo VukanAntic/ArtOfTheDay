@@ -40,7 +40,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
     }
 
     @Override
-    public void removeFromLikedArtworks(String username, Long artworkId) {
+    public void removeLikedArtworks(String username, Long artworkId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userEntityOptional.isEmpty()) {
             return;

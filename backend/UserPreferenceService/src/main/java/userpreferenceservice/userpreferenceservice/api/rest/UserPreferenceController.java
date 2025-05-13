@@ -28,15 +28,26 @@ public class UserPreferenceController {
     @PutMapping("/add-liked-artwork")
     public void likeArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
-        userPreferenceService.addToLikedArtworks(username, addLikedArtworksDTO.getArtworkId());
+        userPreferenceService.addLikedArtworks(username, addLikedArtworksDTO.getArtworkId());
     }
 
     @PutMapping("/remove-liked-artwork")
     public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
-        userPreferenceService.removeFromLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
+        userPreferenceService.removeLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
     }
 
+    @PutMapping("/add-liked-genre")
+    public void addFavoriteGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
+        var username = AuthenticatedUser.getUsername();
+        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
+    }
+
+    @PutMapping("/remove-liked-genre")
+    public void removeFavoriteGenre(@RequestParam RemoveLikedGenreDTO removeFavouriteGenre) {
+        var username = AuthenticatedUser.getUsername();
+        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
+    }
 
     // have a list of all the artworks the user disliked, so we can show smth not similar
 //    @PutMapping("/add-disliked-artwork")
@@ -44,12 +55,4 @@ public class UserPreferenceController {
 //        var username = AuthenticatedUser.getUsername();
 //        userPreferenceService.removeFromLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
 //    }
-
-    @PutMapping("/add-favorite-genre")
-    public void addFavoriteGenre(@RequestParam AddFavouriteGenreDTO addFavouriteGenreDTO) {
-    }
-
-    @PutMapping("/remove-favorite-genre")
-    public void removeFavoriteGenre(@RequestParam RemoveFavouriteGenreDTO removeFavouriteGenre) {
-    }
 }

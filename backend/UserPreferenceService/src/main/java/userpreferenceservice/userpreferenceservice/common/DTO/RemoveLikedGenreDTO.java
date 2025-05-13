@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RemoveFavouriteGenreDTO {
+public class RemoveLikedGenreDTO {
     public String genreId;
 }

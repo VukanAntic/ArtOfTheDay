@@ -7,6 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddFavouriteGenreDTO {
+public class AddLikedGenreDTO {
     public String genreId;
 }

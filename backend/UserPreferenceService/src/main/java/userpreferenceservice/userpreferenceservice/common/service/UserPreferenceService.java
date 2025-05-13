@@ -17,11 +17,11 @@ public class UserPreferenceService {
         return userPreferenceDBRepository.getUserPreferences(username);
     }
 
-    public void addToLikedArtworks(String username, Long artworkId) {
+    public void addLikedArtworks(String username, Long artworkId) {
         userPreferenceDBRepository.addLikedArtwork(username, artworkId);
     }
 
-    public void removeFromLikedArtworks(String username, Long artworkId) {
-        userPreferenceDBRepository.removeFromLikedArtworks(username, artworkId);
+    public void removeLikedArtworks(String username, Long artworkId) {
+        userPreferenceDBRepository.removeLikedArtworks(username, artworkId);
     }
 }
