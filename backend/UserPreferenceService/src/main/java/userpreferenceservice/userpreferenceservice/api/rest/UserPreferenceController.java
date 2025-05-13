@@ -2,8 +2,11 @@ package userpreferenceservice.userpreferenceservice.api.rest;
 
 import common.common.authentication.AuthenticatedUser;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import userpreferenceservice.userpreferenceservice.common.DTO.*;
+import userpreferenceservice.userpreferenceservice.common.model.AddToDBStatus;
 import userpreferenceservice.userpreferenceservice.common.model.UserPreferences;
 import userpreferenceservice.userpreferenceservice.common.service.UserPreferenceService;
 
@@ -20,34 +23,52 @@ public class UserPreferenceController {
     private final UserPreferenceService userPreferenceService;
 
     @GetMapping("/get")
-    public Optional<UserPreferences> get() {
+    public ResponseEntity<Optional<UserPreferences>> get() {
         var username = AuthenticatedUser.getUsername();
-        return userPreferenceService.getUserPreferences(username);
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userPreferenceService.getUserPreferences(username));
     }
 
     @PutMapping("/add-liked-artwork")
-    public void likeArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
+    public ResponseEntity<Void> likeArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
-        userPreferenceService.addLikedArtworks(username, addLikedArtworksDTO.getArtworkId());
-    }
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.addLikedArtworks(username, addLikedArtworksDTO.getArtworkId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();    }
 
     @PutMapping("/remove-liked-artwork")
-    public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
+    public ResponseEntity<Void> dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
-        userPreferenceService.removeLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.removeLikedArtworks(username, removeLikedArtworksDTO.getArtworkId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
     }
 
-    @PutMapping("/add-liked-genre")
-    public void addFavoriteGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
-        var username = AuthenticatedUser.getUsername();
-        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
-    }
-
-    @PutMapping("/remove-liked-genre")
-    public void removeFavoriteGenre(@RequestParam RemoveLikedGenreDTO removeFavouriteGenre) {
-        var username = AuthenticatedUser.getUsername();
-        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
-    }
+//    @PutMapping("/add-liked-genre")
+//    public ResponseEntity<Void> addFavoriteGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
+//        var username = AuthenticatedUser.getUsername();
+//        if (username == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
+//    }
+//
+//    @PutMapping("/remove-liked-genre")
+//    public ResponseEntity<Void> removeFavoriteGenre(@RequestParam RemoveLikedGenreDTO removeLikedGenreDTO) {
+//        var username = AuthenticatedUser.getUsername();
+//        if (username == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        userPreferenceService.removeLikedGenre(username, removeLikedGenreDTO.getGenreId());
+//    }
 
     // have a list of all the artworks the user disliked, so we can show smth not similar
 //    @PutMapping("/add-disliked-artwork")

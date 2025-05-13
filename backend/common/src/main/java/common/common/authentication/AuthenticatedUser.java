@@ -9,9 +9,15 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 public class AuthenticatedUser {
 
     public  static String getUsername() {
-        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        return jwt.getClaim("username");
+        try {
+            JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwt = (Jwt) authentication.getPrincipal();
+            return jwt.getClaim("username");
+        }
+        catch (Exception e) {
+            return null;
+        }
+
     }
 
 }

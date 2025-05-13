@@ -2,6 +2,7 @@ package userpreferenceservice.userpreferenceservice.common.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import userpreferenceservice.userpreferenceservice.common.model.AddToDBStatus;
 import userpreferenceservice.userpreferenceservice.common.model.UserPreferences;
 import userpreferenceservice.userpreferenceservice.common.repository.UserPreferenceRepository;
 
@@ -17,11 +18,11 @@ public class UserPreferenceService {
         return userPreferenceDBRepository.getUserPreferences(username);
     }
 
-    public void addLikedArtworks(String username, Long artworkId) {
-        userPreferenceDBRepository.addLikedArtwork(username, artworkId);
+    public AddToDBStatus addLikedArtworks(String username, Long artworkId) {
+        return userPreferenceDBRepository.addLikedArtwork(username, artworkId);
     }
 
-    public void removeLikedArtworks(String username, Long artworkId) {
-        userPreferenceDBRepository.removeLikedArtworks(username, artworkId);
+    public AddToDBStatus removeLikedArtworks(String username, Long artworkId) {
+        return userPreferenceDBRepository.removeLikedArtworks(username, artworkId);
     }
 }

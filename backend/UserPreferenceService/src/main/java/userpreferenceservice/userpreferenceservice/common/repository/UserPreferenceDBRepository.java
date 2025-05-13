@@ -2,6 +2,7 @@ package userpreferenceservice.userpreferenceservice.common.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import userpreferenceservice.userpreferenceservice.common.model.AddToDBStatus;
 import userpreferenceservice.userpreferenceservice.common.model.UserPreferences;
 import userpreferenceservice.userpreferenceservice.infra.mongo.entity.UserPreferencesMongoEntity;
 import userpreferenceservice.userpreferenceservice.infra.mongo.repository.UserPreferencesMongoRepository;
@@ -26,10 +27,10 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
     }
 
     @Override
-    public void addLikedArtwork(String username, Long artworkId) {
+    public AddToDBStatus addLikedArtwork(String username, Long artworkId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userEntityOptional.isEmpty()) {
-            return;
+            return AddToDBStatus.FAILURE;
         }
 
         var userEntity = userEntityOptional.get();
@@ -37,13 +38,14 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         likedArtworkIds.add(artworkId);
         userEntity.setLikedArtworkIds(likedArtworkIds);
         userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
     }
 
     @Override
-    public void removeLikedArtworks(String username, Long artworkId) {
+    public AddToDBStatus removeLikedArtworks(String username, Long artworkId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userEntityOptional.isEmpty()) {
-            return;
+            return AddToDBStatus.FAILURE;
         }
 
         var userEntity = userEntityOptional.get();
@@ -51,6 +53,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         likedArtworkIds.remove(artworkId);
         userEntity.setLikedArtworkIds(likedArtworkIds);
         userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
     }
 
     public Optional<UserPreferences> getUserPreferences(String username) {
@@ -65,9 +68,9 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
                 UserPreferences
                 .builder()
                 .username(userPreferencesEntity.getUsername())
-                .favoriteArtworkIds(userPreferencesEntity.getLikedArtworkIds())
-                .favouriteArtistIds(userPreferencesEntity.getLikedArtistIds())
-                .favouriteGenreIds(userPreferencesEntity.getLikedGenreIds())
+                .likedArtworkIds(userPreferencesEntity.getLikedArtworkIds())
+                .likedArtistIds(userPreferencesEntity.getLikedArtistIds())
+                .likedGenreIds(userPreferencesEntity.getLikedGenreIds())
                 .build()
         );
     }

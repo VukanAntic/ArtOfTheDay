@@ -14,10 +14,10 @@ import java.util.Set;
 public class UserPreferences {
     private String username;
     @Builder.Default
-    private Set<Long> favoriteArtworkIds = new HashSet<>();
+    private Set<Long> likedArtworkIds = new HashSet<>();
     @Builder.Default
-    private Set<String> favouriteGenreIds = new HashSet<>();
+    private Set<String> likedGenreIds = new HashSet<>();
     // TODO [vukana] : do we store this?
     @Builder.Default
-    private Set<Long> favouriteArtistIds = new HashSet<>();
+    private Set<Long> likedArtistIds = new HashSet<>();
 }
