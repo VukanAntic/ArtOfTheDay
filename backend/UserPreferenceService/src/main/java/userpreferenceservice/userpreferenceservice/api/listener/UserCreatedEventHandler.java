@@ -1,4 +1,4 @@
-package userpreferenceservice.userpreferenceservice.common.messaging.listener;
+package userpreferenceservice.userpreferenceservice.api.listener;
 
 import common.common.events.UserCreatedEvent;
 import lombok.AllArgsConstructor;
