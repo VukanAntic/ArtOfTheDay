@@ -26,6 +26,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         }
     }
 
+    // TODO [vukana] : Add/Remove one method?
     @Override
     public AddToDBStatus addLikedArtwork(String username, Long artworkId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
@@ -52,6 +53,37 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         var likedArtworkIds = userEntity.getLikedArtworkIds();
         likedArtworkIds.remove(artworkId);
         userEntity.setLikedArtworkIds(likedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    // TODO [vukana] : Add/Remove one method?
+    @Override
+    public AddToDBStatus removeLikedGenre(String username, String genreId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedGenreIds = userEntity.getLikedGenreIds();
+        likedGenreIds.add(genreId);
+        userEntity.setLikedGenreIds(likedGenreIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    @Override
+    public AddToDBStatus addLikedGenre(String username, String genreId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedGenreIds = userEntity.getLikedGenreIds();
+        likedGenreIds.remove(genreId);
+        userEntity.setLikedGenreIds(likedGenreIds);
         userPreferenceMongoRepository.save(userEntity);
         return AddToDBStatus.SUCCESS;
     }

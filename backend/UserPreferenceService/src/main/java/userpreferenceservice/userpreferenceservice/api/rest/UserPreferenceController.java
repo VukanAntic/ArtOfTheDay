@@ -32,7 +32,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/add-liked-artwork")
-    public ResponseEntity<Void> likeArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
+    public ResponseEntity<Void> addLikedArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -42,7 +42,7 @@ public class UserPreferenceController {
                 : ResponseEntity.badRequest().build();    }
 
     @PutMapping("/remove-liked-artwork")
-    public ResponseEntity<Void> dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
+    public ResponseEntity<Void> RemoveLikedArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -52,23 +52,27 @@ public class UserPreferenceController {
                 : ResponseEntity.badRequest().build();
     }
 
-//    @PutMapping("/add-liked-genre")
-//    public ResponseEntity<Void> addFavoriteGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
-//        var username = AuthenticatedUser.getUsername();
-//        if (username == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId());
-//    }
-//
-//    @PutMapping("/remove-liked-genre")
-//    public ResponseEntity<Void> removeFavoriteGenre(@RequestParam RemoveLikedGenreDTO removeLikedGenreDTO) {
-//        var username = AuthenticatedUser.getUsername();
-//        if (username == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        userPreferenceService.removeLikedGenre(username, removeLikedGenreDTO.getGenreId());
-//    }
+    @PutMapping("/add-liked-genre")
+    public ResponseEntity<Void> addLikedGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.addLikedGenre(username, addLikedGenreDTO.getGenreId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/remove-liked-genre")
+    public ResponseEntity<Void> removeLikedGenre(@RequestParam RemoveLikedGenreDTO removeLikedGenreDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.removeLikedGenre(username, removeLikedGenreDTO.getGenreId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
 
     // have a list of all the artworks the user disliked, so we can show smth not similar
 //    @PutMapping("/add-disliked-artwork")

@@ -10,4 +10,6 @@ public interface UserPreferenceRepository {
     void persist(String username);
     AddToDBStatus addLikedArtwork(String username, Long artworkId);
     AddToDBStatus removeLikedArtworks(String username, Long artworkId);
+    AddToDBStatus removeLikedGenre(String username, String genreId);
+    AddToDBStatus addLikedGenre(String username, String genreId);
 }
