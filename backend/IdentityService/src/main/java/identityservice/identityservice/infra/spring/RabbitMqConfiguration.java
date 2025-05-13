@@ -14,14 +14,21 @@ import org.springframework.amqp.core.Queue;
 public class RabbitMqConfiguration {
 
     @Value("${spring.rabbitmq.user_created_queue}")
-    private String userCreatedQueue;
+    private String userCreatedQueueName;
+
+    @Value("${spring.rabbitmq.user_deleted_queue}")
+    private String userDeletedQueueName;
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
     @Bean
     public Queue userCreatedQueue() {
-        return new Queue(userCreatedQueue, false);
+        return new Queue(userCreatedQueueName, false);
+    }
+    @Bean
+    public Queue userDeletedQueue() {
+        return new Queue(userDeletedQueueName, false);
     }
 
     @Bean
@@ -30,8 +37,13 @@ public class RabbitMqConfiguration {
     }
 
     @Bean
-    public Binding userCreatedBinding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(userCreatedQueue);
+    public Binding userCreatedBinding(Queue userCreatedQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(userCreatedQueue).to(exchange).with(userCreatedQueueName);
+    }
+
+    @Bean
+    public Binding userDeletedBinding(Queue userDeletedQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(userDeletedQueue).to(exchange).with(userDeletedQueueName);
     }
 
     @Bean

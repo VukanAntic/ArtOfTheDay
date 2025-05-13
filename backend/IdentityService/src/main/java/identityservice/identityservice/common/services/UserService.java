@@ -1,5 +1,6 @@
 package identityservice.identityservice.common.services;
 
+import identityservice.identityservice.api.publishers.UserEventPublisher;
 import identityservice.identityservice.common.Tokens.CurrentUser;
 import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
@@ -16,6 +17,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserEventPublisher userEventPublisher;
 
     public Optional<User> getCurrentUser(CurrentUser principalUser) {
         return userRepository.findByUsername(principalUser.getUsername());
@@ -75,6 +77,7 @@ public class UserService {
     }
 
     public Optional<User> deleteUser(CurrentUser principalUser, String sentUsername) {
+        // TODO [vukana] : This should require a pasword check as well!
         var optionalUser = userRepository.findByUsername(sentUsername);
         var principalUsername = principalUser.getUsername();
         var isDeletionValid = principalUsername != null && principalUsername.equals(sentUsername) && optionalUser.isPresent();
@@ -86,6 +89,7 @@ public class UserService {
 
         try {
             userRepository.delete(user);
+            userEventPublisher.publishUserDeletedEvent(sentUsername);
             return optionalUser;
         }
         catch (DataIntegrityViolationException e) {

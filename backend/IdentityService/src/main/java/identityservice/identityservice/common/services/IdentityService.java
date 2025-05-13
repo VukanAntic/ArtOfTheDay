@@ -1,18 +1,14 @@
 package identityservice.identityservice.common.services;
 
-import common.common.events.UserCreatedEvent;
 import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import identityservice.identityservice.common.DTOs.RefreshTokenDTO;
 import identityservice.identityservice.common.DTOs.UserLoginDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
-import identityservice.identityservice.common.messaging.publishers.UserEventPublisher;
+import identityservice.identityservice.api.publishers.UserEventPublisher;
 import identityservice.identityservice.infra.entities.User;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import identityservice.identityservice.infra.spring.JwtUtilComponent;
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,7 +41,7 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
-            userEventPublisher.SendUserCreatedEvent(user.getUsername());
+            userEventPublisher.publishUserCreatedEvent(user.getUsername());
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
