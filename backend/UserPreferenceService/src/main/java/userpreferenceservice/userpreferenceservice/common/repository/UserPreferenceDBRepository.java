@@ -88,6 +88,15 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         return AddToDBStatus.SUCCESS;
     }
 
+    @Override
+    public void delete(String username) {
+        try {
+            userPreferenceMongoRepository.deleteById(username);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public Optional<UserPreferences> getUserPreferences(String username) {
         var userPreferencesEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userPreferencesEntityOptional.isEmpty()) {

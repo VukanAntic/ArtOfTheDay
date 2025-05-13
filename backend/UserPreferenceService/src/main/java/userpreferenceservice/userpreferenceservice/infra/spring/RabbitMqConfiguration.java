@@ -13,11 +13,20 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfiguration {
 
     @Value("${spring.rabbitmq.user_created_queue}")
-    private String userCreatedQueue;
+    private String userCreatedQueueName;
+
+    @Value("${spring.rabbitmq.user_deleted_queue}")
+    private String userDeletedQueueName;
+
 
     @Bean
-    public Queue queue() {
-        return new Queue(userCreatedQueue, false);
+    public Queue userCreatedQueue() {
+        return new Queue(userCreatedQueueName, false);
+    }
+
+    @Bean
+    public Queue userDeletedQueue() {
+        return new Queue(userDeletedQueueName, false);
     }
 
     @Bean
