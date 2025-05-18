@@ -74,6 +74,28 @@ public class UserPreferenceController {
                 : ResponseEntity.badRequest().build();
     }
 
+    @PutMapping("/add-disliked-artwork")
+    public ResponseEntity<Void> addDislikedImage(@RequestParam AddDislikedArtworkDTO addDislikedArtworkDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.addDislikedArtwork(username, addDislikedArtworkDTO.getArtworkId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/remove-disliked-artwork")
+    public ResponseEntity<Void> removeDislikedArtwork(@RequestParam RemoveDislikedArtworkDTO removeDislikedArtworkDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.removeDislikedArtwork(username, removeDislikedArtworkDTO.getArtworkId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
+
     // have a list of all the artworks the user disliked, so we can show smth not similar
 //    @PutMapping("/add-disliked-artwork")
 //    public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {

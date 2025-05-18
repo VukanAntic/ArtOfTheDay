@@ -1,6 +1,5 @@
 package userpreferenceservice.userpreferenceservice.common.DTO;
 
-
 import lombok.*;
 
 @Getter
@@ -8,6 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RemoveLikedGenreDTO {
-    private String genreId;
+public class RemoveDislikedArtworkDTO {
+    private String artworkId;
 }

@@ -33,4 +33,12 @@ public class UserPreferenceService {
     public AddToDBStatus removeLikedGenre(String username, String genreId) {
         return userPreferenceDBRepository.removeLikedGenre(username, genreId);
     }
+
+    public AddToDBStatus addDislikedArtwork(String username, String artworkId) {
+        return userPreferenceDBRepository.addDislikedArtwork(username, artworkId);
+    }
+
+    public AddToDBStatus removeDislikedArtwork(String username, String artworkId) {
+        return userPreferenceDBRepository.removeDislikedArtwork(username, artworkId);
+    }
 }

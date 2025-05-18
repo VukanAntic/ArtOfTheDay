@@ -17,6 +17,8 @@ public class UserPreferences {
     private Set<Long> likedArtworkIds = new HashSet<>();
     @Builder.Default
     private Set<String> likedGenreIds = new HashSet<>();
+    @Builder.Default
+    private Set<String> dislikedArtworksIds = new HashSet<>();
     // TODO [vukana] : do we store this?
     @Builder.Default
     private Set<Long> likedArtistIds = new HashSet<>();

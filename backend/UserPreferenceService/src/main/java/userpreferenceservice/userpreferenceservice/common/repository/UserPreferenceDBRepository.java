@@ -97,6 +97,36 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         }
     }
 
+    @Override
+    public AddToDBStatus addDislikedArtwork(String username, String artworkId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var dislikedArtworkIds = userEntity.getDislikedArtworksIds();
+        dislikedArtworkIds.add(artworkId);
+        userEntity.setDislikedArtworksIds(dislikedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    @Override
+    public AddToDBStatus removeDislikedArtwork(String username, String artworkId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var dislikedArtworkIds = userEntity.getDislikedArtworksIds();
+        dislikedArtworkIds.remove(artworkId);
+        userEntity.setDislikedArtworksIds(dislikedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
     public Optional<UserPreferences> getUserPreferences(String username) {
         var userPreferencesEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userPreferencesEntityOptional.isEmpty()) {
@@ -111,6 +141,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
                 .username(userPreferencesEntity.getUsername())
                 .likedArtworkIds(userPreferencesEntity.getLikedArtworkIds())
                 .likedArtistIds(userPreferencesEntity.getLikedArtistIds())
+                .dislikedArtworksIds(userPreferencesEntity.getDislikedArtworksIds())
                 .likedGenreIds(userPreferencesEntity.getLikedGenreIds())
                 .build()
         );

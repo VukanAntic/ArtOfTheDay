@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AddLikedGenreDTO {
-    public String genreId;
+    private String genreId;
 }
