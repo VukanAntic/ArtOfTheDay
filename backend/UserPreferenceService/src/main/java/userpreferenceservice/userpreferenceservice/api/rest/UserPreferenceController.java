@@ -96,10 +96,25 @@ public class UserPreferenceController {
                 : ResponseEntity.badRequest().build();
     }
 
-    // have a list of all the artworks the user disliked, so we can show smth not similar
-//    @PutMapping("/add-disliked-artwork")
-//    public void dislikeArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
-//        var username = AuthenticatedUser.getUsername();
-//        userPreferenceService.removeFromLikedArtworks(username, removeLikedArtworksDTO.getArtworkId());
-//    }
+    @PutMapping("/add-liked-artist")
+    public ResponseEntity<Void> addLikedArtist(@RequestParam AddLikedArtistDTO addLikedArtistDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.addLikedArtist(username, addLikedArtistDTO.getArtistId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/remove-liked-artist")
+    public ResponseEntity<Void> removeLikedArtist(@RequestParam RemoveLikedArtistDTO removeLikedArtistDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.removeLikedArtist(username, removeLikedArtistDTO.getArtistId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
 }

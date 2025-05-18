@@ -26,7 +26,6 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         }
     }
 
-    // TODO [vukana] : Add/Remove one method?
     @Override
     public AddToDBStatus addLikedArtwork(String username, Long artworkId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
@@ -57,7 +56,6 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         return AddToDBStatus.SUCCESS;
     }
 
-    // TODO [vukana] : Add/Remove one method?
     @Override
     public AddToDBStatus removeLikedGenre(String username, String genreId) {
         var userEntityOptional = userPreferenceMongoRepository.findById(username);
@@ -123,6 +121,36 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         var dislikedArtworkIds = userEntity.getDislikedArtworksIds();
         dislikedArtworkIds.remove(artworkId);
         userEntity.setDislikedArtworksIds(dislikedArtworkIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    @Override
+    public AddToDBStatus addLikedArtist(String username, Long artistId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedArtistIds = userEntity.getLikedArtistIds();
+        likedArtistIds.add(artistId);
+        userEntity.setLikedArtistIds(likedArtistIds);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    @Override
+    public AddToDBStatus removeLikedArtist(String username, Long artistId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        var likedArtistIds = userEntity.getLikedArtistIds();
+        likedArtistIds.remove(artistId);
+        userEntity.setLikedArtistIds(likedArtistIds);
         userPreferenceMongoRepository.save(userEntity);
         return AddToDBStatus.SUCCESS;
     }

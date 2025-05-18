@@ -15,4 +15,6 @@ public interface UserPreferenceRepository {
     void delete(String username);
     AddToDBStatus addDislikedArtwork(String username, String artworkId);
     AddToDBStatus removeDislikedArtwork(String username, String artworkId);
+    AddToDBStatus addLikedArtist(String username, Long artistId);
+    AddToDBStatus removeLikedArtist(String username, Long artistId);
 }

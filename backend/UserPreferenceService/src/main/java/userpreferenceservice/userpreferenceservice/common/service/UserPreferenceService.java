@@ -41,4 +41,11 @@ public class UserPreferenceService {
     public AddToDBStatus removeDislikedArtwork(String username, String artworkId) {
         return userPreferenceDBRepository.removeDislikedArtwork(username, artworkId);
     }
+    public AddToDBStatus addLikedArtist(String username, Long artistId) {
+        return userPreferenceDBRepository.addLikedArtist(username, artistId);
+    }
+
+    public AddToDBStatus removeLikedArtist(String username, Long artistId) {
+        return userPreferenceDBRepository.removeLikedArtist(username, artistId);
+    }
 }
