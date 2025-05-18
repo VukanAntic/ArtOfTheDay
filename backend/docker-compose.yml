@@ -6,9 +6,11 @@ services:
     build:
       context: .
       dockerfile: ImageService/Dockerfile
-    env_file: ImageService/db_cred.env
+    env_file: ImageService/default.env
     ports:
       - "8080:8080"
+    depends_on:
+      - rabbitmq
   identity_service:
     image: ${DOCKER_REGISTRY-}identity_service
     build:
@@ -17,5 +19,28 @@ services:
     env_file: IdentityService/default.env
     ports:
       - "8081:8081"
+    depends_on:
+      - rabbitmq
+
+  user_preferences_service:
+    image: ${DOCKER_REGISTRY-}user_preferences_service
+    build:
+      context: .
+      dockerfile: UserPreferenceService/Dockerfile
+    env_file: UserPreferenceService/default.env
+    ports:
+      - "8082:8082"
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # AMQP port
+      - "15672:15672"   # Management UI (http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
 
 
