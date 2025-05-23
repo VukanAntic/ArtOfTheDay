@@ -13,48 +13,24 @@ import org.springframework.amqp.core.Queue;
 @Configuration
 public class RabbitMqConfiguration {
 
-    @Value("${spring.rabbitmq.user_created_queue}")
-    private String userCreatedQueueName;
-
-    @Value("${spring.rabbitmq.user_deleted_queue}")
-    private String userDeletedQueueName;
-
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
+    @Value("${spring.rabbitmq.exchange_name}")
+    private String userEventsExchange;
 
     @Bean
-    public Queue userCreatedQueue() {
-        return new Queue(userCreatedQueueName, false);
-    }
-    @Bean
-    public Queue userDeletedQueue() {
-        return new Queue(userDeletedQueueName, false);
+    public TopicExchange userEventsExchange() {
+        return new TopicExchange(userEventsExchange);
     }
 
     @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(exchange);
-    }
-
-    @Bean
-    public Binding userCreatedBinding(Queue userCreatedQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userCreatedQueue).to(exchange).with(userCreatedQueueName);
-    }
-
-    @Bean
-    public Binding userDeletedBinding(Queue userDeletedQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userDeletedQueue).to(exchange).with(userDeletedQueueName);
-    }
-
-    @Bean
-    public MessageConverter jsonMessageConverter() {
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        return rabbitTemplate;
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+                                         Jackson2JsonMessageConverter messageConverter) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter);
+        return template;
     }
 }

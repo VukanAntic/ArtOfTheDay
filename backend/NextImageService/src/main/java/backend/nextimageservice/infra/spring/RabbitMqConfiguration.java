@@ -1,4 +1,4 @@
-package userpreferenceservice.userpreferenceservice.infra.spring;
+package backend.nextimageservice.infra.spring;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -48,7 +48,7 @@ public class RabbitMqConfiguration {
 
     @Bean
     public Binding userCreatedBinding(Queue userCreatedQueue, TopicExchange userEventsExchange) {
-        return BindingBuilder.bind(userCreatedQueue).to(userEventsExchange).with("user_created");
+        return BindingBuilder.bind(userCreatedQueue).to(userEventsExchange).with(userCreatedRoutingKey);
     }
 
     @Bean

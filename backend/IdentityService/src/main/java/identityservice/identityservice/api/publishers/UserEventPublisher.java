@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserEventPublisher {
 
-    @Value("${spring.rabbitmq.user_created_queue}")
-    private String userCreatedQueue;
-    @Value("${spring.rabbitmq.user_deleted_queue}")
-    private String userDeletedQueue;
+    @Value("${spring.rabbitmq.user_created_routing_key}")
+    private String userCreatedRoutingKey;
 
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
+    @Value("${spring.rabbitmq.user_deleted_routing_key}")
+    private String userDeletedRoutingKey;
+
+    @Value("${spring.rabbitmq.exchange_name}")
+    private String userEventsExchange;
 
     private final RabbitTemplate rabbitTemplate;
 
@@ -25,13 +26,13 @@ public class UserEventPublisher {
 
     public void publishUserCreatedEvent(String username) {
         UserCreatedEvent userCreatedEvent = new UserCreatedEvent(username);
-        rabbitTemplate.convertAndSend(exchange, userCreatedQueue , userCreatedEvent);
+        rabbitTemplate.convertAndSend(userEventsExchange, userCreatedRoutingKey, userCreatedEvent);
         System.out.println("Message sent successfully!: " + userCreatedEvent);
     }
 
     public void publishUserDeletedEvent(String username) {
         var userDeletedEvent = new UserDeletedEvent(username);
-        rabbitTemplate.convertAndSend(exchange, userDeletedQueue , userDeletedEvent);
+        rabbitTemplate.convertAndSend(userEventsExchange, userDeletedRoutingKey, userDeletedEvent);
         System.out.println("Message sent successfully!: " + userDeletedEvent);
     }
 }

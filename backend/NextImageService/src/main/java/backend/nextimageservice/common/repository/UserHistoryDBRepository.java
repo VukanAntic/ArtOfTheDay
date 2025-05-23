@@ -5,6 +5,7 @@ import backend.nextimageservice.infra.mongo.repository.UserHistoryMongoRepositor
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+@Repository
 @AllArgsConstructor
 public class UserHistoryDBRepository implements UserHistoryRepository {
 
