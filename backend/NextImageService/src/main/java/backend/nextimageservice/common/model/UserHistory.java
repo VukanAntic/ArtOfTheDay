@@ -14,4 +14,9 @@ public class UserHistory {
     private String username;
     @Builder.Default
     private Set<Long> artworkSeenIds = new HashSet<>();
+    @Builder.Default
+    private int preferredTimeForUpdateInMinutes = 0;
+    @Builder.Default
+    private int preferredTimeForUpdateInHours = 9;
+    private String timeZoneId;
 }

@@ -24,6 +24,25 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
     }
 
     @Override
+    public void setPreferredTimeForUser(String username, String timeZoneId, int preferredUpdateTimeInHours, int preferredUpdateTimeInMinutes) {
+        try {
+            var userEntityOptional = userHistoryMongoRepository.findById(username);
+            var userEntity = userEntityOptional.orElse(null);
+            if (userEntityOptional.isEmpty()) {
+                // if the user doesnt exists, its probably some error, make the necessary object for the user
+                userEntity = UserHistoryMongoEntity.builder().username(username).build();
+            }
+            userEntity.setTimeZoneId(timeZoneId);
+            userEntity.setPreferredTimeForUpdateInHours(preferredUpdateTimeInHours);
+            userEntity.setPreferredTimeForUpdateInMinutes(preferredUpdateTimeInMinutes);
+            userHistoryMongoRepository.save(userEntity);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
     public void delete(String username) {
         try {
             userHistoryMongoRepository.deleteById(username);

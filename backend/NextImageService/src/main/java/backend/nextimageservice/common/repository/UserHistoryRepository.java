@@ -5,4 +5,8 @@ import org.springframework.stereotype.Repository;
 public interface UserHistoryRepository {
     void delete(String username);
     void persist(String username);
+    void setPreferredTimeForUser(String username,
+                                 String timeZoneId,
+                                 int preferredUpdateTimeInHours,
+                                 int preferredUpdateTimeInMinutes);
 }

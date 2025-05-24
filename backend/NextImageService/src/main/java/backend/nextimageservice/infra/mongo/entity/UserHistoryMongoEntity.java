@@ -19,5 +19,10 @@ public class UserHistoryMongoEntity {
     private String username;
     @Builder.Default
     private Set<Long> artworkSeenIds = new HashSet<>();
+    @Builder.Default
+    private int preferredTimeForUpdateInMinutes = 0;
+    @Builder.Default
+    private int preferredTimeForUpdateInHours = 9;
+    private String timeZoneId;
     // TODO [vukana] : Find a way to pick the next 10 or smth
 }
