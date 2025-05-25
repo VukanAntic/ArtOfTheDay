@@ -1,6 +1,9 @@
 package backend.nextimageservice.common.repository;
 
+import backend.nextimageservice.common.model.UserHistory;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 public interface UserHistoryRepository {
     void delete(String username);
@@ -9,4 +12,6 @@ public interface UserHistoryRepository {
                                  String timeZoneId,
                                  int preferredUpdateTimeInHours,
                                  int preferredUpdateTimeInMinutes);
+
+    List<UserHistory> getAllUsers();
 }

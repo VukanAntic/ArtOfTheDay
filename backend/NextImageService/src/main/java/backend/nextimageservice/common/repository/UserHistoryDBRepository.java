@@ -1,9 +1,12 @@
 package backend.nextimageservice.common.repository;
 
+import backend.nextimageservice.common.model.UserHistory;
 import backend.nextimageservice.infra.mongo.entity.UserHistoryMongoEntity;
 import backend.nextimageservice.infra.mongo.repository.UserHistoryMongoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @AllArgsConstructor
@@ -40,6 +43,15 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public List<UserHistory> getAllUsers() {
+        return userHistoryMongoRepository
+                .findAll()
+                .stream()
+                .map(userHistoryMongoEntity -> new UserHistory(userHistoryMongoEntity))
+                .toList();
     }
 
     @Override
