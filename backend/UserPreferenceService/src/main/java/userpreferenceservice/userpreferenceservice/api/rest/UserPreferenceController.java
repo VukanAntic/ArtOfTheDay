@@ -42,7 +42,7 @@ public class UserPreferenceController {
                 : ResponseEntity.badRequest().build();    }
 
     @PutMapping("/remove-liked-artwork")
-    public ResponseEntity<Void> RemoveLikedArtwork(@RequestParam RemoveLikedArtworkDTO removeLikedArtworksDTO) {
+    public ResponseEntity<Void> RemoveLikedArtwork(@RequestBody RemoveLikedArtworkDTO removeLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/add-liked-genre")
-    public ResponseEntity<Void> addLikedGenre(@RequestParam AddLikedGenreDTO addLikedGenreDTO) {
+    public ResponseEntity<Void> addLikedGenre(@RequestBody AddLikedGenreDTO addLikedGenreDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -64,7 +64,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/remove-liked-genre")
-    public ResponseEntity<Void> removeLikedGenre(@RequestParam RemoveLikedGenreDTO removeLikedGenreDTO) {
+    public ResponseEntity<Void> removeLikedGenre(@RequestBody RemoveLikedGenreDTO removeLikedGenreDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -75,7 +75,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/add-disliked-artwork")
-    public ResponseEntity<Void> addDislikedImage(@RequestParam AddDislikedArtworkDTO addDislikedArtworkDTO) {
+    public ResponseEntity<Void> addDislikedImage(@RequestBody AddDislikedArtworkDTO addDislikedArtworkDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -86,7 +86,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/remove-disliked-artwork")
-    public ResponseEntity<Void> removeDislikedArtwork(@RequestParam RemoveDislikedArtworkDTO removeDislikedArtworkDTO) {
+    public ResponseEntity<Void> removeDislikedArtwork(@RequestBody RemoveDislikedArtworkDTO removeDislikedArtworkDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -97,7 +97,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/add-liked-artist")
-    public ResponseEntity<Void> addLikedArtist(@RequestParam AddLikedArtistDTO addLikedArtistDTO) {
+    public ResponseEntity<Void> addLikedArtist(@RequestBody AddLikedArtistDTO addLikedArtistDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
@@ -108,7 +108,7 @@ public class UserPreferenceController {
     }
 
     @PutMapping("/remove-liked-artist")
-    public ResponseEntity<Void> removeLikedArtist(@RequestParam RemoveLikedArtistDTO removeLikedArtistDTO) {
+    public ResponseEntity<Void> removeLikedArtist(@RequestBody RemoveLikedArtistDTO removeLikedArtistDTO) {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
