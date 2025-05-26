@@ -6,7 +6,9 @@ import lombok.*;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -25,6 +27,7 @@ public class UserHistory {
     private int preferredTimeForUpdateInHours = 9;
     private String timeZoneId;
 
+
     public UserHistory(UserHistoryMongoEntity userHistoryMongoEntity) {
         username = userHistoryMongoEntity.getUsername();
         seenArtworks = new HashSet<>(userHistoryMongoEntity.getSeenArtworks());
@@ -35,14 +38,41 @@ public class UserHistory {
 
     public boolean hasUpdateTimePassed() {
         var nowUtc = Instant.now();
-        ZoneId userZone = ZoneId.of(timeZoneId);
-        ZonedDateTime nowUserZone = nowUtc.atZone(userZone);
-        ZonedDateTime preferredDateTime = nowUserZone
+        var preferredDateTimeInUserZone = getPreferredDateTimeInUserZone(nowUtc);
+        ZonedDateTime nowUserZone = getTimeInUserZone(nowUtc);
+
+        return nowUserZone.isAfter(preferredDateTimeInUserZone);
+    }
+
+
+    public boolean hasAlreadyReceivedImageForToday() {
+        var lastSeenImage = getLastSeenImage();
+        if (lastSeenImage.isEmpty()) {
+            return false;
+        }
+
+        var nowUtc = Instant.now();
+        Instant lastImageSeenAtInstant = Instant.ofEpochMilli(lastSeenImage.get().getSeenAt());
+        var preferredTimeInUserZone = getPreferredDateTimeInUserZone(nowUtc).toInstant();
+        return lastImageSeenAtInstant.isBefore(preferredTimeInUserZone);
+    }
+
+    private Optional<SeenImage> getLastSeenImage() {
+        return seenArtworks.stream()
+                .max(Comparator.comparingLong(SeenImage::getSeenAt));
+    }
+
+    private ZonedDateTime getPreferredDateTimeInUserZone(Instant nowUtc) {
+        ZonedDateTime nowUserZone = getTimeInUserZone(nowUtc);
+        return nowUserZone
                 .withHour(preferredTimeForUpdateInHours)
                 .withMinute(preferredTimeForUpdateInMinutes)
                 .withSecond(0)
                 .withNano(0);
+    }
 
-        return nowUserZone.isAfter(preferredDateTime);
+    private ZonedDateTime getTimeInUserZone(Instant nowUtc) {
+        ZoneId userZone = ZoneId.of(timeZoneId);
+        return nowUtc.atZone(userZone);
     }
 }

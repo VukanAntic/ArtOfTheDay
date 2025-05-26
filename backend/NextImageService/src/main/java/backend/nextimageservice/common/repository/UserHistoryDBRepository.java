@@ -1,5 +1,6 @@
 package backend.nextimageservice.common.repository;
 
+import backend.nextimageservice.common.model.SeenImage;
 import backend.nextimageservice.common.model.UserHistory;
 import backend.nextimageservice.infra.mongo.entity.UserHistoryMongoEntity;
 import backend.nextimageservice.infra.mongo.repository.UserHistoryMongoRepository;
@@ -50,8 +51,26 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
         return userHistoryMongoRepository
                 .findAll()
                 .stream()
-                .map(userHistoryMongoEntity -> new UserHistory(userHistoryMongoEntity))
+                .map(UserHistory::new)
                 .toList();
+    }
+
+    @Override
+    public void addNewImageForUserHistory(String username, SeenImage newSeenImageForUserHistory) {
+        try {
+            var userEntityOptional = userHistoryMongoRepository.findById(username);
+            var userEntity = userEntityOptional.orElse(null);
+            if (userEntityOptional.isEmpty()) {
+                // if the user doesnt exists, its probably some error, make the necessary object for the user
+                userEntity = UserHistoryMongoEntity.builder().username(username).build();
+            }
+            var userHistory = userEntity.getSeenArtworks();
+            userHistory.add(newSeenImageForUserHistory);
+            userHistoryMongoRepository.save(userEntity);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

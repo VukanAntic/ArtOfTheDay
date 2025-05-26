@@ -1,5 +1,6 @@
 package backend.nextimageservice.common.repository;
 
+import backend.nextimageservice.common.model.SeenImage;
 import backend.nextimageservice.common.model.UserHistory;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,5 @@ public interface UserHistoryRepository {
                                  int preferredUpdateTimeInMinutes);
 
     List<UserHistory> getAllUsers();
+    void addNewImageForUserHistory(String username, SeenImage newSeenImageForUserHistory);
 }
