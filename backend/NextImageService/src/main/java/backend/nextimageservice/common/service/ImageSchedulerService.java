@@ -14,6 +14,7 @@ import java.time.Instant;
 public class ImageSchedulerService {
 
     private final UserHistoryRepository userHistoryRepository;
+    private final ImageNotificationService imageNotificationService;
 
     @Scheduled(cron = "0 * * * * *")
     public void checkShouldSendNewImage() {
@@ -21,14 +22,21 @@ public class ImageSchedulerService {
         for (var userHistory : allUserHistories) {
             if (!userHistory.hasUpdateTimePassed() && userHistory.hasAlreadyReceivedImageForToday()) continue;
 
-            addNewImageForUser(userHistory);
-            System.out.println("Time for user!!" + userHistory);
+            var artworkIdOfNextImage = addNewImageForUser(userHistory);
+            imageNotificationService.sendBroadcastForUserWithNewImage(artworkIdOfNextImage, userHistory.getUsername());
+            imageNotificationService.sendPushNotificationForUserWithNewImage(artworkIdOfNextImage);
         }
     }
 
-    private void addNewImageForUser(UserHistory userHistory) {
-        var newSeenImageForUserHistory = new SeenImage(123, Instant.now().toEpochMilli());
+    private long addNewImageForUser(UserHistory userHistory) {
+        long artworkIdOfNextImage = getNNextArtworkidForUserHistory();
+        var newSeenImageForUserHistory = new SeenImage(artworkIdOfNextImage, Instant.now().toEpochMilli());
         userHistoryRepository.addNewImageForUserHistory(userHistory.getUsername(), newSeenImageForUserHistory);
+        return artworkIdOfNextImage;
+    }
+
+    private long getNNextArtworkidForUserHistory() {
+        return 132L;
     }
 
 }
