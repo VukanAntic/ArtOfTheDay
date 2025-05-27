@@ -28,6 +28,7 @@ public class JwtUtilComponent {
     private String generateAccessToken(String username) {
         return Jwts.builder()
                 .setClaims(getClaims(username))
+                .addClaims(Map.of("sub", username))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -37,6 +38,7 @@ public class JwtUtilComponent {
     private String generateRefreshToken(String username) {
         return Jwts.builder()
                 .setClaims(getClaims(username))
+                .addClaims(Map.of("sub", username))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
