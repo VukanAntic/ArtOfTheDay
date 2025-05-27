@@ -16,10 +16,11 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
     private final UserHistoryMongoRepository userHistoryMongoRepository;
 
     @Override
-    public void persist(String username) {
+    public void persist(String username, String timeZoneId) {
         try {
             var userEntity = UserHistoryMongoEntity.builder()
                     .username(username)
+                    .timeZoneId(timeZoneId)
                     .build();
             userHistoryMongoRepository.save(userEntity);
         } catch (Exception e) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserHistoryRepository {
     void delete(String username);
-    void persist(String username);
+    void persist(String username, String timeZoneId);
     void setPreferredTimeForUser(String username,
                                  String timeZoneId,
                                  int preferredUpdateTimeInHours,

@@ -7,6 +7,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @ToString
+@Builder
 public class UserCreatedEvent {
     private String username;
+    private String timeZoneId;
 }

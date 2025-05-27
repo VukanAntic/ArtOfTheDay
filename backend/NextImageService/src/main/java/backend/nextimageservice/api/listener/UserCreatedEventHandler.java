@@ -14,6 +14,6 @@ public class UserCreatedEventHandler {
     @RabbitListener(queues = "${spring.rabbitmq.user_created_queue}" )
     public void receiveUserCreatedEvent(UserCreatedEvent userCreatedEvent) {
         System.out.println("Received event! " + userCreatedEvent);
-        userHistoryRepository.persist(userCreatedEvent.getUsername());
+        userHistoryRepository.persist(userCreatedEvent.getUsername(), userCreatedEvent.getTimeZoneId());
     }
 }

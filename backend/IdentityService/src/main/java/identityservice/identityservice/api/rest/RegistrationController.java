@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.TimeZone;
+
 @RestController
 @RequestMapping(value = "/api/authentication", produces = {
         "application/json",
@@ -21,8 +23,8 @@ public class RegistrationController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO) {
-        var user = identityService.registerUser(userRegisterDTO);
+    public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO, TimeZone timeZone) {
+        var user = identityService.registerUser(userRegisterDTO, timeZone.getID());
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("Something is incorrect");
         }

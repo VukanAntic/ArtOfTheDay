@@ -25,7 +25,7 @@ public class IdentityService {
 
     // TODO [vukana] : Should these methods take in dtos?
     //  When we do other ways of client/backend communication it would be cool to use all the same methods
-    public Optional<User> registerUser(UserRegisterDTO userRegisterDTO) {
+    public Optional<User> registerUser(UserRegisterDTO userRegisterDTO, String timeZoneId) {
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return Optional.empty();
         }
@@ -41,7 +41,7 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
-            userEventPublisher.publishUserCreatedEvent(user.getUsername());
+            userEventPublisher.publishUserCreatedEvent(user.getUsername(), timeZoneId);
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {

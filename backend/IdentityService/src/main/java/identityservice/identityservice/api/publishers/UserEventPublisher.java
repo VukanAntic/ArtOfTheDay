@@ -24,8 +24,8 @@ public class UserEventPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void publishUserCreatedEvent(String username) {
-        UserCreatedEvent userCreatedEvent = new UserCreatedEvent(username);
+    public void publishUserCreatedEvent(String username, String timeZoneId) {
+        UserCreatedEvent userCreatedEvent = UserCreatedEvent.builder().username(username).timeZoneId(timeZoneId).build();
         rabbitTemplate.convertAndSend(userEventsExchange, userCreatedRoutingKey, userCreatedEvent);
         System.out.println("Message sent successfully!: " + userCreatedEvent);
     }

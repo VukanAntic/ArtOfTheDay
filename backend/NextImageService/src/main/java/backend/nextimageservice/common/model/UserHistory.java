@@ -48,13 +48,14 @@ public class UserHistory {
     public boolean hasAlreadyReceivedImageForToday() {
         var lastSeenImage = getLastSeenImage();
         if (lastSeenImage.isEmpty()) {
+            // TODO [vukana] : WHen this is the case, we should add like 10 images
             return false;
         }
 
         var nowUtc = Instant.now();
         Instant lastImageSeenAtInstant = Instant.ofEpochMilli(lastSeenImage.get().getSeenAt());
         var preferredTimeInUserZone = getPreferredDateTimeInUserZone(nowUtc).toInstant();
-        return lastImageSeenAtInstant.isBefore(preferredTimeInUserZone);
+        return lastImageSeenAtInstant.isAfter(preferredTimeInUserZone);
     }
 
     private Optional<SeenImage> getLastSeenImage() {

@@ -20,7 +20,7 @@ public class ImageSchedulerService {
     public void checkShouldSendNewImage() {
         var allUserHistories = userHistoryRepository.getAllUsers();
         for (var userHistory : allUserHistories) {
-            if (!userHistory.hasUpdateTimePassed() && userHistory.hasAlreadyReceivedImageForToday()) continue;
+            if (!userHistory.hasUpdateTimePassed() || userHistory.hasAlreadyReceivedImageForToday()) continue;
 
             var artworkIdOfNextImage = addNewImageForUser(userHistory);
             imageNotificationService.sendBroadcastForUserWithNewImage(artworkIdOfNextImage, userHistory.getUsername());
