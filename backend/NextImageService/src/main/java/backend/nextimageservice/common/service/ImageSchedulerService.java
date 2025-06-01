@@ -22,6 +22,7 @@ public class ImageSchedulerService {
         for (var userHistory : allUserHistories) {
             if (!userHistory.hasUpdateTimePassed() || userHistory.hasAlreadyReceivedImageForToday()) continue;
 
+            System.out.println("Sending image for user: "  + userHistory.getUsername() + " in time " + Instant.now());
             var artworkIdOfNextImage = addNewImageForUser(userHistory);
             imageNotificationService.sendBroadcastForUserWithNewImage(artworkIdOfNextImage, userHistory.getUsername());
             imageNotificationService.sendPushNotificationForUserWithNewImage(artworkIdOfNextImage);
