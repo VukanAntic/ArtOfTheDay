@@ -30,13 +30,13 @@ public class ImageSchedulerService {
     }
 
     private long addNewImageForUser(UserHistory userHistory) {
-        long artworkIdOfNextImage = getNNextArtworkidForUserHistory();
+        long artworkIdOfNextImage = getNNextArtworkIdForUserHistory();
         var newSeenImageForUserHistory = new SeenImage(artworkIdOfNextImage, Instant.now().toEpochMilli());
         userHistoryRepository.addNewImageForUserHistory(userHistory.getUsername(), newSeenImageForUserHistory);
         return artworkIdOfNextImage;
     }
 
-    private long getNNextArtworkidForUserHistory() {
+    private long getNNextArtworkIdForUserHistory() {
         return 132L;
     }
 
