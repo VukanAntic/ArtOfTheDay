@@ -9,12 +9,12 @@ COPY common/src/ common/src/
 RUN chmod +x common/mvnw && cd common && ./mvnw install -DskipTests
 
 # Cache service dependencies
-COPY ImageService/.mvn/ .mvn/
-COPY ImageService/mvnw ImageService/pom.xml ./
+COPY NextImageService/.mvn/ .mvn/
+COPY NextImageService/mvnw NextImageService/pom.xml ./
 RUN chmod +x ./mvnw && ./mvnw dependency:go-offline
 
 # Build service
-COPY ImageService/src/ src/
+COPY NextImageService/src/ src/
 RUN ./mvnw package -DskipTests
 
 FROM eclipse-temurin:21-jre-ubi9-minimal
