@@ -12,8 +12,4 @@ public class ImageNotificationService {
     public void sendBroadcastForUserWithNewImage(long artworkIdOfNextImage, String username) {
         messagingTemplate.convertAndSendToUser(username, "/queue/new-image", artworkIdOfNextImage);
     }
-
-    public void sendPushNotificationForUserWithNewImage(long artworkIdOfNextImage) {
-
-    }
 }

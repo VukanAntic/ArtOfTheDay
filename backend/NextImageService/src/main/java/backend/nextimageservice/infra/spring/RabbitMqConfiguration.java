@@ -30,6 +30,12 @@ public class RabbitMqConfiguration {
     @Value("${spring.rabbitmq.user_deleted_routing_key}")
     private String userDeletedRoutingKey;
 
+    @Value("${spring.rabbitmq.new_image_ready_queue}")
+    private String newImageReadyQueueName;
+
+    @Value("${spring.rabbitmq.new_image_ready_routing_key}")
+    private String newImageReadyRoutingKey;
+
 
     @Bean
     public Queue userCreatedQueue() {
@@ -39,6 +45,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Queue userDeletedQueue() {
         return new Queue(userDeletedQueueName, true);
+    }
+
+    @Bean
+    public Queue newImageReadyQueue() {
+        return new Queue(newImageReadyQueueName, true);
     }
 
     @Bean
@@ -54,6 +65,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Binding userDeletedBinding(Queue userDeletedQueue, TopicExchange userEventsExchange) {
         return BindingBuilder.bind(userDeletedQueue).to(userEventsExchange).with(userDeletedRoutingKey);
+    }
+
+    @Bean
+    public Binding newImageReadyBinding(Queue newImageReadyQueue, TopicExchange userEventsExchange) {
+        return BindingBuilder.bind(newImageReadyQueue).to(userEventsExchange).with(newImageReadyRoutingKey);
     }
 
     @Bean
