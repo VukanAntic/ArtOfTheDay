@@ -72,6 +72,10 @@ public class UserHistory {
                 .withNano(0);
     }
 
+    public boolean hasValidTimeZone() {
+        return timeZoneId != null && !timeZoneId.isBlank();
+    }
+
     private ZonedDateTime getTimeInUserZone(Instant nowUtc) {
         ZoneId userZone = ZoneId.of(timeZoneId);
         return nowUtc.atZone(userZone);
