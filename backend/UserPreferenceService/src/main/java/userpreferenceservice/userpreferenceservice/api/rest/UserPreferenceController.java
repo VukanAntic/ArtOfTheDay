@@ -31,6 +31,14 @@ public class UserPreferenceController {
         return ResponseEntity.ok(userPreferenceService.getUserPreferences(username));
     }
 
+    // Used by internal services — requires a valid JWT, username supplied as param
+    @GetMapping("/get-by-username")
+    public ResponseEntity<UserPreferences> getByUsername(@RequestParam String username) {
+        return userPreferenceService.getUserPreferences(username)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/add-liked-artwork")
     public ResponseEntity<Void> addLikedArtwork(@RequestBody AddLikedArtworkDTO addLikedArtworksDTO) {
         var username = AuthenticatedUser.getUsername();

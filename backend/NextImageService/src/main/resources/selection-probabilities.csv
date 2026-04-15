@@ -1,0 +1,3 @@
+property,value
+random_image_probability,0.10
+genre_vs_artist_probability,0.50

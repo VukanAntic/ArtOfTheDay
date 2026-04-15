@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class ImageSchedulerService {
     private final UserHistoryRepository userHistoryRepository;
     private final ImageNotificationService imageNotificationService;
     private final NextImageEventPublisher nextImageEventPublisher;
+    private final NextImageSelectionService nextImageSelectionService;
 
     @Scheduled(cron = "0 * * * * *")
     public void checkShouldSendNewImage() {
@@ -34,14 +36,17 @@ public class ImageSchedulerService {
     }
 
     private long addNewImageForUser(UserHistory userHistory) {
-        long artworkIdOfNextImage = getNextArtworkIdForUserHistory();
+        long artworkIdOfNextImage = getNextArtworkIdForUserHistory(userHistory);
         var newSeenImageForUserHistory = new SeenImage(artworkIdOfNextImage, Instant.now().toEpochMilli());
         userHistoryRepository.addNewImageForUserHistory(userHistory.getUsername(), newSeenImageForUserHistory);
         return artworkIdOfNextImage;
     }
 
-    private long getNextArtworkIdForUserHistory() {
-        return 132L;
+    private long getNextArtworkIdForUserHistory(UserHistory userHistory) {
+        var seenIds = userHistory.getSeenArtworks().stream()
+                .map(SeenImage::getArtworkId)
+                .collect(Collectors.toSet());
+        return nextImageSelectionService.selectNextArtworkId(userHistory.getUsername(), seenIds);
     }
 
 }

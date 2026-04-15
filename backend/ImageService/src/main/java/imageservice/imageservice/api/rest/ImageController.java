@@ -12,12 +12,15 @@ import imageservice.imageservice.infra.enitites.Genre;
 import imageservice.imageservice.infra.repositories.ArtworkRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/api/images", produces = {
@@ -71,5 +74,12 @@ public class ImageController {
     @GetMapping("get-all-artists-from-ids")
     public List<IdentityArtistDTO> getAllArtistsByIds(@RequestParam List<Long> artistIds) {
         return artistService.getAllArtistsByIds(artistIds);
+    }
+
+    @GetMapping("/get-random-artwork-id")
+    public ResponseEntity<Long> getRandomArtworkId(@RequestParam(required = false) Set<Long> excludeIds) {
+        return artworkService.getRandomArtworkIdExcluding(excludeIds)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

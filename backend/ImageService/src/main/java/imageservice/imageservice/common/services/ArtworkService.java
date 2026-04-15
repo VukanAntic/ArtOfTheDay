@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,13 @@ public class ArtworkService {
                 .stream()
                 .map(artwork -> modelMapper.map(artwork, ArtworkDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<Long> getRandomArtworkIdExcluding(Set<Long> excludeIds) {
+        if (excludeIds == null || excludeIds.isEmpty()) {
+            return artworkRepository.findRandomId();
+        }
+        return artworkRepository.findRandomIdExcluding(excludeIds);
     }
 }
 
