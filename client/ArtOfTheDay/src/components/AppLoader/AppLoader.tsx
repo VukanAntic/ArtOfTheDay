@@ -1,9 +1,8 @@
-
-import { ReactNode, useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useFonts } from 'expo-font';
+import {ReactNode, useCallback} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {useFonts} from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { customFonts } from '../../config/fonts';
+import {customFonts} from '../../config/fonts';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -11,7 +10,7 @@ type Props = {
     children: ReactNode;
 };
 
-export function AppLoader({ children }: Props) {
+export function AppLoader({children}: Props) {
     const [fontsLoaded] = useFonts(customFonts);
 
     const onLayoutRootView = useCallback(async () => {
@@ -26,11 +25,11 @@ export function AppLoader({ children }: Props) {
 
     return (
         <View style={styles.root} onLayout={onLayoutRootView}>
-        {children}
+            {children}
         </View>
-);
+    );
 }
 
 const styles = StyleSheet.create({
-    root: { flex: 1 },
+    root: {flex: 1},
 });
