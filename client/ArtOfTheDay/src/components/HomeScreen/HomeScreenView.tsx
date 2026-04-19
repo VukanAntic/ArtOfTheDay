@@ -9,7 +9,7 @@ export default function HomeScreenView() {
             <FeaturedArtworkView
                 title={'ee'}
                 description={'ee'}
-                imageURL={'https://www.artic.edu/iiif/2/4e074d70-4424-331b-ec89-0776a45d6825/full/843,/0/default.jpg'}
+                imageURL={'https://www.artic.edu/iiif/2/5a047a1c-d36e-e88d-05e7-845d3936159b/full/843,/0/default.jpg'}
             />
         </View>
     );
