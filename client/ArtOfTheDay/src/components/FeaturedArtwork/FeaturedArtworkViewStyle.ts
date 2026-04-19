@@ -9,10 +9,15 @@ export default StyleSheet.create({
     wrapper: {
         width: cardWidth,
         alignSelf: 'center',
+        height: 536,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     card: {
-        borderRadius: cardWidth / 4,
+        borderRadius: 125,
         overflow: 'hidden',
+        width: 268,
+        height: 536,
     },
     image: {
         width: '100%',
@@ -36,5 +41,5 @@ export default StyleSheet.create({
     iconText: {
         color: '#fff',
         fontSize: 18,
-    },
+    }
 });

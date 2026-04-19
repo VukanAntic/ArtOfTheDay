@@ -4,8 +4,6 @@ import {useFonts} from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import {customFonts} from '../../config/fonts';
 
-SplashScreen.preventAutoHideAsync();
-
 type Props = {
     children: ReactNode;
 };

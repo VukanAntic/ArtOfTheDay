@@ -1,4 +1,4 @@
-export default class HomeScreenImageViewData {
+export default class FeaturedArtworkViewData {
     title: string;
     description: string;
     imageURL: string;
