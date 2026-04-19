@@ -19,15 +19,16 @@ export default StyleSheet.create({
         position: 'absolute',
         bottom: (height * 0.04),
         right: (width * 0.155),
-        backgroundColor: '#D9D9D9',
-        transform: [{rotate: '12deg'}],
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        borderColor: 'rgba(255, 255, 255, 0.2)', transform: [{rotate: '12deg'}],
 
     },
     seeMoreButton: {
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: '#D9D9D9',
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
         justifyContent: 'center',
         alignItems: 'center',
         bottom: (height * 0.088),
@@ -46,4 +47,5 @@ export default StyleSheet.create({
         fontSize: 26,
         color: '#FFFFFF'
     },
+
 });
