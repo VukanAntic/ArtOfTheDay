@@ -16,23 +16,16 @@ export default function FeaturedArtworkView(data: FeaturedArtworkViewData) {
     };
 
     return (
-        <View style={style.fullScreen}>
-            {/* Blurred background — fills entire screen */}
-            <Image
-                source={imageSource}
-                style={style.blurredBackground}
-                blurRadius={80}
-                resizeMode="cover"
-            />
-
-            {/* Card + quick actions positioned together */}
+        <View style={style.centerContainer}>
             <View style={style.cardContainer}>
                 <Image
                     source={imageSource}
                     style={style.card}
                     resizeMode="cover"
                 />
-                <FeaturedArtworkQuickActionsView isImageLiked={true}/>
+                <View>
+                    <FeaturedArtworkQuickActionsView isImageLiked={true}/>
+                </View>
             </View>
         </View>
     );

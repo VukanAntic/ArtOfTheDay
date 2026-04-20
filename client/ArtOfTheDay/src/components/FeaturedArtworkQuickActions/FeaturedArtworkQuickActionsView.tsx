@@ -1,5 +1,3 @@
-// src/screens/HomeScreen.tsx
-
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import style from "./FeaturedArtworkQuickActionsViewStyle";
 import FeaturedArtworkQuickActionsViewData
