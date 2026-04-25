@@ -1,8 +1,10 @@
+// HomeScreenView.tsx
 import {useState} from 'react';
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
 import FeaturedArtworksListView from "@/src/components/FeaturedArtworksList/FeaturedArtworksListView";
 import FeaturedArtworkDateListView from "@/src/components/FeaturedArtworkDateList/FeaturedArtworkDateListView";
+import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
 
 const listData = [
     new FeaturedArtworkViewData('1', 'ee', 'ee', 'https://www.artic.edu/iiif/2/8f5f8f8f-8765-b04e-8ffa-f4379d9511f5/full/843,/0/default.jpg', new Date()),
@@ -14,12 +16,17 @@ export default function HomeScreenView() {
     const [activeIndex, setActiveIndex] = useState(0);
 
     return (
-        <View style={{flex: 1}}>
-            <FeaturedArtworksListView
-                artworkViews={listData}
-                onIndexChanged={setActiveIndex}
-            />
-            <View style={{position: 'absolute', top: 60, left: 0, right: 0, zIndex: 1}}>
+        <View style={style.container}>
+            <View style={style.headerContainer}>
+                <Text>Some header</Text>
+            </View>
+            <View style={style.artworkListContainer}>
+                <FeaturedArtworksListView
+                    artworkViews={listData}
+                    onIndexChanged={setActiveIndex}
+                />
+            </View>
+            <View style={style.dateListContainer}>
                 <FeaturedArtworkDateListView
                     dates={listData.map(item => item.receivedAt)}
                     activeIndex={activeIndex}
