@@ -13,9 +13,13 @@ const imageHeaders = {
 export default function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
     const scrollX = useRef(new Animated.Value(0)).current;
 
+    const onMomentumScrollEnd = (e: any) => {
+        const index = Math.round(e.nativeEvent.contentOffset.x / width);
+        data.onIndexChanged(index);
+    };
+
     return (
         <View style={{flex: 1, backgroundColor: '#000'}}>
-            {/* Crossfading blurred backgrounds */}
             {data.artworkViews.map((item, index) => {
                 const opacity = scrollX.interpolate({
                     inputRange: [
@@ -41,7 +45,6 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                 );
             })}
 
-            {/* Scrollable artwork cards */}
             <Animated.FlatList
                 data={data.artworkViews}
                 keyExtractor={(item) => item.id}
@@ -53,6 +56,7 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                     [{nativeEvent: {contentOffset: {x: scrollX}}}],
                     {useNativeDriver: true}
                 )}
+                onMomentumScrollEnd={onMomentumScrollEnd}
                 scrollEventThrottle={16}
                 renderItem={({item}) => (
                     <View style={{width, height, justifyContent: 'center', alignItems: 'center'}}>
@@ -61,6 +65,7 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                             title={item.title}
                             description={item.description}
                             imageURL={item.imageURL}
+                            receivedAt={item.receivedAt}
                         />
                     </View>
                 )}

@@ -2,9 +2,10 @@ import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedAr
 
 export default class FeaturedArtworksListViewData {
     artworkViews: FeaturedArtworkViewData[];
+    onIndexChanged: (index: number) => void;
 
-    constructor(artworkViews: FeaturedArtworkViewData[]) {
+    constructor(artworkViews: FeaturedArtworkViewData[], onIndexChanged: (index: number) => void) {
         this.artworkViews = artworkViews;
-
+        this.onIndexChanged = onIndexChanged;
     }
 }
