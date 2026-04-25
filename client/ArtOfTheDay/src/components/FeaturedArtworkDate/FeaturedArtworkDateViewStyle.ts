@@ -8,6 +8,7 @@ export default StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0.5)',
     },
     dateText: {
+        position: 'absolute',
         color: '#fff',
         fontSize: 12,
         fontWeight: '600',

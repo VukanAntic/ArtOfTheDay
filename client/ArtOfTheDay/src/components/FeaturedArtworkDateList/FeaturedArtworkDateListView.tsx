@@ -1,5 +1,6 @@
 import {Animated, Dimensions, View} from 'react-native';
 import FeaturedArtworkDateListViewData from './FeaturedArtworkDateListViewData';
+import FeaturedArtworkDateView from '@/src/components/FeaturedArtworkDate/FeaturedArtworkDateView';
 import style, {ITEM_WIDTH} from './FeaturedArtworkDateListViewStyle';
 
 const screenWidth = Dimensions.get('window').width;
@@ -15,26 +16,14 @@ export default function FeaturedArtworkDateListView(data: FeaturedArtworkDateLis
     return (
         <View style={style.container}>
             <Animated.View style={[style.row, {transform: [{translateX}]}]}>
-                {data.dates.map((date, index) => {
-                    const isActive = index === data.activeIndex;
-
-                    const label = new Date(date).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                    });
-
-                    return (
-                        <View key={index} style={style.item}>
-                            {isActive ? (
-                                <Animated.Text style={style.dateText}>
-                                    {label}
-                                </Animated.Text>
-                            ) : (
-                                <View style={style.dot}/>
-                            )}
-                        </View>
-                    );
-                })}
+                {data.dates.map((date, index) => (
+                    <View key={index} style={style.item}>
+                        <FeaturedArtworkDateView
+                            receivedAt={date}
+                            isSelected={index === data.activeIndex}
+                        />
+                    </View>
+                ))}
             </Animated.View>
         </View>
     );
