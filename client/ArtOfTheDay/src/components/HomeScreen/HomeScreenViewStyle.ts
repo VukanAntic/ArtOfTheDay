@@ -6,21 +6,32 @@ const style = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-    dateListContainer: {
-        width: '100%',
-        height: 100,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    artworkListContainer: {
-        flex: 1,
-    },
     headerContainer: {
-        width: '100%',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
         height: 70,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1,
+        zIndex: 2,
+    },
+    headerText: {
+        color: '#fff',
+    },
+    artworkListContainer: {
+        flex: 1,
+        overflow: 'hidden',
+    },
+    dateListContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2,
     },
 });
 

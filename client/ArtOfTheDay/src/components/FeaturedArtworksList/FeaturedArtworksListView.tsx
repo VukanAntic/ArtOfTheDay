@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import FeaturedArtworksListViewData from "@/src/components/FeaturedArtworksList/FeaturedArtworksListViewData";
 import FeaturedArtworkView from "@/src/components/FeaturedArtwork/FeaturedArtworkView";
@@ -9,7 +9,6 @@ const imageHeaders = {
 };
 
 export default function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
-    const scrollX = useRef(new Animated.Value(0)).current;
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
 
     const onLayout = (e: any) => {
@@ -25,7 +24,7 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
     return (
         <View style={{flex: 1}} onLayout={onLayout}>
             {data.artworkViews.map((item, index) => {
-                const opacity = scrollX.interpolate({
+                const opacity = data.scrollX.interpolate({
                     inputRange: [
                         (index - 1) * containerSize.width,
                         index * containerSize.width,
@@ -58,7 +57,7 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                     showsHorizontalScrollIndicator={false}
                     style={{flex: 1}}
                     onScroll={Animated.event(
-                        [{nativeEvent: {contentOffset: {x: scrollX}}}],
+                        [{nativeEvent: {contentOffset: {x: data.scrollX}}}],
                         {useNativeDriver: true}
                     )}
                     onMomentumScrollEnd={onMomentumScrollEnd}

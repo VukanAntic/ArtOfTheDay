@@ -1,9 +1,15 @@
+import {Animated} from 'react-native';
+
 export default class FeaturedArtworkDateListViewData {
     dates: Date[];
+    scrollX: Animated.Value;
+    pageWidth: number;
     activeIndex: number;
 
-    constructor(dates: Date[], activeIndex: number) {
+    constructor(dates: Date[], scrollX: Animated.Value, pageWidth: number, activeIndex: number) {
         this.dates = dates;
-        this.activeIndex = dates.length - 1;
+        this.scrollX = scrollX;
+        this.pageWidth = pageWidth;
+        this.activeIndex = activeIndex;
     }
 }
