@@ -72,9 +72,14 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                             <FeaturedArtworkView
                                 id={item.id}
                                 title={item.title}
-                                description={item.description}
+                                year={item.year}
                                 imageURL={item.imageURL}
                                 receivedAt={item.receivedAt}
+                                paintingDescription={item.paintingDescription}
+                                artistName={item.artistName}
+                                artistLifespan={item.artistLifespan}
+                                artistDescription={item.artistDescription}
+                                onSeeMore={() => data.onSeeMore(item)}
                             />
                         </View>
                     )}

@@ -9,9 +9,11 @@ const imageHeaders = {
     'Referer': 'https://www.artic.edu/',
 };
 
-export default function FeaturedArtworkView(data: FeaturedArtworkViewData) {
+type Props = FeaturedArtworkViewData & { onSeeMore: () => void };
+
+export default function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
     const imageSource = {
-        uri: data.imageURL,
+        uri: imageURL,
         headers: imageHeaders,
     };
 
@@ -24,7 +26,7 @@ export default function FeaturedArtworkView(data: FeaturedArtworkViewData) {
                     resizeMode="cover"
                 />
                 <View>
-                    <FeaturedArtworkQuickActionsView isImageLiked={true}/>
+                    <FeaturedArtworkQuickActionsView isImageLiked={true} onSeeMore={onSeeMore}/>
                 </View>
             </View>
         </View>

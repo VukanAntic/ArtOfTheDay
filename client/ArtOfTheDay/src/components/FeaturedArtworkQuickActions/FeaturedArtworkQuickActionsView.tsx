@@ -11,7 +11,7 @@ export default function FeaturedArtworkQuickActionsView(data: FeaturedArtworkQui
                 <Text
                     style={data.isImageLiked ? style.likedButtonText : style.notYetLikedButtonText}>{data.isImageLiked ? '♥' : '♡'}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={style.seeMoreButton}>
+            <TouchableOpacity style={style.seeMoreButton} onPress={data.onSeeMore}>
                 <Text style={style.iconText}>+</Text>
             </TouchableOpacity>
         </View>
