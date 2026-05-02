@@ -47,8 +47,6 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
                 resizeMode="cover"
             />
 
-            {/* Full-screen scroll view — transparent so artwork shows through the spacer.
-                Captures all scroll gestures everywhere on the screen. */}
             <Animated.ScrollView
                 style={[StyleSheet.absoluteFillObject, infoPanelStyle]}
                 onScroll={scrollHandler}
@@ -61,13 +59,12 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
                 <ArtworkDetailInfoPanel artwork={artwork}/>
             </Animated.ScrollView>
 
-            {/* Header — rendered on top but passes scroll gestures through via box-none */}
-            <Animated.View
-                style={[StyleSheet.absoluteFillObject, detailUIOpacity]}
+            <View
+                style={StyleSheet.absoluteFillObject}
                 pointerEvents="box-none"
             >
-                <ArtworkDetailHeader onClose={onClose}/>
-            </Animated.View>
+                <ArtworkDetailHeader onClose={onClose} backButtonOpacity={detailUIOpacity}/>
+            </View>
         </View>
     );
 }

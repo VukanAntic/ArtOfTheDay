@@ -1,5 +1,5 @@
 import {useRef, useState} from 'react';
-import {Animated, Dimensions, Text, View} from 'react-native';
+import {Animated, Dimensions, View} from 'react-native';
 import Reanimated from 'react-native-reanimated';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
 import FeaturedArtworksListView from "@/src/components/FeaturedArtworksList/FeaturedArtworksListView";
@@ -7,6 +7,7 @@ import FeaturedArtworkDateListView from "@/src/components/FeaturedArtworkDateLis
 import ArtworkDetailView from "@/src/components/ArtworkDetail/ArtworkDetailView";
 import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
 import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
+import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
 
 const {width} = Dimensions.get('window');
 
@@ -64,7 +65,7 @@ export default function HomeScreenView() {
     return (
         <View style={style.container}>
             <Reanimated.View style={[style.headerContainer, homeUIOpacity]}>
-                <Text style={style.headerText}>Some header</Text>
+                <ArtworkDetailHeader/>
             </Reanimated.View>
 
             <Reanimated.View style={[{flex: 1}, homeUIOpacity]}>

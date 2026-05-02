@@ -1,22 +1,30 @@
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
+import Animated from 'react-native-reanimated';
 import style from './ArtworkDetailHeaderStyle';
 
 type Props = {
-    onClose: () => void;
+    onClose?: () => void;
+    backButtonOpacity?: any;
 };
 
-export default function ArtworkDetailHeader({onClose}: Props) {
+export default function ArtworkDetailHeader({onClose, backButtonOpacity}: Props) {
     return (
         <View style={style.container}>
-            <TouchableOpacity style={style.backButton} onPress={onClose}>
-                <Text style={style.backIcon}>‹</Text>
-            </TouchableOpacity>
+            <Animated.View style={backButtonOpacity}>
+                {onClose && (
+                    <TouchableOpacity style={style.backButton} onPress={onClose}>
+                        <Text style={style.backIcon}>‹</Text>
+                    </TouchableOpacity>
+                )}
+            </Animated.View>
+
             <View style={style.titleContainer}>
                 <Text style={style.title}>INSPIRA</Text>
                 <Text style={style.subtitle}>daily</Text>
             </View>
+
             <TouchableOpacity style={style.profileButton}>
-                <Text style={style.profileIcon}>◉</Text>
+                <Image source={require('@/assets/images/User/User_02.png')}/>
             </TouchableOpacity>
         </View>
     );

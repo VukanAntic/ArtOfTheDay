@@ -43,6 +43,10 @@ export function useArtworkExpandAnimation() {
     const homeUIOpacity = useAnimatedStyle(() => ({
         opacity: interpolate(progress.value, [0, 0.4], [1, 0], Extrapolation.CLAMP),
     }));
+    const backButtonOpacity = useAnimatedStyle(() => ({
+        opacity: progress.value > 0.01 ? 1 : 0,
+        pointerEvents: progress.value > 0.01 ? 'auto' : 'none',
+    }));
 
     const detailUIOpacity = useAnimatedStyle(() => ({
         opacity: interpolate(progress.value, [0.5, 1], [0, 1], Extrapolation.CLAMP),
@@ -60,5 +64,5 @@ export function useArtworkExpandAnimation() {
         progress.value = withTiming(0, CLOSE_CONFIG, () => runOnJS(onDone)());
     };
 
-    return {cardStyle, homeUIOpacity, detailUIOpacity, infoPanelStyle, open, close};
+    return {cardStyle, homeUIOpacity, backButtonOpacity, detailUIOpacity, infoPanelStyle, open, close};
 }
