@@ -1,6 +1,7 @@
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 import style from './ArtworkDetailHeaderStyle';
+import {router} from "expo-router";
 
 type Props = {
     onClose?: () => void;
@@ -8,6 +9,11 @@ type Props = {
 };
 
 export default function ArtworkDetailHeader({onClose, backButtonOpacity}: Props) {
+
+    const goToUserProfile = () => {
+        router.push('/profile');
+    };
+
     return (
         <View style={style.container}>
             <Animated.View style={backButtonOpacity}>
@@ -23,7 +29,7 @@ export default function ArtworkDetailHeader({onClose, backButtonOpacity}: Props)
                 <Text style={style.subtitle}>daily</Text>
             </View>
 
-            <TouchableOpacity style={style.profileButton}>
+            <TouchableOpacity style={style.profileButton} onPress={goToUserProfile}>
                 <Image source={require('@/assets/images/User/User_02.png')}/>
             </TouchableOpacity>
         </View>
