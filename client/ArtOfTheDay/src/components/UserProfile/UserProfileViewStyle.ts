@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 export default StyleSheet.create({
     root: {
         flex: 1,
-        backgroundColor: '#f2f1ee',
+        backgroundColor: '#000',  // visible while image loads / if no image
     },
     header: {
         height: 70,
@@ -16,12 +16,12 @@ export default StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: 'rgba(0,0,0,0.08)',
+        backgroundColor: 'rgba(255,255,255,0.2)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     backIcon: {
-        color: '#1a1a1a',
+        color: '#fff',
         fontSize: 22,
         lineHeight: 26,
         marginLeft: -2,
@@ -30,17 +30,16 @@ export default StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        color: '#1a1a1a',
+        color: '#fff',
         fontSize: 18,
         fontStyle: 'italic',
         fontFamily: 'Lato-Bold',
     },
     subtitle: {
-        color: '#666',
+        color: 'rgba(255,255,255,0.65)',
         fontSize: 13,
         fontFamily: 'Lato-Regular',
     },
-    // Spacer to mirror back button and keep title centred
     headerRight: {
         width: 36,
     },

@@ -6,12 +6,14 @@ import {router} from "expo-router";
 type Props = {
     onClose?: () => void;
     backButtonOpacity?: any;
+    /** URL of the currently active artwork — forwarded to the profile screen as background */
+    backgroundImageUrl?: string;
 };
 
-export default function ArtworkDetailHeader({onClose, backButtonOpacity}: Props) {
+export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgroundImageUrl}: Props) {
 
     const goToUserProfile = () => {
-        router.push('/profile');
+        router.push({pathname: '/profile', params: {bg: backgroundImageUrl ?? ''}});
     };
 
     return (

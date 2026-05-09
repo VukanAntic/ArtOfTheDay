@@ -11,6 +11,8 @@ export const LEFT_ICON_X = 52;
 export const RIGHT_ICON_X = SCREEN_WIDTH - 52;
 // How far the bezier control points dip below the icon horizontal line
 export const CURVE_DIP = 14;
+// How far the visible SVG line is inset from each icon center (stops at icon edge + gap)
+export const LINE_MARGIN = CIRCLE_RADIUS + 6;
 // Width of each icon touchable (wider than circle to accommodate the label)
 export const BUTTON_WIDTH = 64;
 
@@ -57,7 +59,7 @@ export default StyleSheet.create({
         marginTop: 3,
         fontSize: 11,
         fontFamily: 'Lato-Bold',
-        color: '#1a1a1a',
+        color: '#ffffff',
         letterSpacing: 0.2,
     },
 });

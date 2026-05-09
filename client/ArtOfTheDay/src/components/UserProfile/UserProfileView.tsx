@@ -1,4 +1,4 @@
-import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
     runOnUI,
     scrollTo,
@@ -14,6 +14,11 @@ import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
+
+const imageHeaders = {
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.artic.edu/',
+};
 
 type Props = {
     viewData: UserProfileViewData;
@@ -37,7 +42,15 @@ export default function UserProfileView({viewData}: Props) {
 
     return (
         <View style={style.root}>
-            {/* Header */}
+            {viewData.backgroundImageUrl && (
+                <Image
+                    source={{uri: viewData.backgroundImageUrl, headers: imageHeaders}}
+                    style={[StyleSheet.absoluteFillObject, {transform: [{scale: 1.5}]}]}
+                    blurRadius={80}
+                    resizeMode="cover"
+                />
+            )}
+
             <View style={style.header}>
                 <TouchableOpacity style={style.backButton} onPress={() => router.push('/')}>
                     <Text style={style.backIcon}>‹</Text>
@@ -49,13 +62,11 @@ export default function UserProfileView({viewData}: Props) {
                 <View style={style.headerRight}/>
             </View>
 
-            {/* Curved tab indicator */}
             <CurvedTabIndicatorView
                 scrollProgress={scrollProgress}
                 onTabPress={handleTabPress}
             />
 
-            {/* Horizontal pager */}
             <Animated.ScrollView
                 ref={pagerRef}
                 horizontal

@@ -65,7 +65,7 @@ export default function HomeScreenView() {
     return (
         <View style={style.container}>
             <Reanimated.View style={[style.headerContainer, homeUIOpacity]}>
-                <ArtworkDetailHeader/>
+                <ArtworkDetailHeader backgroundImageUrl={listData[activeIndex].imageURL}/>
             </Reanimated.View>
 
             <Reanimated.View style={[{flex: 1}, homeUIOpacity]}>

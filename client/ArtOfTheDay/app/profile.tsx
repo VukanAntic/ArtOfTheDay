@@ -1,3 +1,4 @@
+import {useLocalSearchParams} from 'expo-router';
 import UserProfileView from '@/src/components/UserProfile/UserProfileView';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData, {LikedArtItemViewData} from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
@@ -35,8 +36,12 @@ const settings = new SettingsScreenViewData(
     ],
 );
 
-const viewData = new UserProfileViewData(likedArt, settings);
-
 export default function ProfileRoute() {
+    // The home screen forwards the currently active artwork's URL via the `bg`
+    // route param so the profile screen can mirror the same blurred background.
+    const {bg} = useLocalSearchParams<{bg?: string}>();
+
+    const viewData = new UserProfileViewData(likedArt, settings, bg || null);
+
     return <UserProfileView viewData={viewData}/>;
 }

@@ -11,7 +11,7 @@ export const IMAGE_HEIGHT = Math.round(CELL_SIZE * 1.2);
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f2f1ee',
+        backgroundColor: 'transparent',
     },
     list: {
         padding: GRID_PADDING,
@@ -27,7 +27,7 @@ export default StyleSheet.create({
         width: CELL_SIZE,
         height: IMAGE_HEIGHT,
         borderRadius: 6,
-        backgroundColor: '#d8d6d2',
+        backgroundColor: 'rgba(255,255,255,0.15)',
         overflow: 'hidden',
     },
     image: {

@@ -13,6 +13,7 @@ import style, {
     ICON_Y,
     INDICATOR_HEIGHT,
     LEFT_ICON_X,
+    LINE_MARGIN,
     RIGHT_ICON_X,
 } from './CurvedTabIndicatorViewStyle';
 
@@ -23,13 +24,17 @@ type Props = {
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
-// Cubic bezier control points — gentle downward arc between icon centers
+// Cubic bezier anchor points (icon centers) — used for the animated circle
 const P0X = LEFT_ICON_X,           P0Y = ICON_Y;
 const P1X = SCREEN_WIDTH * 0.38,   P1Y = ICON_Y + CURVE_DIP;
 const P2X = SCREEN_WIDTH * 0.62,   P2Y = ICON_Y + CURVE_DIP;
 const P3X = RIGHT_ICON_X,          P3Y = ICON_Y;
 
-const PATH_D = `M ${P0X} ${P0Y} C ${P1X} ${P1Y} ${P2X} ${P2Y} ${P3X} ${P3Y}`;
+// SVG path endpoints are inset from each icon center so the line
+// stops at the icon edge and doesn't run into the button visually
+const LINE_P0X = LEFT_ICON_X + LINE_MARGIN;
+const LINE_P3X = RIGHT_ICON_X - LINE_MARGIN;
+const PATH_D = `M ${LINE_P0X} ${P0Y} C ${P1X} ${P1Y} ${P2X} ${P2Y} ${LINE_P3X} ${P3Y}`;
 
 export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Props) {
     // Evaluate cubic bezier at t = scrollProgress, translate circle from P0 to that point
@@ -58,7 +63,7 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
         <Animated.View style={style.container}>
             {/* Static bezier curve line */}
             <Svg width={SCREEN_WIDTH} height={INDICATOR_HEIGHT} style={style.svg}>
-                <Path d={PATH_D} stroke="#c4c2be" strokeWidth={1.5} fill="none"/>
+                <Path d={PATH_D} stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} fill="none"/>
             </Svg>
 
             {/* Moving white circle — slides along the bezier path */}
@@ -71,7 +76,7 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
                 activeOpacity={0.75}
             >
                 <Animated.View style={[style.iconWrapper, leftIconStyle]}>
-                    <Ionicons name="heart" size={22} color="#1a1a1a"/>
+                    <Ionicons name="heart" size={22} color="#ffffff"/>
                 </Animated.View>
                 <Animated.Text style={[style.iconLabel, leftIconStyle]}>
                     Liked art
@@ -85,7 +90,7 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
                 activeOpacity={0.75}
             >
                 <Animated.View style={[style.iconWrapper, rightIconStyle]}>
-                    <Ionicons name="settings-sharp" size={22} color="#1a1a1a"/>
+                    <Ionicons name="settings-sharp" size={22} color="#ffffff"/>
                 </Animated.View>
                 <Animated.Text style={[style.iconLabel, rightIconStyle]}>
                     Settings
