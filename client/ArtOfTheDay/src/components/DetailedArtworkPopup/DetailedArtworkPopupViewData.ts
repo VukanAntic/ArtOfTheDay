@@ -1,4 +1,4 @@
-export default class DetailedImagePopupViewData {
+export default class DetailedArtworkPopupViewData {
     id: string;
     title: string;
     year: string;
