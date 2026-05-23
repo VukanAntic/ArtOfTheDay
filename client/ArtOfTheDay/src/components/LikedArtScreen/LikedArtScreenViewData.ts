@@ -1,19 +1,9 @@
-export class LikedArtItemViewData {
-    id: string;
-    imageUrl: string | null;
-    dateLabel: string;
-
-    constructor(id: string, imageUrl: string | null, dateLabel: string) {
-        this.id = id;
-        this.imageUrl = imageUrl;
-        this.dateLabel = dateLabel;
-    }
-}
+import {LikedArtworkCellViewData} from "@/src/components/LikedArtworkCell/LikedArtworkCellViewData";
 
 export default class LikedArtScreenViewData {
-    items: LikedArtItemViewData[];
+    items: LikedArtworkCellViewData[];
 
-    constructor(items: LikedArtItemViewData[]) {
+    constructor(items: LikedArtworkCellViewData[]) {
         this.items = items;
     }
 }

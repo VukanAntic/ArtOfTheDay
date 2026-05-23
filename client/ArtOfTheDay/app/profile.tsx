@@ -1,22 +1,23 @@
 import {useLocalSearchParams} from 'expo-router';
 import UserProfileView from '@/src/components/UserProfile/UserProfileView';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
-import LikedArtScreenViewData, {LikedArtItemViewData} from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
+import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
 import SettingsScreenViewData from '@/src/components/SettingsScreen/SettingsScreenViewData';
+import {LikedArtworkCellViewData} from "@/src/components/LikedArtworkCell/LikedArtworkCellViewData";
 
 const likedArt = new LikedArtScreenViewData([
-    new LikedArtItemViewData('1',  null, 'Nov 11th'),
-    new LikedArtItemViewData('2',  null, 'Nov 10th'),
-    new LikedArtItemViewData('3',  null, 'Nov 9th'),
-    new LikedArtItemViewData('4',  null, 'Nov 8th'),
-    new LikedArtItemViewData('5',  null, 'Nov 7th'),
-    new LikedArtItemViewData('6',  null, 'Nov 6th'),
-    new LikedArtItemViewData('7',  null, 'Nov 5th'),
-    new LikedArtItemViewData('8',  null, 'Nov 4th'),
-    new LikedArtItemViewData('9',  null, 'Nov 3rd'),
-    new LikedArtItemViewData('10', null, 'Nov 2nd'),
-    new LikedArtItemViewData('11', null, 'Nov 1st'),
-    new LikedArtItemViewData('12', null, 'Oct 31st'),
+    new LikedArtworkCellViewData('1', null, 'Nov 11th'),
+    new LikedArtworkCellViewData('2', null, 'Nov 10th'),
+    new LikedArtworkCellViewData('3', null, 'Nov 9th'),
+    new LikedArtworkCellViewData('4', null, 'Nov 8th'),
+    new LikedArtworkCellViewData('5', null, 'Nov 7th'),
+    new LikedArtworkCellViewData('6', null, 'Nov 6th'),
+    new LikedArtworkCellViewData('7', null, 'Nov 5th'),
+    new LikedArtworkCellViewData('8', null, 'Nov 4th'),
+    new LikedArtworkCellViewData('9', null, 'Nov 3rd'),
+    new LikedArtworkCellViewData('10', null, 'Nov 2nd'),
+    new LikedArtworkCellViewData('11', null, 'Nov 1st'),
+    new LikedArtworkCellViewData('12', null, 'Oct 31st'),
 ]);
 
 const settings = new SettingsScreenViewData(
@@ -39,7 +40,7 @@ const settings = new SettingsScreenViewData(
 export default function ProfileRoute() {
     // The home screen forwards the currently active artwork's URL via the `bg`
     // route param so the profile screen can mirror the same blurred background.
-    const {bg} = useLocalSearchParams<{bg?: string}>();
+    const {bg} = useLocalSearchParams<{ bg?: string }>();
 
     const viewData = new UserProfileViewData(likedArt, settings, bg || null);
 

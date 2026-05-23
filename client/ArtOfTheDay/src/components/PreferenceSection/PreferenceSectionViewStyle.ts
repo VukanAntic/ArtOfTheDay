@@ -10,7 +10,6 @@ export default StyleSheet.create({
         color: '#1a1a1a',
     },
 
-    // ── Selected chips ─────────────────────────────────────────────────────────
     chipsWrap: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -39,7 +38,6 @@ export default StyleSheet.create({
         color: '#888',
     },
 
-    // ── Add row ────────────────────────────────────────────────────────────────
     addRow: {
         flexDirection: 'row',
         gap: 10,
@@ -72,7 +70,6 @@ export default StyleSheet.create({
         fontStyle: 'italic',
     },
 
-    // ── Suggestions row ────────────────────────────────────────────────────────
     suggestionsContent: {
         gap: 7,
         paddingRight: 4,
