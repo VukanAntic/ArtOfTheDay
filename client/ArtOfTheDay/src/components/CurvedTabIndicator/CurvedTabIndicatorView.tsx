@@ -1,10 +1,6 @@
 import {Dimensions, TouchableOpacity} from 'react-native';
-import Animated, {
-    Extrapolation,
-    interpolate,
-    useAnimatedStyle,
-} from 'react-native-reanimated';
 import type {SharedValue} from 'react-native-reanimated';
+import Animated, {Extrapolation, interpolate, useAnimatedStyle,} from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
 import {Ionicons} from '@expo/vector-icons';
 import style, {
@@ -25,10 +21,10 @@ type Props = {
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
 // Cubic bezier anchor points (icon centers) — used for the animated circle
-const P0X = LEFT_ICON_X,           P0Y = ICON_Y;
-const P1X = SCREEN_WIDTH * 0.38,   P1Y = ICON_Y + CURVE_DIP;
-const P2X = SCREEN_WIDTH * 0.62,   P2Y = ICON_Y + CURVE_DIP;
-const P3X = RIGHT_ICON_X,          P3Y = ICON_Y;
+const P0X = LEFT_ICON_X, P0Y = ICON_Y;
+const P1X = SCREEN_WIDTH * 0.38, P1Y = ICON_Y + CURVE_DIP;
+const P2X = SCREEN_WIDTH * 0.62, P2Y = ICON_Y + CURVE_DIP;
+const P3X = RIGHT_ICON_X, P3Y = ICON_Y;
 
 // SVG path endpoints are inset from each icon center so the line
 // stops at the icon edge and doesn't run into the button visually
@@ -76,7 +72,7 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
                 activeOpacity={0.75}
             >
                 <Animated.View style={[style.iconWrapper, leftIconStyle]}>
-                    <Ionicons name="heart" size={22} color="#ffffff"/>
+                    <Ionicons name="heart" size={22} color="#000000"/>
                 </Animated.View>
                 <Animated.Text style={[style.iconLabel, leftIconStyle]}>
                     Liked art
@@ -90,7 +86,7 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
                 activeOpacity={0.75}
             >
                 <Animated.View style={[style.iconWrapper, rightIconStyle]}>
-                    <Ionicons name="settings-sharp" size={22} color="#ffffff"/>
+                    <Ionicons name="settings-sharp" size={22} color="#000000"/>
                 </Animated.View>
                 <Animated.Text style={[style.iconLabel, rightIconStyle]}>
                     Settings
