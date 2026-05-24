@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
     runOnUI,
@@ -10,6 +11,8 @@ import {router} from 'expo-router';
 import CurvedTabIndicatorView from '@/src/components/CurvedTabIndicator/CurvedTabIndicatorView';
 import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenView';
 import SettingsScreenView from '@/src/components/SettingsScreen/SettingsScreenView';
+import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupViewData';
+import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
 
@@ -27,6 +30,7 @@ type Props = {
 export default function UserProfileView({viewData}: Props) {
     const pagerRef = useAnimatedRef<Animated.ScrollView>();
     const scrollProgress = useSharedValue(0);
+    const [selectedArtwork, setSelectedArtwork] = useState<DetailedArtworkPopupViewData | null>(null);
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -77,9 +81,20 @@ export default function UserProfileView({viewData}: Props) {
                 style={style.pager}
                 bounces={false}
             >
-                <LikedArtScreenView viewData={viewData.likedArt} width={SCREEN_WIDTH}/>
+                <LikedArtScreenView
+                    viewData={viewData.likedArt}
+                    width={SCREEN_WIDTH}
+                    onItemPress={setSelectedArtwork}
+                />
                 <SettingsScreenView viewData={viewData.settings} width={SCREEN_WIDTH}/>
             </Animated.ScrollView>
+
+            {selectedArtwork && (
+                <DetailedArtworkPopupView
+                    artwork={selectedArtwork}
+                    onClose={() => setSelectedArtwork(null)}
+                />
+            )}
         </View>
     );
 }
