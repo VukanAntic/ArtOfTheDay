@@ -19,7 +19,7 @@ export function useAuthScreenController() {
         setError(null);
         try {
             await controller.login(command);
-            router.replace('/');
+            router.replace('/home');
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Login failed');
         } finally {
@@ -32,7 +32,7 @@ export function useAuthScreenController() {
         setError(null);
         try {
             await controller.register(command);
-            router.replace('/');
+            router.replace('/home');
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Registration failed');
         } finally {

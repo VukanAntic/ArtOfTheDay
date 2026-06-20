@@ -1,5 +1,5 @@
-import HomeScreenView from "@/src/components/HomeScreen/HomeScreenView";
+import SplashScreenView from '@/src/components/SplashScreen/SplashScreenView';
 
-export default function HomeRoute() {
-    return <HomeScreenView/>;
+export default function SplashRoute() {
+    return <SplashScreenView />;
 }
