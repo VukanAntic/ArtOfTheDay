@@ -1,5 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {Animated, Easing, StatusBar} from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import {useSplashScreenController} from '@/src/hooks/useSplashScreenController';
 import style from './SplashScreenViewStyle';
 
@@ -11,6 +12,10 @@ export default function SplashScreenView() {
     const subtitleOpacity = useRef(new Animated.Value(0)).current;
     const subtitleY = useRef(new Animated.Value(12)).current;
     const screenOpacity = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        SplashScreen.hideAsync();
+    }, []);
 
     useEffect(() => {
         Animated.sequence([
@@ -55,7 +60,7 @@ export default function SplashScreenView() {
 
     return (
         <Animated.View style={[style.container, {opacity: screenOpacity}]}>
-            <StatusBar barStyle="light-content" backgroundColor="#19201F"/>
+            <StatusBar barStyle="light-content"/>
             <Animated.Text style={[style.title, {opacity: titleOpacity, transform: [{translateY: titleY}]}]}>
                 INSPIRA
             </Animated.Text>
