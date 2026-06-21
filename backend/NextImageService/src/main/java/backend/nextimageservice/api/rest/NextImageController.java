@@ -1,5 +1,6 @@
 package backend.nextimageservice.api.rest;
 
+import backend.nextimageservice.common.DTO.SeenImageDTO;
 import backend.nextimageservice.common.DTO.SetPreferredTimeForUpdateDTO;
 import backend.nextimageservice.common.service.NextImageService;
 import common.common.authentication.AuthenticatedUser;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.TimeZone;
 
 @RestController
@@ -22,6 +24,15 @@ public class NextImageController {
     @GetMapping("/test")
     public void test(TimeZone timeZone) {
         System.out.println(timeZone);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<SeenImageDTO>> getHistory() {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(nextImageService.getUserHistory(username));
     }
 
     @PostMapping("/set-preferred-time-for-update")

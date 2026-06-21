@@ -16,4 +16,5 @@ public interface UserHistoryRepository {
 
     List<UserHistory> getAllUsers();
     void addNewImageForUserHistory(String username, SeenImage newSeenImageForUserHistory);
+    UserHistory getUserHistory(String username);
 }

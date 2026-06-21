@@ -75,6 +75,13 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
     }
 
     @Override
+    public UserHistory getUserHistory(String username) {
+        return userHistoryMongoRepository.findById(username)
+                .map(UserHistory::new)
+                .orElse(null);
+    }
+
+    @Override
     public void delete(String username) {
         try {
             userHistoryMongoRepository.deleteById(username);
