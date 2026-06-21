@@ -4,6 +4,7 @@ import {createImageClient} from '@/src/services/ImageServices/createImageClient'
 import {createPreferenceClient} from '@/src/services/PreferenceServices/createPreferenceClient';
 import {createTutorialClient} from '@/src/services/TutorialServices/createTutorialClient';
 import {createNextImageClient} from '@/src/services/NextImageServices/createNextImageClient';
+import {NextImageWebSocketService} from '@/src/services/NextImageServices/NextImageWebSocketService';
 import {CachedRepository} from '@/src/repositories/CachedRepository';
 import {SecureRepository} from '@/src/repositories/SecureRepository';
 import {InMemoryRepository} from '@/src/repositories/InMemoryRepository';
@@ -73,3 +74,4 @@ export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutoria
 
 export const historyRepository = new InMemoryRepository<SeenImageData[]>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
+export const nextImageWebSocketService = new NextImageWebSocketService();
