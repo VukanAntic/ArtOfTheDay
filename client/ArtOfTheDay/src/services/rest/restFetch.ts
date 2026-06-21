@@ -3,7 +3,8 @@ async function handleResponse<T>(response: Response): Promise<T> {
         const message = await response.text().catch(() => `HTTP ${response.status}`);
         throw new Error(message);
     }
-    return response.json() as Promise<T>;
+    const text = await response.text();
+    return (text ? JSON.parse(text) : undefined) as T;
 }
 
 export async function restPost<TBody, TResponse>(

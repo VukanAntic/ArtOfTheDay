@@ -2,11 +2,14 @@ import {CURRENT_PROTOCOL} from '@/src/config/apiProtocol';
 import {createAuthClient} from '@/src/services/AuthServices/createAuthClient';
 import {createImageClient} from '@/src/services/ImageServices/createImageClient';
 import {createPreferenceClient} from '@/src/services/PreferenceServices/createPreferenceClient';
+import {createTutorialClient} from '@/src/services/TutorialServices/createTutorialClient';
+import {createNextImageClient} from '@/src/services/NextImageServices/createNextImageClient';
 import {CachedRepository} from '@/src/repositories/CachedRepository';
 import {SecureRepository} from '@/src/repositories/SecureRepository';
 import {InMemoryRepository} from '@/src/repositories/InMemoryRepository';
 import {AuthTokens} from '@/src/domain/Auth';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
+import {SeenImageData} from '@/src/domain/SeenImageData';
 import {LoginCommandHandler} from '@/src/services/AuthServices/commandHandlers/LoginCommandHandler';
 import {RegisterCommandHandler} from '@/src/services/AuthServices/commandHandlers/RegisterCommandHandler';
 import {RefreshTokenCommandHandler} from '@/src/services/AuthServices/commandHandlers/RefreshTokenCommandHandler';
@@ -28,10 +31,14 @@ import {AddLikedArtistCommandHandler} from '@/src/services/PreferenceServices/co
 import {RemoveLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtistCommandHandler';
 import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
 import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
+import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
 
 const authClient = createAuthClient(CURRENT_PROTOCOL);
 const imageClient = createImageClient(CURRENT_PROTOCOL);
 const preferenceClient = createPreferenceClient(CURRENT_PROTOCOL);
+const tutorialClient = createTutorialClient(CURRENT_PROTOCOL);
+const nextImageClient = createNextImageClient(CURRENT_PROTOCOL);
 
 export const authRepository = new CachedRepository<AuthTokens>(
     new SecureRepository<AuthTokens>('auth_tokens'),
@@ -61,3 +68,8 @@ export const addLikedArtistCommandHandler = new AddLikedArtistCommandHandler(pre
 export const removeLikedArtistCommandHandler = new RemoveLikedArtistCommandHandler(preferenceClient, preferencesRepository);
 export const addDislikedArtworkCommandHandler = new AddDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
 export const removeDislikedArtworkCommandHandler = new RemoveDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
+
+export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutorialClient);
+
+export const historyRepository = new InMemoryRepository<SeenImageData[]>();
+export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
