@@ -36,6 +36,12 @@ public class RabbitMqConfiguration {
     @Value("${spring.rabbitmq.new_image_ready_routing_key}")
     private String newImageReadyRoutingKey;
 
+    @Value("${spring.rabbitmq.ftue_completed_queue}")
+    private String ftueCompletedQueueName;
+
+    @Value("${spring.rabbitmq.ftue_completed_routing_key}")
+    private String ftueCompletedRoutingKey;
+
 
     @Bean
     public Queue userCreatedQueue() {
@@ -50,6 +56,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Queue newImageReadyQueue() {
         return new Queue(newImageReadyQueueName, true);
+    }
+
+    @Bean
+    public Queue ftueCompletedQueue() {
+        return new Queue(ftueCompletedQueueName, true);
     }
 
     @Bean
@@ -70,6 +81,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Binding newImageReadyBinding(Queue newImageReadyQueue, TopicExchange userEventsExchange) {
         return BindingBuilder.bind(newImageReadyQueue).to(userEventsExchange).with(newImageReadyRoutingKey);
+    }
+
+    @Bean
+    public Binding ftueCompletedBinding(Queue ftueCompletedQueue, TopicExchange userEventsExchange) {
+        return BindingBuilder.bind(ftueCompletedQueue).to(userEventsExchange).with(ftueCompletedRoutingKey);
     }
 
     @Bean
