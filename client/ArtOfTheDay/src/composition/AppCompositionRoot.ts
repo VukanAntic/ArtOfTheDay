@@ -1,9 +1,12 @@
 import {CURRENT_PROTOCOL} from '@/src/config/apiProtocol';
 import {createAuthClient} from '@/src/services/AuthServices/createAuthClient';
 import {createImageClient} from '@/src/services/ImageServices/createImageClient';
+import {createPreferenceClient} from '@/src/services/PreferenceServices/createPreferenceClient';
 import {CachedRepository} from '@/src/repositories/CachedRepository';
 import {SecureRepository} from '@/src/repositories/SecureRepository';
+import {InMemoryRepository} from '@/src/repositories/InMemoryRepository';
 import {AuthTokens} from '@/src/domain/Auth';
+import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {LoginCommandHandler} from '@/src/services/AuthServices/commandHandlers/LoginCommandHandler';
 import {RegisterCommandHandler} from '@/src/services/AuthServices/commandHandlers/RegisterCommandHandler';
 import {RefreshTokenCommandHandler} from '@/src/services/AuthServices/commandHandlers/RefreshTokenCommandHandler';
@@ -16,13 +19,24 @@ import {GetArtworksFromArtistCommandHandler} from '@/src/services/ImageServices/
 import {GetAllGenresFromIdsCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetAllGenresFromIdsCommandHandler';
 import {GetAllArtistsFromIdsCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetAllArtistsFromIdsCommandHandler';
 import {GetRandomArtworkIdCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetRandomArtworkIdCommandHandler';
+import {GetPreferencesCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/GetPreferencesCommandHandler';
+import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
+import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
+import {AddLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
+import {RemoveLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedGenreCommandHandler';
+import {AddLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtistCommandHandler';
+import {RemoveLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtistCommandHandler';
+import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
+import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
 
 const authClient = createAuthClient(CURRENT_PROTOCOL);
 const imageClient = createImageClient(CURRENT_PROTOCOL);
+const preferenceClient = createPreferenceClient(CURRENT_PROTOCOL);
 
 export const authRepository = new CachedRepository<AuthTokens>(
     new SecureRepository<AuthTokens>('auth_tokens'),
 );
+export const preferencesRepository = new InMemoryRepository<UserPreferencesData>();
 
 export const loginCommandHandler = new LoginCommandHandler(authClient, authRepository);
 export const registerCommandHandler = new RegisterCommandHandler(authClient, authRepository);
@@ -37,3 +51,13 @@ export const getArtworksFromArtistCommandHandler = new GetArtworksFromArtistComm
 export const getAllGenresFromIdsCommandHandler = new GetAllGenresFromIdsCommandHandler(imageClient);
 export const getAllArtistsFromIdsCommandHandler = new GetAllArtistsFromIdsCommandHandler(imageClient);
 export const getRandomArtworkIdCommandHandler = new GetRandomArtworkIdCommandHandler(imageClient);
+
+export const getPreferencesCommandHandler = new GetPreferencesCommandHandler(preferenceClient, preferencesRepository);
+export const addLikedArtworkCommandHandler = new AddLikedArtworkCommandHandler(preferenceClient, preferencesRepository);
+export const removeLikedArtworkCommandHandler = new RemoveLikedArtworkCommandHandler(preferenceClient, preferencesRepository);
+export const addLikedGenreCommandHandler = new AddLikedGenreCommandHandler(preferenceClient, preferencesRepository);
+export const removeLikedGenreCommandHandler = new RemoveLikedGenreCommandHandler(preferenceClient, preferencesRepository);
+export const addLikedArtistCommandHandler = new AddLikedArtistCommandHandler(preferenceClient, preferencesRepository);
+export const removeLikedArtistCommandHandler = new RemoveLikedArtistCommandHandler(preferenceClient, preferencesRepository);
+export const addDislikedArtworkCommandHandler = new AddDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
+export const removeDislikedArtworkCommandHandler = new RemoveDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
