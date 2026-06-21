@@ -1,11 +1,13 @@
 import {useEffect, useRef} from 'react';
 import {Animated, Easing, StatusBar} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSplashScreenController} from '@/src/hooks/useSplashScreenController';
 import style from './SplashScreenViewStyle';
 
 export default function SplashScreenView() {
     const {onAnimationComplete} = useSplashScreenController();
+    const {top} = useSafeAreaInsets();
 
     const titleOpacity = useRef(new Animated.Value(0)).current;
     const titleY = useRef(new Animated.Value(20)).current;
@@ -59,7 +61,7 @@ export default function SplashScreenView() {
     }, []);
 
     return (
-        <Animated.View style={[style.container, {opacity: screenOpacity}]}>
+        <Animated.View style={[style.container, {opacity: screenOpacity, marginTop: -top}]}>
             <StatusBar barStyle="light-content"/>
             <Animated.Text style={[style.title, {opacity: titleOpacity, transform: [{translateY: titleY}]}]}>
                 INSPIRA
