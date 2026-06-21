@@ -1,5 +1,6 @@
 package identityservice.identityservice.api.publishers;
 
+import common.common.events.FtueCompletedEvent;
 import common.common.events.UserCreatedEvent;
 import common.common.events.UserDeletedEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,6 +15,9 @@ public class UserEventPublisher {
 
     @Value("${spring.rabbitmq.user_deleted_routing_key}")
     private String userDeletedRoutingKey;
+
+    @Value("${spring.rabbitmq.ftue_completed_routing_key}")
+    private String ftueCompletedRoutingKey;
 
     @Value("${spring.rabbitmq.exchange_name}")
     private String userEventsExchange;
@@ -34,5 +38,11 @@ public class UserEventPublisher {
         var userDeletedEvent = new UserDeletedEvent(username);
         rabbitTemplate.convertAndSend(userEventsExchange, userDeletedRoutingKey, userDeletedEvent);
         System.out.println("Message sent successfully!: " + userDeletedEvent);
+    }
+
+    public void publishFtueCompletedEvent(String username) {
+        var event = FtueCompletedEvent.builder().username(username).build();
+        rabbitTemplate.convertAndSend(userEventsExchange, ftueCompletedRoutingKey, event);
+        System.out.println("Message sent successfully!: " + event);
     }
 }

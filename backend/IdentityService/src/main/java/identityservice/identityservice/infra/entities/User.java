@@ -27,4 +27,7 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean ftueCompleted = false;
 }
