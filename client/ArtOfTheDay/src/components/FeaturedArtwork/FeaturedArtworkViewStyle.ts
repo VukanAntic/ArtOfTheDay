@@ -1,4 +1,3 @@
-// FeaturedArtworkViewStyle.ts
 import {StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
@@ -16,5 +15,6 @@ export default StyleSheet.create({
         overflow: 'hidden',
         width: 268,
         height: 536,
+        backgroundColor: 'white',
     },
 });

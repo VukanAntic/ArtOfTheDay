@@ -11,8 +11,8 @@ type SeenImageDTO = {
 const BASE = `${API_CONFIG.nextImageService}/api/next-image`;
 
 export class RestNextImageClient implements INextImageClient {
-    async getHistory(token: string): Promise<SeenImageData[]> {
-        const res = await restGet<SeenImageDTO[]>(`${BASE}/history`, token);
+    async getHistory(): Promise<SeenImageData[]> {
+        const res = await restGet<SeenImageDTO[]>(`${BASE}/history`);
         return res.map(dto => new SeenImageData(dto.artworkId, new Date(dto.seenAt)));
     }
 }

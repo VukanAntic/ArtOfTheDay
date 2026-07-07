@@ -15,7 +15,7 @@ export class RemoveLikedArtworkCommandHandler extends CommandHandler {
     async handle(command: RemoveLikedArtworkCommand): Promise<void> {
         await this.timed('RemoveLikedArtwork', async () => {
             await this.client.removeLikedArtwork(command);
-            const updated = await this.client.getPreferences(command.token);
+            const updated = await this.client.getPreferences();
             await this.repository.update(updated);
         });
     }

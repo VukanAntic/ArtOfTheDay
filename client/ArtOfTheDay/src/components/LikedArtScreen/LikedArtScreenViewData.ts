@@ -1,9 +1,14 @@
-import {LikedArtworkCellViewData} from "@/src/components/LikedArtworkCell/LikedArtworkCellViewData";
+import {ArtworkData} from '@/src/domain/ArtworkData';
+import {SeenImageData} from '@/src/domain/SeenImageData';
+import {LikedArtworkCellViewData} from '@/src/components/LikedArtworkCell/LikedArtworkCellViewData';
 
 export default class LikedArtScreenViewData {
-    items: LikedArtworkCellViewData[];
+    readonly items: LikedArtworkCellViewData[];
 
-    constructor(items: LikedArtworkCellViewData[]) {
-        this.items = items;
+    constructor(artworks: ArtworkData[], history: SeenImageData[]) {
+        this.items = artworks.map(artwork => {
+            const seenImage = history.find(s => s.artworkId === artwork.id);
+            return new LikedArtworkCellViewData(artwork, seenImage?.seenAt ?? null);
+        });
     }
 }

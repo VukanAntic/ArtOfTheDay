@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  image_service:
+  image-service:
     image: ${DOCKER_REGISTRY-}image_service
     build:
       context: .
@@ -14,7 +14,7 @@ services:
     depends_on:
       - rabbitmq
 
-  identity_service:
+  identity-service:
     image: ${DOCKER_REGISTRY-}identity_service
     build:
       context: .
@@ -27,7 +27,7 @@ services:
     depends_on:
       - rabbitmq
 
-  user_preferences_service:
+  user-preferences-service:
     image: ${DOCKER_REGISTRY-}user_preferences_service
     build:
       context: .
@@ -40,7 +40,7 @@ services:
     depends_on:
       - rabbitmq
 
-  next_image_service:
+  next-image-service:
     image: ${DOCKER_REGISTRY-}next_image_service
     build:
       context: .
@@ -48,6 +48,8 @@ services:
     env_file: NextImageService/default.env
     environment:
       - rabbit_mq_host=rabbitmq
+      - user_preference_service_url=http://user-preferences-service:8082
+      - image_service_url=http://image-service:8080
     ports:
       - "8084:8084"
     depends_on:

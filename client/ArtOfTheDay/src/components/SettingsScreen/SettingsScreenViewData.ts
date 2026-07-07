@@ -1,18 +1,21 @@
+import {GenreData} from '@/src/domain/GenreData';
+import {ArtistData} from '@/src/domain/ArtistData';
+
 export default class SettingsScreenViewData {
-    likedGenres: string[];
-    likedArtists: string[];
-    allGenres: string[];
-    allArtists: string[];
+    readonly likedGenres: string[];
+    readonly likedArtists: string[];
+    readonly allGenres: string[];
+    readonly allArtists: string[];
 
     constructor(
-        likedGenres: string[],
-        likedArtists: string[],
-        allGenres: string[],
-        allArtists: string[],
+        allGenres: GenreData[],
+        allArtists: ArtistData[],
+        likedGenreIds: string[],
+        likedArtistIds: number[],
     ) {
-        this.likedGenres = likedGenres;
-        this.likedArtists = likedArtists;
-        this.allGenres = allGenres;
-        this.allArtists = allArtists;
+        this.allGenres = allGenres.map(g => g.name);
+        this.allArtists = allArtists.map(a => a.name);
+        this.likedGenres = allGenres.filter(g => likedGenreIds.includes(g.id)).map(g => g.name);
+        this.likedArtists = allArtists.filter(a => likedArtistIds.includes(a.id)).map(a => a.name);
     }
 }

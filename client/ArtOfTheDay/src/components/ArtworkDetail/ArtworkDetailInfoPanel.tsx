@@ -1,15 +1,23 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 import s from './ArtworkDetailInfoPanelStyle';
-import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
-
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function formatDate(date: Date): string {
     return `${MONTHS[date.getMonth()]} ${date.getDate()}`;
 }
 
+type ArtworkPanelData = {
+    title: string;
+    year: string;
+    receivedAt: Date;
+    paintingDescription: string;
+    artistName: string;
+    artistLifespan: string;
+    artistDescription: string;
+};
+
 type Props = {
-    artwork: FeaturedArtworkViewData;
+    artwork: ArtworkPanelData;
 };
 
 export default function ArtworkDetailInfoPanel({artwork}: Props) {

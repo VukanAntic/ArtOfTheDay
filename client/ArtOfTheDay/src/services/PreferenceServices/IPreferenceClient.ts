@@ -11,7 +11,7 @@ import {
 } from './PreferenceCommands';
 
 export interface IPreferenceClient {
-    getPreferences(token: string): Promise<UserPreferencesData>;
+    getPreferences(): Promise<UserPreferencesData>;
     addLikedArtwork(command: AddLikedArtworkCommand): Promise<void>;
     removeLikedArtwork(command: RemoveLikedArtworkCommand): Promise<void>;
     addLikedGenre(command: AddLikedGenreCommand): Promise<void>;

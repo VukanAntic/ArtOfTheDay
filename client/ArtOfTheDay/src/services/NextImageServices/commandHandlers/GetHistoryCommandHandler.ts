@@ -12,9 +12,9 @@ export class GetHistoryCommandHandler extends CommandHandler {
         super();
     }
 
-    async handle(command: GetHistoryCommand): Promise<void> {
+    async handle(_command: GetHistoryCommand): Promise<void> {
         await this.timed('GetHistory', async () => {
-            const history = await this.client.getHistory(command.token);
+            const history = await this.client.getHistory();
             await this.repository.update(history);
         });
     }

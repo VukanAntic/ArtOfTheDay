@@ -25,17 +25,19 @@ public class UserPreferenceServiceClient {
     }
 
     public UserPreferencesDTO getUserPreferences(String username) {
-        var url = UriComponentsBuilder
-                .fromHttpUrl(userPreferenceServiceUrl + UserPreferenceServiceEndpoints.GET_BY_USERNAME)
-                .queryParam("username", username)
-                .toUriString();
+        try {
+            var url = userPreferenceServiceUrl + UserPreferenceServiceEndpoints.GET_PREFERENCES;
 
-        var headers = new HttpHeaders();
-        headers.setBearerAuth(serviceJwtComponent.generateServiceToken());
-        var entity = new HttpEntity<>(headers);
+            var headers = new HttpHeaders();
+            headers.setBearerAuth(serviceJwtComponent.generateTokenForUser(username));
+            var entity = new HttpEntity<>(headers);
 
-        var response = restTemplate.exchange(url, HttpMethod.GET, entity, UserPreferencesDTO.class);
-        var body = response.getBody();
-        return body != null ? body : new UserPreferencesDTO();
+            var response = restTemplate.exchange(url, HttpMethod.GET, entity, UserPreferencesDTO.class);
+            var body = response.getBody();
+            return body != null ? body : new UserPreferencesDTO();
+        } catch (Exception e) {
+            System.out.println("Could not fetch preferences for " + username + ", using empty preferences: " + e.getMessage());
+            return new UserPreferencesDTO();
+        }
     }
 }

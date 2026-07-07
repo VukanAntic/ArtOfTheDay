@@ -1,4 +1,5 @@
 import {CURRENT_PROTOCOL} from '@/src/config/apiProtocol';
+import {setTokenProvider} from '@/src/services/rest/restFetch';
 import {createAuthClient} from '@/src/services/AuthServices/createAuthClient';
 import {createImageClient} from '@/src/services/ImageServices/createImageClient';
 import {createPreferenceClient} from '@/src/services/PreferenceServices/createPreferenceClient';
@@ -75,3 +76,24 @@ export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutoria
 export const historyRepository = new InMemoryRepository<SeenImageData[]>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
 export const nextImageWebSocketService = new NextImageWebSocketService();
+
+setTokenProvider(getValidToken);
+
+export async function getValidToken(): Promise<string | null> {
+    const tokens = await authRepository.get();
+    if (!tokens) return null;
+
+    try {
+        const payload = JSON.parse(atob(tokens.accessToken.split('.')[1]));
+        const isExpired = payload.exp * 1000 < Date.now() + 30_000; // refresh 30s early
+        if (isExpired) {
+            await refreshTokenCommandHandler.handle();
+            const refreshed = await authRepository.get();
+            return refreshed?.accessToken ?? null;
+        }
+    } catch {
+        return tokens.accessToken;
+    }
+
+    return tokens.accessToken;
+}

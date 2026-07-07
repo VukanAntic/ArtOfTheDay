@@ -17,7 +17,10 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCommands';
 import authBackgroundImages from '@/src/config/authBackgroundImages';
-import {useAuthScreenController} from '@/src/hooks/useAuthScreenController';
+import {router} from 'expo-router';
+import {AuthScreenController} from '@/src/controllers/AuthScreenController';
+import {loginCommandHandler, registerCommandHandler, ftueCompleteCommandHandler} from '@/src/composition/AppCompositionRoot';
+import AuthScreenViewData from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';
 
 const CYCLE_INTERVAL_MS = 5000;
@@ -149,9 +152,41 @@ function RegisterForm({onSubmit, disabled}: { onSubmit: (c: RegisterCommand) => 
     );
 }
 
+const controller = new AuthScreenController(loginCommandHandler, registerCommandHandler);
+
 export default function AuthScreenView() {
-    const {viewData, onLogin, onRegister} = useAuthScreenController();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
+
+    const viewData = new AuthScreenViewData(isLoading, error);
+
+    const onLogin = async (command: LoginCommand) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await controller.login(command);
+            router.replace('/home');
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Login failed');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const onRegister = async (command: RegisterCommand) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            await controller.register(command);
+            await ftueCompleteCommandHandler.handle({});
+            router.replace('/home');
+        } catch (e) {
+            setError(e instanceof Error ? e.message : 'Registration failed');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <View style={style.container}>

@@ -1,3 +1,1 @@
-export interface GetHistoryCommand {
-    token: string;
-}
+export interface GetHistoryCommand {}

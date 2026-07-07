@@ -23,6 +23,10 @@ public class ServiceJwtComponent {
     private String secret;
 
     public String generateServiceToken() {
+        return generateTokenForUser("next-image-service");
+    }
+
+    public String generateTokenForUser(String username) {
         var secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
         var jwk = new OctetSequenceKey.Builder(secretKey.getEncoded())
                 .algorithm(com.nimbusds.jose.JWSAlgorithm.HS256)
@@ -32,7 +36,8 @@ public class ServiceJwtComponent {
         );
 
         var claims = JwtClaimsSet.builder()
-                .subject("next-image-service")
+                .subject(username)
+                .claim("username", username)
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(30))
                 .build();

@@ -21,11 +21,6 @@ public class NextImageController {
 
     private final NextImageService nextImageService;
 
-    @GetMapping("/test")
-    public void test(TimeZone timeZone) {
-        System.out.println(timeZone);
-    }
-
     @GetMapping("/history")
     public ResponseEntity<List<SeenImageDTO>> getHistory() {
         var username = AuthenticatedUser.getUsername();

@@ -5,16 +5,22 @@ type OnNewImageCallback = () => void;
 
 export class NextImageWebSocketService {
     private client: Client | null = null;
+    private subscribed = false;
 
     connect(token: string, onNewImage: OnNewImageCallback): void {
-        const wsUrl = API_CONFIG.nextImageService.replace(/^http/, 'ws') + '/ws/websocket';
+        if (this.client?.active) return;
+
+        const wsUrl = API_CONFIG.nextImageService.replace(/^http/, 'ws') + '/ws';
 
         this.client = new Client({
             brokerURL: wsUrl,
             connectHeaders: {
                 Authorization: `Bearer ${token}`,
             },
+            reconnectDelay: 0,
             onConnect: () => {
+                if (this.subscribed) return;
+                this.subscribed = true;
                 this.client?.subscribe('/user/queue/new-image', () => {
                     onNewImage();
                 });
@@ -30,5 +36,6 @@ export class NextImageWebSocketService {
     disconnect(): void {
         this.client?.deactivate();
         this.client = null;
+        this.subscribed = false;
     }
 }

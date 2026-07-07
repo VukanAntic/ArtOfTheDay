@@ -57,7 +57,6 @@ public class NextImageService {
                 seenIds.add(artworkId);
             } catch (Exception e) {
                 System.out.println("Failed to seed image " + i + " for user " + username + ": " + e.getMessage());
-                break;
             }
         }
     }

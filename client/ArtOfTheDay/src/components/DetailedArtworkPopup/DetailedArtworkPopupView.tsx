@@ -5,7 +5,6 @@ import Reanimated, {runOnJS, useAnimatedScrollHandler, useSharedValue} from 'rea
 import DetailedArtworkPopupViewData from './DetailedArtworkPopupViewData';
 import {useDetailedArtworkExpandAnimation} from '@/src/hooks/useDetailedArtworkExpandAnimation';
 import ArtworkDetailInfoPanel from '@/src/components/ArtworkDetail/ArtworkDetailInfoPanel';
-import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
 import s from './DetailedArtworkPopupViewStyle';
 
 const {width: SCREEN_W, height: SCREEN_H} = Dimensions.get('window');
@@ -78,12 +77,6 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
         },
     });
 
-    // ArtworkDetailInfoPanel expects FeaturedArtworkViewData — same shape, different class
-    const artworkForPanel = new FeaturedArtworkViewData(
-        artwork.id, artwork.title, artwork.year, artwork.imageURL,
-        artwork.receivedAt, artwork.paintingDescription,
-        artwork.artistName, artwork.artistLifespan, artwork.artistDescription,
-    );
 
     return (
         <Animated.View style={[StyleSheet.absoluteFillObject, {opacity: fadeAnim}]}>
@@ -159,7 +152,7 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                     contentContainerStyle={{paddingBottom: 48}}
                 >
                     <View style={{height: SPACER_HEIGHT}}/>
-                    <ArtworkDetailInfoPanel artwork={artworkForPanel}/>
+                    <ArtworkDetailInfoPanel artwork={artwork}/>
                 </Reanimated.ScrollView>
             </View>
 

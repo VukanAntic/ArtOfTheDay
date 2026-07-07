@@ -1,7 +1,9 @@
 package identityservice.identityservice.api.rest;
 
+import identityservice.identityservice.common.DTOs.AuthenticationDTO;
 import identityservice.identityservice.common.DTOs.UserRegisterDTO;
 import identityservice.identityservice.common.services.IdentityService;
+import identityservice.identityservice.infra.spring.JwtUtilComponent;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ import java.util.TimeZone;
 public class RegistrationController {
 
     private final IdentityService identityService;
-
+    private final JwtUtilComponent jwtUtilComponent;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO, TimeZone timeZone) {
@@ -28,6 +30,8 @@ public class RegistrationController {
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("Something is incorrect");
         }
-        return ResponseEntity.ok(user);
+        return jwtUtilComponent.generateNewTokens(user.get().getUsername())
+                .map(tokens -> ResponseEntity.ok((Object) tokens))
+                .orElse(ResponseEntity.internalServerError().build());
     }
 }

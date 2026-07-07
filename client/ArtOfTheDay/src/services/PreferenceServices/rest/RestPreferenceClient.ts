@@ -34,40 +34,40 @@ function toUserPreferences(dto: UserPreferencesDTO): UserPreferencesData {
 }
 
 export class RestPreferenceClient implements IPreferenceClient {
-    async getPreferences(token: string): Promise<UserPreferencesData> {
-        const res = await restGet<UserPreferencesDTO>(`${BASE}/get`, token);
+    async getPreferences(): Promise<UserPreferencesData> {
+        const res = await restGet<UserPreferencesDTO>(`${BASE}/get`);
         return toUserPreferences(res);
     }
 
     async addLikedArtwork(command: AddLikedArtworkCommand): Promise<void> {
-        await restPut(`${BASE}/add-liked-artwork`, {artworkId: command.artworkId}, command.token);
+        await restPut(`${BASE}/add-liked-artwork`, {artworkId: command.artworkId});
     }
 
     async removeLikedArtwork(command: RemoveLikedArtworkCommand): Promise<void> {
-        await restPut(`${BASE}/remove-liked-artwork`, {artworkId: command.artworkId}, command.token);
+        await restPut(`${BASE}/remove-liked-artwork`, {artworkId: command.artworkId});
     }
 
     async addLikedGenre(command: AddLikedGenreCommand): Promise<void> {
-        await restPut(`${BASE}/add-liked-genre`, {genreId: command.genreId}, command.token);
+        await restPut(`${BASE}/add-liked-genre`, {genreId: command.genreId});
     }
 
     async removeLikedGenre(command: RemoveLikedGenreCommand): Promise<void> {
-        await restPut(`${BASE}/remove-liked-genre`, {genreId: command.genreId}, command.token);
+        await restPut(`${BASE}/remove-liked-genre`, {genreId: command.genreId});
     }
 
     async addLikedArtist(command: AddLikedArtistCommand): Promise<void> {
-        await restPut(`${BASE}/add-liked-artist`, {artistId: command.artistId}, command.token);
+        await restPut(`${BASE}/add-liked-artist`, {artistId: command.artistId});
     }
 
     async removeLikedArtist(command: RemoveLikedArtistCommand): Promise<void> {
-        await restPut(`${BASE}/remove-liked-artist`, {artistId: command.artistId}, command.token);
+        await restPut(`${BASE}/remove-liked-artist`, {artistId: command.artistId});
     }
 
     async addDislikedArtwork(command: AddDislikedArtworkCommand): Promise<void> {
-        await restPut(`${BASE}/add-disliked-artwork`, {artworkId: command.artworkId}, command.token);
+        await restPut(`${BASE}/add-disliked-artwork`, {artworkId: command.artworkId});
     }
 
     async removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void> {
-        await restPut(`${BASE}/remove-disliked-artwork`, {artworkId: command.artworkId}, command.token);
+        await restPut(`${BASE}/remove-disliked-artwork`, {artworkId: command.artworkId});
     }
 }

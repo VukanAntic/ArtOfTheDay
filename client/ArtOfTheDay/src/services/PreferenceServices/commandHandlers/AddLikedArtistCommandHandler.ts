@@ -15,7 +15,7 @@ export class AddLikedArtistCommandHandler extends CommandHandler {
     async handle(command: AddLikedArtistCommand): Promise<void> {
         await this.timed('AddLikedArtist', async () => {
             await this.client.addLikedArtist(command);
-            const updated = await this.client.getPreferences(command.token);
+            const updated = await this.client.getPreferences();
             await this.repository.update(updated);
         });
     }

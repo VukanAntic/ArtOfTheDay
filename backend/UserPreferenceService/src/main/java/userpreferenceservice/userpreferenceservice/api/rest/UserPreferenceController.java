@@ -10,7 +10,6 @@ import userpreferenceservice.userpreferenceservice.common.model.AddToDBStatus;
 import userpreferenceservice.userpreferenceservice.common.model.UserPreferences;
 import userpreferenceservice.userpreferenceservice.common.service.UserPreferenceService;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/preference", produces = {
@@ -23,12 +22,14 @@ public class UserPreferenceController {
     private final UserPreferenceService userPreferenceService;
 
     @GetMapping("/get")
-    public ResponseEntity<Optional<UserPreferences>> get() {
+    public ResponseEntity<UserPreferences> get() {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(userPreferenceService.getUserPreferences(username));
+        return userPreferenceService.getUserPreferences(username)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Used by internal services — requires a valid JWT, username supplied as param

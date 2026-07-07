@@ -12,9 +12,9 @@ export class GetPreferencesCommandHandler extends CommandHandler {
         super();
     }
 
-    async handle(command: GetPreferencesCommand): Promise<void> {
+    async handle(_command: GetPreferencesCommand): Promise<void> {
         await this.timed('GetPreferences', async () => {
-            const preferences = await this.client.getPreferences(command.token);
+            const preferences = await this.client.getPreferences();
             await this.repository.update(preferences);
         });
     }

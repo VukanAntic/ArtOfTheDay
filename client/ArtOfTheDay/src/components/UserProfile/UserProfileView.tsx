@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
     runOnUI,
@@ -13,6 +13,16 @@ import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenVi
 import SettingsScreenView from '@/src/components/SettingsScreen/SettingsScreenView';
 import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupViewData';
 import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
+import {UserProfileController} from '@/src/controllers/UserProfileController';
+import {
+    getValidToken,
+    preferencesRepository,
+    historyRepository,
+    getPreferencesCommandHandler,
+    getArtworksFromIdsCommandHandler,
+    getAllGenresCommandHandler,
+    getAllArtistsCommandHandler,
+} from '@/src/composition/AppCompositionRoot';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
 
@@ -23,11 +33,24 @@ const imageHeaders = {
     'Referer': 'https://www.artic.edu/',
 };
 
-type Props = {
-    viewData: UserProfileViewData;
-};
+const controller = new UserProfileController(
+    getPreferencesCommandHandler,
+    getArtworksFromIdsCommandHandler,
+    getAllGenresCommandHandler,
+    getAllArtistsCommandHandler,
+    getValidToken,
+    preferencesRepository,
+    historyRepository,
+);
 
-export default function UserProfileView({viewData}: Props) {
+export default function UserProfileView() {
+    const [viewData, setViewData] = useState<UserProfileViewData | null>(null);
+
+    useEffect(() => {
+        controller.loadProfile().then(setViewData);
+    }, []);
+
+    if (!viewData) return null;
     const pagerRef = useAnimatedRef<Animated.ScrollView>();
     const scrollProgress = useSharedValue(0);
     const [selectedArtwork, setSelectedArtwork] = useState<DetailedArtworkPopupViewData | null>(null);

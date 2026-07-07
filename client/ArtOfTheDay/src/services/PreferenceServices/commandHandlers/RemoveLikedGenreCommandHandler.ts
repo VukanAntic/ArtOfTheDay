@@ -15,7 +15,7 @@ export class RemoveLikedGenreCommandHandler extends CommandHandler {
     async handle(command: RemoveLikedGenreCommand): Promise<void> {
         await this.timed('RemoveLikedGenre', async () => {
             await this.client.removeLikedGenre(command);
-            const updated = await this.client.getPreferences(command.token);
+            const updated = await this.client.getPreferences();
             await this.repository.update(updated);
         });
     }

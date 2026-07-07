@@ -1,3 +1,1 @@
-export interface FtueCompleteCommand {
-    token: string;
-}
+export interface FtueCompleteCommand {}

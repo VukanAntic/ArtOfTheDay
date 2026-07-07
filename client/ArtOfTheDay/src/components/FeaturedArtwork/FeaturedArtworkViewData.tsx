@@ -1,33 +1,26 @@
-export default class FeaturedArtworkViewData {
-    id: string;
-    title: string;
-    year: string;
-    imageURL: string;
-    receivedAt: Date;
-    paintingDescription: string;
-    artistName: string;
-    artistLifespan: string;
-    artistDescription: string;
+import {ArtworkData} from '@/src/domain/ArtworkData';
+import {SeenImageData} from '@/src/domain/SeenImageData';
 
-    constructor(
-        id: string,
-        title: string,
-        year: string,
-        imageURL: string,
-        receivedAt: Date,
-        paintingDescription: string,
-        artistName: string,
-        artistLifespan: string,
-        artistDescription: string,
-    ) {
-        this.id = id;
-        this.title = title;
-        this.year = year;
-        this.imageURL = imageURL;
-        this.receivedAt = receivedAt;
-        this.paintingDescription = paintingDescription;
-        this.artistName = artistName;
-        this.artistLifespan = artistLifespan;
-        this.artistDescription = artistDescription;
+export default class FeaturedArtworkViewData {
+    readonly id: string;
+    readonly title: string;
+    readonly year: string;
+    readonly imageURL: string;
+    readonly receivedAt: Date;
+    readonly paintingDescription: string;
+    readonly artistName: string;
+    readonly artistLifespan: string;
+    readonly artistDescription: string;
+
+    constructor(artwork: ArtworkData, seenImage: SeenImageData) {
+        this.id = String(artwork.id);
+        this.title = artwork.title;
+        this.year = '';
+        this.imageURL = artwork.imageUrl;
+        this.receivedAt = seenImage.seenAt;
+        this.paintingDescription = artwork.description;
+        this.artistName = artwork.artist.name;
+        this.artistLifespan = '';
+        this.artistDescription = '';
     }
 }
