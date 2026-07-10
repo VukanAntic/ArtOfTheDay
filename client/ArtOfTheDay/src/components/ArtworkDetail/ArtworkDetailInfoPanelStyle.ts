@@ -56,6 +56,12 @@ export default StyleSheet.create({
         color: '#111',
         textAlign: 'center',
     },
+    artistName: {
+        fontSize: 18,
+        fontStyle: 'italic',
+        color: '#111',
+        textAlign: 'center',
+    },
     year: {
         fontSize: 16,
         color: '#666',

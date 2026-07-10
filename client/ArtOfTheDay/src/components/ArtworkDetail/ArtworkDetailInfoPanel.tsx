@@ -1,5 +1,6 @@
 import {Text, TouchableOpacity, View} from 'react-native';
 import s from './ArtworkDetailInfoPanelStyle';
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function formatDate(date: Date): string {
@@ -10,10 +11,8 @@ type ArtworkPanelData = {
     title: string;
     year: string;
     receivedAt: Date;
-    paintingDescription: string;
+    description: string;
     artistName: string;
-    artistLifespan: string;
-    artistDescription: string;
 };
 
 type Props = {
@@ -43,15 +42,8 @@ export default function ArtworkDetailInfoPanel({artwork}: Props) {
                 <View style={s.card}>
                     <Text style={s.label}>the painting</Text>
                     <Text style={s.cardTitle}>{artwork.title}</Text>
-                    <Text style={s.year}>{artwork.year}</Text>
-                    <Text style={s.description}>{artwork.paintingDescription}</Text>
-                </View>
-
-                <View style={s.card}>
-                    <Text style={s.label}>the artist</Text>
-                    <Text style={s.cardTitle}>{artwork.artistName}</Text>
-                    <Text style={s.year}>{artwork.artistLifespan}</Text>
-                    <Text style={s.description}>{artwork.artistDescription}</Text>
+                    <Text style={s.artistName}>by {artwork.artistName}</Text>
+                    <Text style={s.description}>{artwork.description}</Text>
                 </View>
             </View>
         </View>

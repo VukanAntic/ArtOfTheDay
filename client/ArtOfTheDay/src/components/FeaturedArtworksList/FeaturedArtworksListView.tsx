@@ -86,7 +86,7 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                                     year={item.year}
                                     imageURL={item.imageURL}
                                     receivedAt={item.receivedAt}
-                                    paintingDescription={item.paintingDescription}
+                                    description={item.paintingDescription}
                                     artistName={item.artistName}
                                     artistLifespan={item.artistLifespan}
                                     artistDescription={item.artistDescription}

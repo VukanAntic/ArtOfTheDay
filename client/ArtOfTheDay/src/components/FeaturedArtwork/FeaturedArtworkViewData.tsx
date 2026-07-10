@@ -8,10 +8,8 @@ export default class FeaturedArtworkViewData {
     readonly year: string;
     readonly imageURL: string;
     readonly receivedAt: Date;
-    readonly paintingDescription: string;
+    readonly description: string;
     readonly artistName: string;
-    readonly artistLifespan: string;
-    readonly artistDescription: string;
 
     constructor(artwork: ArtworkData, seenImage: SeenImageData) {
         this.id = String(artwork.id);
@@ -19,9 +17,7 @@ export default class FeaturedArtworkViewData {
         this.year = '';
         this.imageURL = artwork.imageUrl;
         this.receivedAt = seenImage.seenAt;
-        this.paintingDescription = stripHtml(artwork.description);
+        this.description = stripHtml(artwork.description);
         this.artistName = artwork.artist.name;
-        this.artistLifespan = '';
-        this.artistDescription = '';
     }
 }
