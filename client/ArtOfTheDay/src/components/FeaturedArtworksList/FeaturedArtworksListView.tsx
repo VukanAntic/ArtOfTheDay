@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import FeaturedArtworksListViewData from '@/src/components/FeaturedArtworksList/FeaturedArtworksListViewData';
 import FeaturedArtworkView from '@/src/components/FeaturedArtwork/FeaturedArtworkView';
@@ -9,6 +9,7 @@ const imageHeaders = {
 };
 
 export default function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
+    console.log('[FeaturedArtworksListView] render');
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
 
     const onLayout = (e: any) => {
@@ -21,33 +22,38 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
         data.onIndexChanged(index);
     };
 
+    const backgrounds = useMemo(() => {
+        if (containerSize.width === 0) return null;
+        return [...data.artworkViews].reverse().map((item, reversedIndex) => {
+            const index = data.artworkViews.length - 1 - reversedIndex;
+            const opacity = data.scrollX.interpolate({
+                inputRange: [
+                    index * containerSize.width,
+                    (index + 1) * containerSize.width,
+                ],
+                outputRange: [1, 0],
+                extrapolate: 'clamp',
+            });
+            return (
+                <Animated.Image
+                    key={item.id}
+                    source={{uri: item.imageURL, headers: imageHeaders}}
+                    style={[
+                        StyleSheet.absoluteFillObject,
+                        {opacity, transform: [{scale: 1.5}]},
+                    ]}
+                    blurRadius={80}
+                    resizeMode="cover"
+                />
+            );
+        });
+    }, [data.artworkViews, data.scrollX, containerSize.width]);
+
     return (
         <View style={{flex: 1}} onLayout={onLayout}>
             {containerSize.width > 0 && (
                 <>
-                    {[...data.artworkViews].reverse().map((item, reversedIndex) => {
-                        const index = data.artworkViews.length - 1 - reversedIndex;
-                        const opacity = data.scrollX.interpolate({
-                            inputRange: [
-                                index * containerSize.width,
-                                (index + 1) * containerSize.width,
-                            ],
-                            outputRange: [1, 0],
-                            extrapolate: 'clamp',
-                        });
-                        return (
-                            <Animated.Image
-                                key={item.id}
-                                source={{uri: item.imageURL, headers: imageHeaders}}
-                                style={[
-                                    StyleSheet.absoluteFillObject,
-                                    {opacity, transform: [{scale: 1.5}]},
-                                ]}
-                                blurRadius={80}
-                                resizeMode="cover"
-                            />
-                        );
-                    })}
+                    {backgrounds}
 
                     <Animated.FlatList
                         data={data.artworkViews}

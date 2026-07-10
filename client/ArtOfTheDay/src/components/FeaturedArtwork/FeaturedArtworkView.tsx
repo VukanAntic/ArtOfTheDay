@@ -1,3 +1,4 @@
+import {memo, useMemo} from 'react';
 import {Image, View} from 'react-native';
 import style from './FeaturedArtworkViewStyle';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
@@ -11,11 +12,9 @@ const imageHeaders = {
 
 type Props = FeaturedArtworkViewData & { onSeeMore: () => void };
 
-export default function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
-    const imageSource = {
-        uri: imageURL,
-        headers: imageHeaders,
-    };
+function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
+    console.log('[FeaturedArtworkView] render', imageURL);
+    const imageSource = useMemo(() => ({uri: imageURL, headers: imageHeaders}), [imageURL]);
 
     return (
         <View style={style.centerContainer}>
@@ -32,3 +31,5 @@ export default function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
         </View>
     );
 }
+
+export default memo(FeaturedArtworkView, (prev, next) => prev.id === next.id && prev.imageURL === next.imageURL);
