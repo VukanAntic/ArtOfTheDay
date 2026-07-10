@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {memo, useMemo, useState} from 'react';
 import {Animated, StyleSheet, View} from 'react-native';
 import FeaturedArtworksListViewData from '@/src/components/FeaturedArtworksList/FeaturedArtworksListViewData';
 import FeaturedArtworkView from '@/src/components/FeaturedArtwork/FeaturedArtworkView';
@@ -8,9 +8,10 @@ const imageHeaders = {
     'Referer': 'https://www.artic.edu/',
 };
 
-export default function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
+function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
     console.log('[FeaturedArtworksListView] render');
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
+    const itemCount = data.artworkViews.length || 1;
 
     const onLayout = (e: any) => {
         const {width, height} = e.nativeEvent.layout;
@@ -68,6 +69,10 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
                         )}
                         onMomentumScrollEnd={onMomentumScrollEnd}
                         scrollEventThrottle={16}
+                        initialNumToRender={itemCount}
+                        maxToRenderPerBatch={itemCount}
+                        windowSize={itemCount * 2 + 1}
+                        removeClippedSubviews={false}
                         renderItem={({item}) => (
                             <View style={{
                                 width: containerSize.width,
@@ -95,3 +100,5 @@ export default function FeaturedArtworksListView(data: FeaturedArtworksListViewD
         </View>
     );
 }
+
+export default memo(FeaturedArtworksListView);

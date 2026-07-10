@@ -1,3 +1,4 @@
+import {useCallback} from 'react';
 import {Dimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {
@@ -56,13 +57,13 @@ export function useArtworkExpandAnimation() {
         opacity: interpolate(progress.value, [0.7, 1], [0, 1], Extrapolation.CLAMP),
     }));
 
-    const open = () => {
+    const open = useCallback(() => {
         progress.value = withTiming(1, OPEN_CONFIG);
-    };
+    }, []);
 
-    const close = (onDone: () => void) => {
+    const close = useCallback((onDone: () => void) => {
         progress.value = withTiming(0, CLOSE_CONFIG, () => runOnJS(onDone)());
-    };
+    }, []);
 
     return {cardStyle, homeUIOpacity, backButtonOpacity, detailUIOpacity, infoPanelStyle, open, close};
 }

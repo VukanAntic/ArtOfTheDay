@@ -18,7 +18,7 @@ export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgro
 
     return (
         <View style={style.container}>
-            <Animated.View style={backButtonOpacity}>
+            <Animated.View style={[style.backSlot, backButtonOpacity]}>
                 {onClose && (
                     <TouchableOpacity style={style.backButton} onPress={onClose}>
                         <Text style={style.backIcon}>‹</Text>

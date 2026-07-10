@@ -13,6 +13,10 @@ export default StyleSheet.create({
         paddingHorizontal: 16,
         zIndex: 10,
     },
+    backSlot: {
+        width: 36,
+        height: 36,
+    },
     backButton: {
         width: 36,
         height: 36,

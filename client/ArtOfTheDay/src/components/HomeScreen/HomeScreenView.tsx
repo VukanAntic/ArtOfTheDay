@@ -1,5 +1,5 @@
-import {useEffect, useRef, useState} from 'react';
-import {Animated, Dimensions, View} from 'react-native';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {Animated, Dimensions, Image, StyleSheet, View} from 'react-native';
 import Reanimated from 'react-native-reanimated';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
 import FeaturedArtworksListView from "@/src/components/FeaturedArtworksList/FeaturedArtworksListView";
@@ -18,6 +18,11 @@ import {
 } from "@/src/composition/AppCompositionRoot";
 
 const {width} = Dimensions.get('window');
+
+const imageHeaders = {
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.artic.edu/',
+};
 
 const controller = new HomeScreenController(
     getHistoryCommandHandler,
@@ -52,19 +57,26 @@ export default function HomeScreenView() {
     const scrollX = useRef(new Animated.Value(0)).current;
     const {cardStyle, homeUIOpacity, detailUIOpacity, infoPanelStyle, open, close} = useArtworkExpandAnimation();
 
-    const handleSeeMore = (artwork: FeaturedArtworkViewData) => {
+    const handleSeeMore = useCallback((artwork: FeaturedArtworkViewData) => {
         setSelectedArtwork(artwork);
         open();
-    };
+    }, [open]);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         close(() => setSelectedArtwork(null));
-    };
+    }, [close]);
 
     if (!loaded || artworks.length === 0) return <View style={style.container} />;
 
     return (
         <View style={style.container}>
+            <Image
+                source={{uri: artworks[activeIndex].imageURL, headers: imageHeaders}}
+                style={[StyleSheet.absoluteFillObject, {transform: [{scale: 1.5}]}]}
+                blurRadius={80}
+                resizeMode="cover"
+            />
+
             <Reanimated.View style={[style.headerContainer, homeUIOpacity]}>
                 <ArtworkDetailHeader backgroundImageUrl={artworks[activeIndex].imageURL}/>
             </Reanimated.View>
