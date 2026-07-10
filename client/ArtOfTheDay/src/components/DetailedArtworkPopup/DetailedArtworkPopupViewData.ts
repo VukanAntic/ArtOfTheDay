@@ -1,4 +1,5 @@
 import {ArtworkData} from '@/src/domain/ArtworkData';
+import {stripHtml} from '@/src/utils/stripHtml';
 
 export default class DetailedArtworkPopupViewData {
     readonly id: string;
@@ -17,7 +18,7 @@ export default class DetailedArtworkPopupViewData {
         this.year = '';
         this.imageURL = artwork.imageUrl;
         this.receivedAt = receivedAt ?? new Date(0);
-        this.paintingDescription = artwork.description;
+        this.paintingDescription = stripHtml(artwork.description);
         this.artistName = artwork.artist.name;
         this.artistLifespan = '';
         this.artistDescription = '';

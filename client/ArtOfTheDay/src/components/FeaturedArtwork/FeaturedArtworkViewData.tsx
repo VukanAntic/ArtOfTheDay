@@ -1,5 +1,6 @@
 import {ArtworkData} from '@/src/domain/ArtworkData';
 import {SeenImageData} from '@/src/domain/SeenImageData';
+import {stripHtml} from '@/src/utils/stripHtml';
 
 export default class FeaturedArtworkViewData {
     readonly id: string;
@@ -18,7 +19,7 @@ export default class FeaturedArtworkViewData {
         this.year = '';
         this.imageURL = artwork.imageUrl;
         this.receivedAt = seenImage.seenAt;
-        this.paintingDescription = artwork.description;
+        this.paintingDescription = stripHtml(artwork.description);
         this.artistName = artwork.artist.name;
         this.artistLifespan = '';
         this.artistDescription = '';
