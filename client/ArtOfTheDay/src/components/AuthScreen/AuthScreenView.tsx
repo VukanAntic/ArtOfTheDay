@@ -18,7 +18,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCommands';
 import authBackgroundImages from '@/src/config/authBackgroundImages';
 import {router} from 'expo-router';
-import {AuthScreenController} from '@/src/controllers/AuthScreenController';
+import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
 import {loginCommandHandler, registerCommandHandler, ftueCompleteCommandHandler} from '@/src/composition/AppCompositionRoot';
 import AuthScreenViewData from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';

@@ -1,4 +1,4 @@
-import {Genre} from '@/src/domain/GenreData';
+import {GenreData} from '@/src/domain/GenreData';
 import {CommandHandler} from '@/src/services/CommandHandler';
 import {IImageClient} from '@/src/services/ImageServices/IImageClient';
 
@@ -7,7 +7,7 @@ export class GetAllGenresCommandHandler extends CommandHandler {
         super();
     }
 
-    async handle(): Promise<Genre[]> {
+    async handle(): Promise<GenreData[]> {
         return this.timed('GetAllGenres', () => this.client.getAllGenres());
     }
 }

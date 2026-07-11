@@ -1,4 +1,4 @@
-import {Artist} from '@/src/domain/ArtistData';
+import {ArtistData} from '@/src/domain/ArtistData';
 import {CommandHandler} from '@/src/services/CommandHandler';
 import {IImageClient} from '@/src/services/ImageServices/IImageClient';
 
@@ -7,7 +7,7 @@ export class GetAllArtistsCommandHandler extends CommandHandler {
         super();
     }
 
-    async handle(): Promise<Artist[]> {
+    async handle(): Promise<ArtistData[]> {
         return this.timed('GetAllArtists', () => this.client.getAllArtists());
     }
 }

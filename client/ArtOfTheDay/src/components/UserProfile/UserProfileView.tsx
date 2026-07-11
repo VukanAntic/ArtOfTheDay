@@ -13,7 +13,7 @@ import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenVi
 import SettingsScreenView from '@/src/components/SettingsScreen/SettingsScreenView';
 import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupViewData';
 import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
-import {UserProfileController} from '@/src/controllers/UserProfileController';
+import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
 import {
     getValidToken,
     preferencesRepository,
@@ -45,12 +45,6 @@ const controller = new UserProfileController(
 
 export default function UserProfileView() {
     const [viewData, setViewData] = useState<UserProfileViewData | null>(null);
-
-    useEffect(() => {
-        controller.loadProfile().then(setViewData);
-    }, []);
-
-    if (!viewData) return null;
     const pagerRef = useAnimatedRef<Animated.ScrollView>();
     const scrollProgress = useSharedValue(0);
     const [selectedArtwork, setSelectedArtwork] = useState<DetailedArtworkPopupViewData | null>(null);
@@ -61,11 +55,17 @@ export default function UserProfileView() {
         },
     });
 
+    useEffect(() => {
+        controller.loadProfile().then(setViewData);
+    }, []);
+
     const handleTabPress = (index: number) => {
         runOnUI(() => {
             scrollTo(pagerRef, index * SCREEN_WIDTH, 0, true);
         })();
     };
+
+    if (!viewData) return null;
 
     return (
         <View style={style.root}>

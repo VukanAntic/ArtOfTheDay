@@ -8,7 +8,7 @@ import ArtworkDetailView from "@/src/components/ArtworkDetail/ArtworkDetailView"
 import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
 import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
 import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
-import {HomeScreenController} from "@/src/controllers/HomeScreenController";
+import {HomeScreenController} from "@/src/components/HomeScreen/HomeScreenController";
 import {
     getValidToken,
     getArtworksFromIdsCommandHandler,

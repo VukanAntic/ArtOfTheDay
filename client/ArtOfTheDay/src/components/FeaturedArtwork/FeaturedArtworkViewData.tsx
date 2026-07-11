@@ -5,7 +5,6 @@ import {stripHtml} from '@/src/utils/stripHtml';
 export default class FeaturedArtworkViewData {
     readonly id: string;
     readonly title: string;
-    readonly year: string;
     readonly imageURL: string;
     readonly receivedAt: Date;
     readonly description: string;
@@ -14,7 +13,6 @@ export default class FeaturedArtworkViewData {
     constructor(artwork: ArtworkData, seenImage: SeenImageData) {
         this.id = String(artwork.id);
         this.title = artwork.title;
-        this.year = '';
         this.imageURL = artwork.imageUrl;
         this.receivedAt = seenImage.seenAt;
         this.description = stripHtml(artwork.description);

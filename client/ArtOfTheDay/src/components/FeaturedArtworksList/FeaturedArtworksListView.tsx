@@ -83,13 +83,10 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                                 <FeaturedArtworkView
                                     id={item.id}
                                     title={item.title}
-                                    year={item.year}
                                     imageURL={item.imageURL}
                                     receivedAt={item.receivedAt}
-                                    description={item.paintingDescription}
+                                    description={item.description}
                                     artistName={item.artistName}
-                                    artistLifespan={item.artistLifespan}
-                                    artistDescription={item.artistDescription}
                                     onSeeMore={() => data.onSeeMore(item)}
                                 />
                             </View>
