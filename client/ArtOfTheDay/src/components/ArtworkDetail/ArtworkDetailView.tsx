@@ -1,6 +1,8 @@
+import {useState} from 'react';
 import Animated, {runOnJS, useAnimatedScrollHandler, useSharedValue} from 'react-native-reanimated';
 import {Dimensions, StyleSheet, View} from 'react-native';
 import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
+import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import ArtworkDetailHeader from './ArtworkDetailHeader';
 import ArtworkDetailInfoPanel from './ArtworkDetailInfoPanel';
 
@@ -24,10 +26,18 @@ type Props = {
     detailUIOpacity: any;
     infoPanelStyle: any;
     onClose: () => void;
+    onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
 };
 
-export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, infoPanelStyle, onClose}: Props) {
+export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, infoPanelStyle, onClose, onPreferenceIntent}: Props) {
     const isClosing = useSharedValue(false);
+    const [liked, setLiked] = useState(false);
+
+    const onToggleLike = () => {
+        const next = !liked;
+        setLiked(next);
+        onPreferenceIntent({type: next ? 'LIKE' : 'UNLIKE', artworkId: Number(artwork.id)});
+    };
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -56,7 +66,7 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
                 contentContainerStyle={{paddingBottom: 48}}
             >
                 <View style={{height: SPACER_HEIGHT}}/>
-                <ArtworkDetailInfoPanel artwork={artwork}/>
+                <ArtworkDetailInfoPanel artwork={artwork} isLiked={liked} onToggleLike={onToggleLike}/>
             </Animated.ScrollView>
 
             <View

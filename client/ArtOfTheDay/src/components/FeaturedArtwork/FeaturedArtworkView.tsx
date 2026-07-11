@@ -1,20 +1,31 @@
-import {memo, useMemo} from 'react';
+import {memo, useMemo, useState} from 'react';
 import {Image, View} from 'react-native';
 import style from './FeaturedArtworkViewStyle';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
 import FeaturedArtworkQuickActionsView
     from "@/src/components/FeaturedArtworkQuickActions/FeaturedArtworkQuickActionsView";
+import {ArtworkPreferenceIntent} from "@/src/services/PreferenceServices/ArtworkPreferenceIntent";
 
 const imageHeaders = {
     'User-Agent': 'Mozilla/5.0',
     'Referer': 'https://www.artic.edu/',
 };
 
-type Props = FeaturedArtworkViewData & { onSeeMore: () => void };
+type Props = FeaturedArtworkViewData & {
+    onSeeMore: () => void;
+    onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
+};
 
-function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
+function FeaturedArtworkView({id, imageURL, onSeeMore, onPreferenceIntent}: Props) {
     console.log('[FeaturedArtworkView] render', imageURL);
     const imageSource = useMemo(() => ({uri: imageURL, headers: imageHeaders}), [imageURL]);
+    const [liked, setLiked] = useState(false);
+
+    const onToggleLike = () => {
+        const next = !liked;
+        setLiked(next);
+        onPreferenceIntent({type: next ? 'LIKE' : 'UNLIKE', artworkId: Number(id)});
+    };
 
     return (
         <View style={style.centerContainer}>
@@ -25,7 +36,7 @@ function FeaturedArtworkView({imageURL, onSeeMore}: Props) {
                     resizeMode="cover"
                 />
                 <View>
-                    <FeaturedArtworkQuickActionsView isImageLiked={true} onSeeMore={onSeeMore}/>
+                    <FeaturedArtworkQuickActionsView isImageLiked={liked} onToggleLike={onToggleLike} onSeeMore={onSeeMore}/>
                 </View>
             </View>
         </View>

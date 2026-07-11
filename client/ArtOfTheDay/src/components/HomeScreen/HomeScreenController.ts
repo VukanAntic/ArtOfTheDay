@@ -5,6 +5,11 @@ import {
     GetArtworksFromIdsCommandHandler
 } from '@/src/services/ImageServices/commandHandlers/GetArtworksFromIdsCommandHandler';
 import {NextImageWebSocketService} from '@/src/services/NextImageServices/NextImageWebSocketService';
+import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
+import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
+import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
+import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
 
 export class HomeScreenController {
@@ -14,7 +19,29 @@ export class HomeScreenController {
         private readonly getValidToken: () => Promise<string | null>,
         private readonly historyRepository: IRepository<SeenImageData[]>,
         private readonly webSocketService: NextImageWebSocketService,
+        private readonly addLikedArtworkHandler: AddLikedArtworkCommandHandler,
+        private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
+        private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
+        private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
     ) {
+    }
+
+    dispatchPreference(intent: ArtworkPreferenceIntent): void {
+        this.handlePreference(intent)
+            .catch(e => console.error('[HomeScreen] preference intent failed:', e));
+    }
+
+    private async handlePreference(intent: ArtworkPreferenceIntent): Promise<void> {
+        switch (intent.type) {
+            case 'LIKE':
+                return this.addLikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'UNLIKE':
+                return this.removeLikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'DISLIKE':
+                return this.addDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'UNDISLIKE':
+                return this.removeDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+        }
     }
 
     async loadArtworks(): Promise<FeaturedArtworkViewData[]> {

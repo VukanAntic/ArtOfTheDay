@@ -16,9 +16,11 @@ type ArtworkPanelData = {
 
 type Props = {
     artwork: ArtworkPanelData;
+    isLiked?: boolean;
+    onToggleLike?: () => void;
 };
 
-export default function ArtworkDetailInfoPanel({artwork}: Props) {
+export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike}: Props) {
     return (
         <View>
             <View style={s.actionBar}>
@@ -28,8 +30,8 @@ export default function ArtworkDetailInfoPanel({artwork}: Props) {
                     <Text style={s.actionButtonText}>+</Text>
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
-                <TouchableOpacity style={s.actionButton}>
-                    <Text style={s.actionButtonText}>♡</Text>
+                <TouchableOpacity style={s.actionButton} onPress={onToggleLike}>
+                    <Text style={s.actionButtonText}>{isLiked ? '♥' : '♡'}</Text>
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
                 <TouchableOpacity style={s.actionButton}>

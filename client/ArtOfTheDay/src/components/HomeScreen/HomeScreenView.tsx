@@ -9,12 +9,17 @@ import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
 import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
 import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
 import {HomeScreenController} from "@/src/components/HomeScreen/HomeScreenController";
+import {ArtworkPreferenceIntent} from "@/src/services/PreferenceServices/ArtworkPreferenceIntent";
 import {
     getValidToken,
     getArtworksFromIdsCommandHandler,
     getHistoryCommandHandler,
     historyRepository,
     nextImageWebSocketService,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
 } from "@/src/composition/AppCompositionRoot";
 
 const {width} = Dimensions.get('window');
@@ -30,6 +35,10 @@ const controller = new HomeScreenController(
     getValidToken,
     historyRepository,
     nextImageWebSocketService,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
 );
 
 export default function HomeScreenView() {
@@ -66,6 +75,11 @@ export default function HomeScreenView() {
         close(() => setSelectedArtwork(null));
     }, [close]);
 
+    const onPreferenceIntent = useCallback(
+        (intent: ArtworkPreferenceIntent) => controller.dispatchPreference(intent),
+        [],
+    );
+
     if (!loaded || artworks.length === 0) return <View style={style.container} />;
 
     return (
@@ -87,6 +101,7 @@ export default function HomeScreenView() {
                     onIndexChanged={setActiveIndex}
                     scrollX={scrollX}
                     onSeeMore={handleSeeMore}
+                    onPreferenceIntent={onPreferenceIntent}
                 />
             </Reanimated.View>
 
@@ -106,6 +121,7 @@ export default function HomeScreenView() {
                     detailUIOpacity={detailUIOpacity}
                     infoPanelStyle={infoPanelStyle}
                     onClose={handleClose}
+                    onPreferenceIntent={onPreferenceIntent}
                 />
             )}
         </View>

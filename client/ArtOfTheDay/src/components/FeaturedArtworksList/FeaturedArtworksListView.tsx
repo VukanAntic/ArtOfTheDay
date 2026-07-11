@@ -88,6 +88,7 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                                     description={item.description}
                                     artistName={item.artistName}
                                     onSeeMore={() => data.onSeeMore(item)}
+                                    onPreferenceIntent={data.onPreferenceIntent}
                                 />
                             </View>
                         )}
