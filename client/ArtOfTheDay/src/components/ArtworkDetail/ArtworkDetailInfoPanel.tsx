@@ -9,7 +9,6 @@ function formatDate(date: Date): string {
 
 type ArtworkPanelData = {
     title: string;
-    year: string;
     receivedAt: Date;
     description: string;
     artistName: string;
