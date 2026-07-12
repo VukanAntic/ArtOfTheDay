@@ -20,6 +20,10 @@ import {
     genresRepository,
     artistsRepository,
     historyRepository,
+    addLikedGenreCommandHandler,
+    removeLikedGenreCommandHandler,
+    addLikedArtistCommandHandler,
+    removeLikedArtistCommandHandler,
 } from '@/src/composition/AppCompositionRoot';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
@@ -37,6 +41,10 @@ const controller = new UserProfileController(
     genresRepository,
     artistsRepository,
     historyRepository,
+    addLikedGenreCommandHandler,
+    removeLikedGenreCommandHandler,
+    addLikedArtistCommandHandler,
+    removeLikedArtistCommandHandler,
 );
 
 export default function UserProfileView() {
@@ -105,7 +113,11 @@ export default function UserProfileView() {
                     width={SCREEN_WIDTH}
                     onItemPress={setSelectedArtwork}
                 />
-                <SettingsScreenView viewData={viewData.settings} width={SCREEN_WIDTH}/>
+                <SettingsScreenView
+                    viewData={viewData.settings}
+                    width={SCREEN_WIDTH}
+                    onPreferenceIntent={intent => controller.dispatch(intent)}
+                />
             </Animated.ScrollView>
 
             {selectedArtwork && (

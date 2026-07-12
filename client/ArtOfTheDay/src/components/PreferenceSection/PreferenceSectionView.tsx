@@ -18,10 +18,11 @@ export default function PreferenceSectionView({viewData, onRemove, onAdd}: Props
         ? available
         : available.filter(item => item.toLowerCase().includes(input.toLowerCase()));
 
+    const exactMatch = available.find(item => item.toLowerCase() === input.trim().toLowerCase());
+
     const handleAdd = () => {
-        const trimmed = input.trim();
-        if (trimmed && !viewData.selected.includes(trimmed)) {
-            onAdd(trimmed);
+        if (exactMatch) {
+            onAdd(exactMatch);
             setInput('');
         }
     };
@@ -63,7 +64,11 @@ export default function PreferenceSectionView({viewData, onRemove, onAdd}: Props
                     onSubmitEditing={handleAdd}
                     returnKeyType="done"
                 />
-                <TouchableOpacity style={style.addButton} onPress={handleAdd}>
+                <TouchableOpacity
+                    style={[style.addButton, !exactMatch && {opacity: 0.4}]}
+                    onPress={handleAdd}
+                    disabled={!exactMatch}
+                >
                     <Text style={style.addButtonText}>add</Text>
                 </TouchableOpacity>
             </View>

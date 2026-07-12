@@ -65,7 +65,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
 
         var userEntity = userEntityOptional.get();
         var likedGenreIds = userEntity.getLikedGenreIds();
-        likedGenreIds.add(genreId);
+        likedGenreIds.remove(genreId);
         userEntity.setLikedGenreIds(likedGenreIds);
         userPreferenceMongoRepository.save(userEntity);
         return AddToDBStatus.SUCCESS;
@@ -80,7 +80,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
 
         var userEntity = userEntityOptional.get();
         var likedGenreIds = userEntity.getLikedGenreIds();
-        likedGenreIds.remove(genreId);
+        likedGenreIds.add(genreId);
         userEntity.setLikedGenreIds(likedGenreIds);
         userPreferenceMongoRepository.save(userEntity);
         return AddToDBStatus.SUCCESS;

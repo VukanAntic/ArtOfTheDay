@@ -15,7 +15,7 @@ public class Artist {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Artwork> artworks;
 
 
