@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Image, Text, TouchableOpacity, View} from 'react-native';
 import s from './ArtworkDetailInfoPanelStyle';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -27,7 +27,7 @@ export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike}:
                 <Text style={s.actionBarDate}>{formatDate(artwork.receivedAt)}</Text>
                 <View style={s.actionBarLine}/>
                 <TouchableOpacity style={s.actionButton}>
-                    <Text style={s.actionButtonText}>+</Text>
+                    <Image source={require('@/assets/images/icons/Shrink.png')}></Image>
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
                 <TouchableOpacity style={s.actionButton} onPress={onToggleLike}>
@@ -35,7 +35,7 @@ export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike}:
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
                 <TouchableOpacity style={s.actionButton}>
-                    <Text style={s.actionButtonText}>↑</Text>
+                    <Image source={require('@/assets/images/icons/Share_Android.png')}></Image>
                 </TouchableOpacity>
             </View>
 

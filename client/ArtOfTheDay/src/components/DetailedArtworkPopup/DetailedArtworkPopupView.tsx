@@ -121,20 +121,19 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
 
                 <View style={s.actionBar}>
                     <TouchableOpacity style={s.actionButton}>
-                        <Text style={s.actionButtonText}>↓</Text>
+                        <Image source={require('@/assets/images/icons/Cloud_Download.png')}></Image>
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton} onPress={handleExpand}>
-                        <Text style={s.actionButtonText}>+</Text>
+                        <Image source={require('@/assets/images/icons/Shrink.png')}></Image>
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton}>
                         <Text style={s.actionButtonText}>{artwork.isImageLiked ? '♥' : '♡'}</Text>
-                        {/*<Text style={s.actionButtonText}>♡</Text>*/}
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton}>
-                        <Text style={s.actionButtonText}>↑</Text>
+                        <Image source={require('@/assets/images/icons/Share_Android.png')}></Image>
                     </TouchableOpacity>
                 </View>
                 <View style={{height: bottomInset}}/>
