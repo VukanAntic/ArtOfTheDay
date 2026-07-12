@@ -87,8 +87,13 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                 blurRadius={80}
                 resizeMode="cover"
             />
+            <Image
+                source={{uri: artwork.imageURL, headers: imageHeaders}}
+                style={[StyleSheet.absoluteFillObject, s.backgroundImage]}
+                blurRadius={80}
+                resizeMode="cover"
+            />
 
-            {/* Popup UI — fades out as the card expands on + press */}
             <Reanimated.View
                 style={[StyleSheet.absoluteFillObject, popupUIOpacity]}
                 pointerEvents={isExpanded ? 'none' : 'box-none'}
@@ -124,7 +129,8 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton}>
-                        <Text style={s.actionButtonText}>♡</Text>
+                        <Text style={s.actionButtonText}>{artwork.isImageLiked ? '♥' : '♡'}</Text>
+                        {/*<Text style={s.actionButtonText}>♡</Text>*/}
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton}>

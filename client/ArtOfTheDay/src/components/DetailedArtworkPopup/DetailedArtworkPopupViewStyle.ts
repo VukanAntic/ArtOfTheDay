@@ -49,6 +49,7 @@ export default StyleSheet.create({
         flex: 1,
     },
     titleArea: {
+        marginTop: 40,
         height: TITLE_AREA_HEIGHT,
         alignItems: 'center',
         justifyContent: 'center',

@@ -8,19 +8,8 @@ import ArtworkDetailView from "@/src/components/ArtworkDetail/ArtworkDetailView"
 import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
 import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
 import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
-import {HomeScreenController} from "@/src/components/HomeScreen/HomeScreenController";
 import {ArtworkPreferenceIntent} from "@/src/services/PreferenceServices/ArtworkPreferenceIntent";
-import {
-    getValidToken,
-    getArtworksFromIdsCommandHandler,
-    getHistoryCommandHandler,
-    historyRepository,
-    nextImageWebSocketService,
-    addLikedArtworkCommandHandler,
-    removeLikedArtworkCommandHandler,
-    addDislikedArtworkCommandHandler,
-    removeDislikedArtworkCommandHandler,
-} from "@/src/composition/AppCompositionRoot";
+import {homeScreenController} from "@/src/composition/AppCompositionRoot";
 
 const {width} = Dimensions.get('window');
 
@@ -28,18 +17,6 @@ const imageHeaders = {
     'User-Agent': 'Mozilla/5.0',
     'Referer': 'https://www.artic.edu/',
 };
-
-const controller = new HomeScreenController(
-    getHistoryCommandHandler,
-    getArtworksFromIdsCommandHandler,
-    getValidToken,
-    historyRepository,
-    nextImageWebSocketService,
-    addLikedArtworkCommandHandler,
-    removeLikedArtworkCommandHandler,
-    addDislikedArtworkCommandHandler,
-    removeDislikedArtworkCommandHandler,
-);
 
 export default function HomeScreenView() {
     console.log('[HomeScreen] render');
@@ -50,7 +27,7 @@ export default function HomeScreenView() {
     const load = () => {
         if (isLoading.current) return;
         isLoading.current = true;
-        controller.loadArtworks()
+        homeScreenController.loadArtworks()
             .then(data => { setArtworks(data); setLoaded(true); })
             .catch(e => { console.error('[HomeScreen] loadArtworks failed:', e); setLoaded(true); })
             .finally(() => { isLoading.current = false; });
@@ -58,8 +35,8 @@ export default function HomeScreenView() {
 
     useEffect(() => {
         load();
-        controller.connectWebSocket(load);
-        return () => controller.disconnect();
+        homeScreenController.connectWebSocket(load);
+        return () => homeScreenController.disconnect();
     }, []);
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedArtwork, setSelectedArtwork] = useState<FeaturedArtworkViewData | null>(null);
@@ -76,7 +53,7 @@ export default function HomeScreenView() {
     }, [close]);
 
     const onPreferenceIntent = useCallback(
-        (intent: ArtworkPreferenceIntent) => controller.dispatchPreference(intent),
+        (intent: ArtworkPreferenceIntent) => homeScreenController.dispatchPreference(intent),
         [],
     );
 

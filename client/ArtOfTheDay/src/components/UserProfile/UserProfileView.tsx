@@ -15,13 +15,11 @@ import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/
 import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
 import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
 import {
-    getValidToken,
     preferencesRepository,
+    artworkRepository,
+    genresRepository,
+    artistsRepository,
     historyRepository,
-    getPreferencesCommandHandler,
-    getArtworksFromIdsCommandHandler,
-    getAllGenresCommandHandler,
-    getAllArtistsCommandHandler,
 } from '@/src/composition/AppCompositionRoot';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
@@ -34,12 +32,10 @@ const imageHeaders = {
 };
 
 const controller = new UserProfileController(
-    getPreferencesCommandHandler,
-    getArtworksFromIdsCommandHandler,
-    getAllGenresCommandHandler,
-    getAllArtistsCommandHandler,
-    getValidToken,
     preferencesRepository,
+    artworkRepository,
+    genresRepository,
+    artistsRepository,
     historyRepository,
 );
 

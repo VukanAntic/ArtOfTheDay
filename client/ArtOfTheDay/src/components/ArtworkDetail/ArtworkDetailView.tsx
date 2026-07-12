@@ -31,7 +31,7 @@ type Props = {
 
 export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, infoPanelStyle, onClose, onPreferenceIntent}: Props) {
     const isClosing = useSharedValue(false);
-    const [liked, setLiked] = useState(false);
+    const [liked, setLiked] = useState(artwork.isLiked);
 
     const onToggleLike = () => {
         const next = !liked;

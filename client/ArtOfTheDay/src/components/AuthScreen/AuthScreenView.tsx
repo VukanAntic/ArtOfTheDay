@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {
+    ActivityIndicator,
     Animated,
     ImageSourcePropType,
     KeyboardAvoidingView,
@@ -19,7 +20,7 @@ import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCom
 import authBackgroundImages from '@/src/config/authBackgroundImages';
 import {router} from 'expo-router';
 import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
-import {loginCommandHandler, registerCommandHandler, ftueCompleteCommandHandler} from '@/src/composition/AppCompositionRoot';
+import {loginCommandHandler, registerCommandHandler, ftueCompleteCommandHandler, bootstrapSession} from '@/src/composition/AppCompositionRoot';
 import AuthScreenViewData from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';
 
@@ -158,6 +159,7 @@ export default function AuthScreenView() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
+    const insets = useSafeAreaInsets();
 
     const viewData = new AuthScreenViewData(isLoading, error);
 
@@ -166,6 +168,7 @@ export default function AuthScreenView() {
         setError(null);
         try {
             await controller.login(command);
+            await bootstrapSession();
             router.replace('/home');
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Login failed');
@@ -180,6 +183,7 @@ export default function AuthScreenView() {
         try {
             await controller.register(command);
             await ftueCompleteCommandHandler.handle({});
+            await bootstrapSession();
             router.replace('/home');
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Registration failed');
@@ -223,6 +227,12 @@ export default function AuthScreenView() {
                     {viewData.error && <Text style={style.error}>{viewData.error}</Text>}
                 </ScrollView>
             </KeyboardAvoidingView>
+
+            {viewData.isLoading && (
+                <View style={[StyleSheet.absoluteFillObject, {top: -insets.top, bottom: -insets.bottom, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center'}]}>
+                    <ActivityIndicator size="large" color="#ffffff"/>
+                </View>
+            )}
         </View>
     );
 }

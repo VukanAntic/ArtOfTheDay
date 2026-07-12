@@ -16,10 +16,10 @@ type Props = FeaturedArtworkViewData & {
     onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
 };
 
-function FeaturedArtworkView({id, imageURL, onSeeMore, onPreferenceIntent}: Props) {
+function FeaturedArtworkView({id, imageURL, isLiked, onSeeMore, onPreferenceIntent}: Props) {
     console.log('[FeaturedArtworkView] render', imageURL);
     const imageSource = useMemo(() => ({uri: imageURL, headers: imageHeaders}), [imageURL]);
-    const [liked, setLiked] = useState(false);
+    const [liked, setLiked] = useState(isLiked);
 
     const onToggleLike = () => {
         const next = !liked;

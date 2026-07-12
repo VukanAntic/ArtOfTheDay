@@ -9,7 +9,8 @@ export default function FeaturedArtworkQuickActionsView(data: FeaturedArtworkQui
             <Image source={require('@/assets/images/FeaturedArtworkQuickActionLines.png')}/>
             <TouchableOpacity style={style.likeButton} onPress={data.onToggleLike}>
                 <Text
-                    style={data.isImageLiked ? style.likedButtonText : style.notYetLikedButtonText}>{data.isImageLiked ? '♥' : '♡'}</Text>
+                    style={data.isImageLiked ? style.likedButtonText : style.notYetLikedButtonText}>{data.isImageLiked ? '♥' : '♡'}
+                </Text>
             </TouchableOpacity>
             <TouchableOpacity style={style.seeMoreButton} onPress={data.onSeeMore}>
                 <Text style={style.iconText}>+</Text>

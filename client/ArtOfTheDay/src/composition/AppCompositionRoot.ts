@@ -12,6 +12,9 @@ import {InMemoryRepository} from '@/src/repositories/InMemoryRepository';
 import {AuthTokens} from '@/src/domain/Auth';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {SeenImageData} from '@/src/domain/SeenImageData';
+import {AllArtworksData} from '@/src/domain/AllArtworksData';
+import {GenreData} from '@/src/domain/GenreData';
+import {ArtistData} from '@/src/domain/ArtistData';
 import {LoginCommandHandler} from '@/src/services/AuthServices/commandHandlers/LoginCommandHandler';
 import {RegisterCommandHandler} from '@/src/services/AuthServices/commandHandlers/RegisterCommandHandler';
 import {RefreshTokenCommandHandler} from '@/src/services/AuthServices/commandHandlers/RefreshTokenCommandHandler';
@@ -35,6 +38,7 @@ import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceService
 import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
+import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
 
 const authClient = createAuthClient(CURRENT_PROTOCOL);
 const imageClient = createImageClient(CURRENT_PROTOCOL);
@@ -46,15 +50,18 @@ export const authRepository = new CachedRepository<AuthTokens>(
     new SecureRepository<AuthTokens>('auth_tokens'),
 );
 export const preferencesRepository = new InMemoryRepository<UserPreferencesData>();
+export const artworkRepository = new InMemoryRepository<AllArtworksData>();
+export const genresRepository = new InMemoryRepository<GenreData[]>();
+export const artistsRepository = new InMemoryRepository<ArtistData[]>();
 
 export const loginCommandHandler = new LoginCommandHandler(authClient, authRepository);
 export const registerCommandHandler = new RegisterCommandHandler(authClient, authRepository);
 export const refreshTokenCommandHandler = new RefreshTokenCommandHandler(authClient, authRepository);
 
-export const getAllGenresCommandHandler = new GetAllGenresCommandHandler(imageClient);
+export const getAllGenresCommandHandler = new GetAllGenresCommandHandler(imageClient, genresRepository);
 export const getAllArtworksCommandHandler = new GetAllArtworksCommandHandler(imageClient);
-export const getAllArtistsCommandHandler = new GetAllArtistsCommandHandler(imageClient);
-export const getArtworksFromIdsCommandHandler = new GetArtworksFromIdsCommandHandler(imageClient);
+export const getAllArtistsCommandHandler = new GetAllArtistsCommandHandler(imageClient, artistsRepository);
+export const getArtworksFromIdsCommandHandler = new GetArtworksFromIdsCommandHandler(imageClient, artworkRepository);
 export const getArtworksFromGenreCommandHandler = new GetArtworksFromGenreCommandHandler(imageClient);
 export const getArtworksFromArtistCommandHandler = new GetArtworksFromArtistCommandHandler(imageClient);
 export const getAllGenresFromIdsCommandHandler = new GetAllGenresFromIdsCommandHandler(imageClient);
@@ -76,6 +83,37 @@ export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutoria
 export const historyRepository = new InMemoryRepository<SeenImageData[]>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
 export const nextImageWebSocketService = new NextImageWebSocketService();
+
+export const homeScreenController = new HomeScreenController(
+    getHistoryCommandHandler,
+    getArtworksFromIdsCommandHandler,
+    getValidToken,
+    historyRepository,
+    nextImageWebSocketService,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
+    preferencesRepository,
+    artworkRepository,
+);
+
+export async function bootstrapSession(): Promise<void> {
+    await Promise.allSettled([
+        getPreferencesCommandHandler.handle({}),
+        getAllGenresCommandHandler.handle(),
+        getAllArtistsCommandHandler.handle(),
+        loadHistoryAndArtworks(),
+    ]);
+}
+
+async function loadHistoryAndArtworks(): Promise<void> {
+    await getHistoryCommandHandler.handle({});
+    const history = await historyRepository.get() ?? [];
+    if (history.length > 0) {
+        await getArtworksFromIdsCommandHandler.handle({artworkIds: history.map(s => s.artworkId)});
+    }
+}
 
 setTokenProvider(getValidToken);
 

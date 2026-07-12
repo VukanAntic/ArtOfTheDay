@@ -8,6 +8,7 @@ export default class DetailedArtworkPopupViewData {
     readonly receivedAt: Date;
     readonly description: string;
     readonly artistName: string;
+    readonly isImageLiked: boolean;
 
     constructor(artwork: ArtworkData, receivedAt: Date | null) {
         this.id = String(artwork.id);
@@ -16,5 +17,6 @@ export default class DetailedArtworkPopupViewData {
         this.receivedAt = receivedAt ?? new Date(0);
         this.description = stripHtml(artwork.description);
         this.artistName = artwork.artist.name;
+        this.isImageLiked = true;
     }
 }

@@ -1,9 +1,9 @@
 import {IRepository} from '@/src/repositories/IRepository';
 import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
+import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
-import {
-    GetArtworksFromIdsCommandHandler
-} from '@/src/services/ImageServices/commandHandlers/GetArtworksFromIdsCommandHandler';
+import {GetArtworksFromIdsCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetArtworksFromIdsCommandHandler';
 import {NextImageWebSocketService} from '@/src/services/NextImageServices/NextImageWebSocketService';
 import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
 import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
@@ -23,7 +23,26 @@ export class HomeScreenController {
         private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
         private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
         private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
+        private readonly preferencesRepository: IRepository<UserPreferencesData>,
+        private readonly artworkRepository: IRepository<AllArtworksData>,
     ) {
+    }
+
+    async loadArtworks(): Promise<FeaturedArtworkViewData[]> {
+        const history = await this.historyRepository.get() ?? [];
+        if (history.length === 0) return [];
+
+        const allArtworks = await this.artworkRepository.get();
+        const preferences = await this.preferencesRepository.get();
+        const likedIds = new Set(preferences?.likedArtworkIds ?? []);
+
+        return [...history]
+            .sort((a, b) => b.seenAt.getTime() - a.seenAt.getTime())
+            .map(seenImage => {
+                const artwork = allArtworks?.getById(seenImage.artworkId);
+                return artwork ? new FeaturedArtworkViewData(artwork, seenImage, likedIds.has(artwork.id)) : null;
+            })
+            .filter((item): item is FeaturedArtworkViewData => item !== null);
     }
 
     dispatchPreference(intent: ArtworkPreferenceIntent): void {
@@ -44,31 +63,30 @@ export class HomeScreenController {
         }
     }
 
-    async loadArtworks(): Promise<FeaturedArtworkViewData[]> {
-        const token = await this.getValidToken();
-        if (!token) return [];
-
-        await this.getHistoryHandler.handle({});
-        const history = await this.historyRepository.get() ?? [];
-        if (history.length === 0) return [];
-
-        const artworkIds = history.map(s => s.artworkId);
-        const artworks = await this.getArtworksFromIdsHandler.handle({artworkIds});
-
-        return [...history]
-            .sort((a, b) => b.seenAt.getTime() - a.seenAt.getTime())
-            .map(seenImage => {
-                const artwork = artworks.find(a => a.id === seenImage.artworkId);
-                return artwork ? new FeaturedArtworkViewData(artwork, seenImage) : null;
-            })
-            .filter((item): item is FeaturedArtworkViewData => item !== null);
-    }
-
-    async connectWebSocket(onRefresh: () => void): Promise<void> {
+    async connectWebSocket(onRefreshed: () => void): Promise<void> {
         const token = await this.getValidToken();
         if (!token) return;
-        this.webSocketService.connect(token, onRefresh);
+        this.webSocketService.connect(token, () => {
+            this.refreshOnNewImage()
+                .then(onRefreshed)
+                .catch(e => console.error('[HomeScreen] new-image refresh failed:', e));
+        });
     }
+
+    private async refreshOnNewImage(): Promise<void> {
+        console.log('[HomeScreen] new-image broadcast received');
+        await this.getHistoryHandler.handle({});
+        const history = await this.historyRepository.get() ?? [];
+        const allArtworks = await this.artworkRepository.get();
+        const missingIds = history
+            .map(s => s.artworkId)
+            .filter(id => !allArtworks?.getById(id));
+        if (missingIds.length > 0) {
+            await this.getArtworksFromIdsHandler.handle({artworkIds: missingIds});
+            console.log('[HomeScreen] broadcast added artwork(s) to repo:', missingIds);
+        }
+    }
+
 
     disconnect(): void {
         this.webSocketService.disconnect();

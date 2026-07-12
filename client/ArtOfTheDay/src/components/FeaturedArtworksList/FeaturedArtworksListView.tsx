@@ -11,6 +11,7 @@ const imageHeaders = {
 function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
     console.log('[FeaturedArtworksListView] render');
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
+    const [activeIndex, setActiveIndex] = useState(0);
     const itemCount = data.artworkViews.length || 1;
 
     const onLayout = (e: any) => {
@@ -20,35 +21,39 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
 
     const onMomentumScrollEnd = (e: any) => {
         const index = Math.round(e.nativeEvent.contentOffset.x / containerSize.width);
+        setActiveIndex(index);
         data.onIndexChanged(index);
     };
 
     const backgrounds = useMemo(() => {
         if (containerSize.width === 0) return null;
-        return [...data.artworkViews].reverse().map((item, reversedIndex) => {
-            const index = data.artworkViews.length - 1 - reversedIndex;
-            const opacity = data.scrollX.interpolate({
-                inputRange: [
-                    index * containerSize.width,
-                    (index + 1) * containerSize.width,
-                ],
-                outputRange: [1, 0],
-                extrapolate: 'clamp',
+        return data.artworkViews
+            .map((item, index) => ({item, index}))
+            .filter(({index}) => Math.abs(index - activeIndex) <= 1)
+            .reverse()
+            .map(({item, index}) => {
+                const opacity = data.scrollX.interpolate({
+                    inputRange: [
+                        index * containerSize.width,
+                        (index + 1) * containerSize.width,
+                    ],
+                    outputRange: [1, 0],
+                    extrapolate: 'clamp',
+                });
+                return (
+                    <Animated.Image
+                        key={item.id}
+                        source={{uri: item.imageURL, headers: imageHeaders}}
+                        style={[
+                            StyleSheet.absoluteFillObject,
+                            {opacity, transform: [{scale: 1.5}]},
+                        ]}
+                        blurRadius={80}
+                        resizeMode="cover"
+                    />
+                );
             });
-            return (
-                <Animated.Image
-                    key={item.id}
-                    source={{uri: item.imageURL, headers: imageHeaders}}
-                    style={[
-                        StyleSheet.absoluteFillObject,
-                        {opacity, transform: [{scale: 1.5}]},
-                    ]}
-                    blurRadius={80}
-                    resizeMode="cover"
-                />
-            );
-        });
-    }, [data.artworkViews, data.scrollX, containerSize.width]);
+    }, [data.artworkViews, data.scrollX, containerSize.width, activeIndex]);
 
     return (
         <View style={{flex: 1}} onLayout={onLayout}>
@@ -87,6 +92,7 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                                     receivedAt={item.receivedAt}
                                     description={item.description}
                                     artistName={item.artistName}
+                                    isLiked={item.isLiked}
                                     onSeeMore={() => data.onSeeMore(item)}
                                     onPreferenceIntent={data.onPreferenceIntent}
                                 />
