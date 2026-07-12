@@ -37,7 +37,7 @@ export class HomeScreenController {
         const likedIds = new Set(preferences?.likedArtworkIds ?? []);
 
         return [...history]
-            .sort((a, b) => b.seenAt.getTime() - a.seenAt.getTime())
+            .sort((a, b) => a.seenAt.getTime() - b.seenAt.getTime())
             .map(seenImage => {
                 const artwork = allArtworks?.getById(seenImage.artworkId);
                 return artwork ? new FeaturedArtworkViewData(artwork, seenImage, likedIds.has(artwork.id)) : null;

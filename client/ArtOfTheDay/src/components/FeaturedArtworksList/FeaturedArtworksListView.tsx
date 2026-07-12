@@ -11,7 +11,7 @@ const imageHeaders = {
 function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
     console.log('[FeaturedArtworksListView] render');
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
-    const [activeIndex, setActiveIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState(Math.max(0, data.artworkViews.length - 1));
     const itemCount = data.artworkViews.length || 1;
 
     const onLayout = (e: any) => {
@@ -78,6 +78,8 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                         maxToRenderPerBatch={itemCount}
                         windowSize={itemCount * 2 + 1}
                         removeClippedSubviews={false}
+                        getItemLayout={(_, index) => ({length: containerSize.width, offset: containerSize.width * index, index})}
+                        initialScrollIndex={itemCount - 1}
                         renderItem={({item}) => (
                             <View style={{
                                 width: containerSize.width,

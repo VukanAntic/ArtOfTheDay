@@ -39,6 +39,9 @@ export default function HomeScreenView() {
         return () => homeScreenController.disconnect();
     }, []);
     const [activeIndex, setActiveIndex] = useState(0);
+    useEffect(() => {
+        if (artworks.length > 0) setActiveIndex(artworks.length - 1);
+    }, [artworks.length]);
     const [selectedArtwork, setSelectedArtwork] = useState<FeaturedArtworkViewData | null>(null);
     const scrollX = useRef(new Animated.Value(0)).current;
     const {cardStyle, homeUIOpacity, detailUIOpacity, infoPanelStyle, open, close} = useArtworkExpandAnimation();
