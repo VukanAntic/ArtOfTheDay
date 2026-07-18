@@ -12,7 +12,7 @@ export class CachedRepository<T> implements IRepository<T> {
         return this.cache;
     }
 
-    async update(data: T): Promise<void> {
+    async update(data: T | null): Promise<void> {
         this.cache = data;
         await this.inner.update(data);
         this.listeners.forEach(l => l());

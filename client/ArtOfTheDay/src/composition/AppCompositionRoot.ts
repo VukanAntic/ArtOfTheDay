@@ -39,12 +39,20 @@ import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServ
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
 import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
+import {UserData} from '@/src/domain/UserData';
+import {RestUserClient} from '@/src/services/UserServices/rest/RestUserClient';
+import {GetCurrentUserCommandHandler} from '@/src/services/UserServices/commandHandlers/GetCurrentUserCommandHandler';
+import {ChangeEmailCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeEmailCommandHandler';
+import {ChangePasswordCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangePasswordCommandHandler';
+import {ChangeNameCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeNameCommandHandler';
+import {DeleteUserCommandHandler} from '@/src/services/UserServices/commandHandlers/DeleteUserCommandHandler';
 
 const authClient = createAuthClient(CURRENT_PROTOCOL);
 const imageClient = createImageClient(CURRENT_PROTOCOL);
 const preferenceClient = createPreferenceClient(CURRENT_PROTOCOL);
 const tutorialClient = createTutorialClient(CURRENT_PROTOCOL);
 const nextImageClient = createNextImageClient(CURRENT_PROTOCOL);
+const userClient = new RestUserClient();
 
 export const authRepository = new CachedRepository<AuthTokens>(
     new SecureRepository<AuthTokens>('auth_tokens'),
@@ -53,6 +61,7 @@ export const preferencesRepository = new InMemoryRepository<UserPreferencesData>
 export const artworkRepository = new InMemoryRepository<AllArtworksData>();
 export const genresRepository = new InMemoryRepository<GenreData[]>();
 export const artistsRepository = new InMemoryRepository<ArtistData[]>();
+export const userRepository = new InMemoryRepository<UserData>();
 
 export const loginCommandHandler = new LoginCommandHandler(authClient, authRepository);
 export const registerCommandHandler = new RegisterCommandHandler(authClient, authRepository);
@@ -84,6 +93,12 @@ export const historyRepository = new InMemoryRepository<SeenImageData[]>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
 export const nextImageWebSocketService = new NextImageWebSocketService();
 
+export const getCurrentUserCommandHandler = new GetCurrentUserCommandHandler(userClient, userRepository);
+export const changeEmailCommandHandler = new ChangeEmailCommandHandler(userClient, userRepository);
+export const changePasswordCommandHandler = new ChangePasswordCommandHandler(userClient, userRepository);
+export const changeNameCommandHandler = new ChangeNameCommandHandler(userClient, userRepository);
+export const deleteUserCommandHandler = new DeleteUserCommandHandler(userClient, authRepository, userRepository);
+
 export const homeScreenController = new HomeScreenController(
     getHistoryCommandHandler,
     getArtworksFromIdsCommandHandler,
@@ -103,6 +118,7 @@ export async function bootstrapSession(): Promise<void> {
         getPreferencesCommandHandler.handle({}),
         getAllGenresCommandHandler.handle(),
         getAllArtistsCommandHandler.handle(),
+        getCurrentUserCommandHandler.handle({}),
         loadHistoryAndArtworks(),
     ]);
 }

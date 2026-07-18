@@ -27,7 +27,11 @@ public class UserController {
 
     @GetMapping("/get-current-user")
     public ResponseEntity<?> GetCurrentUser(@AuthenticationPrincipal CurrentUser principalUser) {
-        return ResponseEntity.ok(userService.getCurrentUser(principalUser));
+        var user = userService.getCurrentUser(principalUser);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user.get());
     }
 
     @PostMapping("/change-email")

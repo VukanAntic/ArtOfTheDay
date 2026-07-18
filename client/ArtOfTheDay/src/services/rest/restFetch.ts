@@ -35,3 +35,9 @@ export async function restPut<TBody, TResponse = void>(url: string, body: TBody)
     const response = await fetch(url, {method: 'PUT', headers, body: JSON.stringify(body)});
     return handleResponse<TResponse>(response);
 }
+
+export async function restDelete<TBody, TResponse = void>(url: string, body: TBody): Promise<TResponse> {
+    const headers: HeadersInit = {'Content-Type': 'application/json', ...await getAuthHeaders()};
+    const response = await fetch(url, {method: 'DELETE', headers, body: JSON.stringify(body)});
+    return handleResponse<TResponse>(response);
+}

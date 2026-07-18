@@ -10,7 +10,9 @@ import Animated, {
 import {router} from 'expo-router';
 import CurvedTabIndicatorView from '@/src/components/CurvedTabIndicator/CurvedTabIndicatorView';
 import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenView';
+import PersonalScreenView from '@/src/components/PersonalScreen/PersonalScreenView';
 import SettingsScreenView from '@/src/components/SettingsScreen/SettingsScreenView';
+import SettingsScreenViewData from '@/src/components/SettingsScreen/SettingsScreenViewData';
 import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupViewData';
 import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
 import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
@@ -20,10 +22,15 @@ import {
     genresRepository,
     artistsRepository,
     historyRepository,
+    userRepository,
     addLikedGenreCommandHandler,
     removeLikedGenreCommandHandler,
     addLikedArtistCommandHandler,
     removeLikedArtistCommandHandler,
+    changeNameCommandHandler,
+    changeEmailCommandHandler,
+    changePasswordCommandHandler,
+    deleteUserCommandHandler,
 } from '@/src/composition/AppCompositionRoot';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
@@ -41,10 +48,15 @@ const controller = new UserProfileController(
     genresRepository,
     artistsRepository,
     historyRepository,
+    userRepository,
     addLikedGenreCommandHandler,
     removeLikedGenreCommandHandler,
     addLikedArtistCommandHandler,
     removeLikedArtistCommandHandler,
+    changeNameCommandHandler,
+    changeEmailCommandHandler,
+    changePasswordCommandHandler,
+    deleteUserCommandHandler,
 );
 
 export default function UserProfileView() {
@@ -113,10 +125,16 @@ export default function UserProfileView() {
                     width={SCREEN_WIDTH}
                     onItemPress={setSelectedArtwork}
                 />
-                <SettingsScreenView
-                    viewData={viewData.settings}
+                <PersonalScreenView
+                    viewData={viewData.personal}
                     width={SCREEN_WIDTH}
                     onPreferenceIntent={intent => controller.dispatch(intent)}
+                />
+
+                <SettingsScreenView
+                    viewData={new SettingsScreenViewData(viewData.user)}
+                    width={SCREEN_WIDTH}
+                    onAccountIntent={intent => controller.dispatch(intent)}
                 />
             </Animated.ScrollView>
 

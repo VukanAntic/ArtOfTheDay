@@ -8,7 +8,7 @@ export class InMemoryRepository<T> implements IRepository<T> {
         return this.data;
     }
 
-    async update(data: T): Promise<void> {
+    async update(data: T | null): Promise<void> {
         this.data = data;
         this.listeners.forEach(l => l());
     }

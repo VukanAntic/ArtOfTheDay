@@ -5,11 +5,11 @@ import Svg, {Path} from 'react-native-svg';
 import {Ionicons} from '@expo/vector-icons';
 import style, {
     BUTTON_WIDTH,
-    CURVE_DIP,
     ICON_Y,
     INDICATOR_HEIGHT,
     LEFT_ICON_X,
     LINE_MARGIN,
+    MID_ICON_X,
     RIGHT_ICON_X,
 } from './CurvedTabIndicatorViewStyle';
 
@@ -20,30 +20,14 @@ type Props = {
 
 const {width: SCREEN_WIDTH} = Dimensions.get('window');
 
-// Cubic bezier anchor points (icon centers) — used for the animated circle
-const P0X = LEFT_ICON_X, P0Y = ICON_Y;
-const P1X = SCREEN_WIDTH * 0.38, P1Y = ICON_Y + CURVE_DIP;
-const P2X = SCREEN_WIDTH * 0.62, P2Y = ICON_Y + CURVE_DIP;
-const P3X = RIGHT_ICON_X, P3Y = ICON_Y;
-
-// SVG path endpoints are inset from each icon center so the line
-// stops at the icon edge and doesn't run into the button visually
-const LINE_P0X = LEFT_ICON_X + LINE_MARGIN;
-const LINE_P3X = RIGHT_ICON_X - LINE_MARGIN;
-const PATH_D = `M ${LINE_P0X} ${P0Y} C ${P1X} ${P1Y} ${P2X} ${P2Y} ${LINE_P3X} ${P3Y}`;
+const PATH_LEFT = `M ${LEFT_ICON_X + LINE_MARGIN} ${ICON_Y} L ${MID_ICON_X - LINE_MARGIN} ${ICON_Y}`;
+const PATH_RIGHT = `M ${MID_ICON_X + LINE_MARGIN} ${ICON_Y} L ${RIGHT_ICON_X - LINE_MARGIN} ${ICON_Y}`;
 
 export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Props) {
-    // Evaluate cubic bezier at t = scrollProgress, translate circle from P0 to that point
     const circleStyle = useAnimatedStyle(() => {
-        const t = scrollProgress.value;
-        const mt = 1 - t;
-        const x = mt * mt * mt * P0X + 3 * mt * mt * t * P1X + 3 * mt * t * t * P2X + t * t * t * P3X;
-        const y = mt * mt * mt * P0Y + 3 * mt * mt * t * P1Y + 3 * mt * t * t * P2Y + t * t * t * P3Y;
+        const x = interpolate(scrollProgress.value, [0, 1, 2], [LEFT_ICON_X, MID_ICON_X, RIGHT_ICON_X], Extrapolation.CLAMP);
         return {
-            transform: [
-                {translateX: x - P0X},
-                {translateY: y - P0Y},
-            ],
+            transform: [{translateX: x - LEFT_ICON_X}],
         };
     });
 
@@ -51,21 +35,23 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
         opacity: interpolate(scrollProgress.value, [0, 0.6], [1, 0.28], Extrapolation.CLAMP),
     }));
 
+    const midIconStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(scrollProgress.value, [0.4, 1, 1.6], [0.28, 1, 0.28], Extrapolation.CLAMP),
+    }));
+
     const rightIconStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(scrollProgress.value, [0.4, 1], [0.28, 1], Extrapolation.CLAMP),
+        opacity: interpolate(scrollProgress.value, [1.4, 2], [0.28, 1], Extrapolation.CLAMP),
     }));
 
     return (
         <Animated.View style={style.container}>
-            {/* Static bezier curve line */}
             <Svg width={SCREEN_WIDTH} height={INDICATOR_HEIGHT} style={style.svg}>
-                <Path d={PATH_D} stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} fill="none"/>
+                <Path d={PATH_LEFT} stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} fill="none"/>
+                <Path d={PATH_RIGHT} stroke="rgba(255,255,255,0.35)" strokeWidth={1.5} fill="none"/>
             </Svg>
 
-            {/* Moving white circle — slides along the bezier path */}
             <Animated.View style={[style.movingCircle, circleStyle]}/>
 
-            {/* Left tab: Liked Art */}
             <TouchableOpacity
                 style={[style.iconButton, {left: LEFT_ICON_X - BUTTON_WIDTH / 2}]}
                 onPress={() => onTabPress(0)}
@@ -79,10 +65,22 @@ export default function CurvedTabIndicatorView({scrollProgress, onTabPress}: Pro
                 </Animated.Text>
             </TouchableOpacity>
 
-            {/* Right tab: Settings */}
+            <TouchableOpacity
+                style={[style.iconButton, {left: MID_ICON_X - BUTTON_WIDTH / 2}]}
+                onPress={() => onTabPress(1)}
+                activeOpacity={0.75}
+            >
+                <Animated.View style={[style.iconWrapper, midIconStyle]}>
+                    <Ionicons name="person-sharp" size={22} color="#000000"/>
+                </Animated.View>
+                <Animated.Text style={[style.iconLabel, midIconStyle]}>
+                    Personal
+                </Animated.Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
                 style={[style.iconButton, {left: RIGHT_ICON_X - BUTTON_WIDTH / 2}]}
-                onPress={() => onTabPress(1)}
+                onPress={() => onTabPress(2)}
                 activeOpacity={0.75}
             >
                 <Animated.View style={[style.iconWrapper, rightIconStyle]}>

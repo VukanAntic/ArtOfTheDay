@@ -8,6 +8,7 @@ export const CIRCLE_RADIUS = CIRCLE_SIZE / 2;
 // Icon centers sit vertically at CIRCLE_RADIUS from the top of the bar
 export const ICON_Y = CIRCLE_RADIUS;
 export const LEFT_ICON_X = 52;
+export const MID_ICON_X = SCREEN_WIDTH / 2;
 export const RIGHT_ICON_X = SCREEN_WIDTH - 52;
 // How far the bezier control points dip below the icon horizontal line
 export const CURVE_DIP = 14;

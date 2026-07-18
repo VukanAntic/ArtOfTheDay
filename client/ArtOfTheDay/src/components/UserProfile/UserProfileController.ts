@@ -5,13 +5,18 @@ import {ArtworkData} from '@/src/domain/ArtworkData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GenreData} from '@/src/domain/GenreData';
 import {ArtistData} from '@/src/domain/ArtistData';
+import {UserData} from '@/src/domain/UserData';
 import {AddLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
 import {RemoveLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedGenreCommandHandler';
 import {AddLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtistCommandHandler';
 import {RemoveLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtistCommandHandler';
+import {ChangeNameCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeNameCommandHandler';
+import {ChangeEmailCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeEmailCommandHandler';
+import {ChangePasswordCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangePasswordCommandHandler';
+import {DeleteUserCommandHandler} from '@/src/services/UserServices/commandHandlers/DeleteUserCommandHandler';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
-import SettingsScreenViewData from '@/src/components/SettingsScreen/SettingsScreenViewData';
+import PersonalScreenViewData from '@/src/components/PersonalScreen/PersonalScreenViewData';
 
 export class LikeGenreIntent {
     constructor(readonly name: string) {}
@@ -29,11 +34,23 @@ export class UnlikeArtistIntent {
     constructor(readonly name: string) {}
 }
 
-export type SettingsPreferenceIntent =
-    | LikeGenreIntent
-    | UnlikeGenreIntent
-    | LikeArtistIntent
-    | UnlikeArtistIntent;
+export class ChangeNameIntent {
+    constructor(readonly firstName: string, readonly lastName: string) {}
+}
+
+export class ChangeEmailIntent {
+    constructor(readonly email: string) {}
+}
+
+export class ChangePasswordIntent {
+    constructor(readonly oldPassword: string, readonly newPassword: string) {}
+}
+
+export class DeleteAccountIntent {}
+
+export type SettingsPreferenceIntent = LikeGenreIntent | UnlikeGenreIntent | LikeArtistIntent | UnlikeArtistIntent;
+export type AccountIntent = ChangeNameIntent | ChangeEmailIntent | ChangePasswordIntent | DeleteAccountIntent;
+export type UserProfileIntent = SettingsPreferenceIntent | AccountIntent;
 
 export class UserProfileController {
     constructor(
@@ -42,10 +59,15 @@ export class UserProfileController {
         private readonly genresRepository: IRepository<GenreData[]>,
         private readonly artistsRepository: IRepository<ArtistData[]>,
         private readonly historyRepository: IRepository<SeenImageData[]>,
+        private readonly userRepository: IRepository<UserData>,
         private readonly addLikedGenreHandler: AddLikedGenreCommandHandler,
         private readonly removeLikedGenreHandler: RemoveLikedGenreCommandHandler,
         private readonly addLikedArtistHandler: AddLikedArtistCommandHandler,
         private readonly removeLikedArtistHandler: RemoveLikedArtistCommandHandler,
+        private readonly changeNameHandler: ChangeNameCommandHandler,
+        private readonly changeEmailHandler: ChangeEmailCommandHandler,
+        private readonly changePasswordHandler: ChangePasswordCommandHandler,
+        private readonly deleteUserHandler: DeleteUserCommandHandler,
     ) {}
 
     async loadProfile(): Promise<UserProfileViewData | null> {
@@ -59,26 +81,38 @@ export class UserProfileController {
         const allGenres = await this.genresRepository.get() ?? [];
         const allArtists = await this.artistsRepository.get() ?? [];
         const history = await this.historyRepository.get() ?? [];
+        const user = await this.userRepository.get();
 
         const backgroundImageUrl = likedArtworks[0]?.imageUrl ?? null;
 
         return new UserProfileViewData(
             new LikedArtScreenViewData(likedArtworks, history),
-            new SettingsScreenViewData(allGenres, allArtists, preferences.likedGenreIds, preferences.likedArtistIds),
+            new PersonalScreenViewData(allGenres, allArtists, preferences.likedGenreIds, preferences.likedArtistIds),
+            user,
             backgroundImageUrl,
         );
     }
 
-    dispatch(intent: SettingsPreferenceIntent): void {
+    dispatch(intent: UserProfileIntent): void {
         this.handleIntent(intent)
-            .catch(e => console.error('[Profile] preference intent failed:', e));
+            .catch(e => console.error('[Profile] intent failed:', e));
     }
 
-    private async handleIntent(intent: SettingsPreferenceIntent): Promise<void> {
+    private async handleIntent(intent: UserProfileIntent): Promise<void> {
         if (intent instanceof LikeGenreIntent) return this.setGenre(intent.name, true);
         if (intent instanceof UnlikeGenreIntent) return this.setGenre(intent.name, false);
         if (intent instanceof LikeArtistIntent) return this.setArtist(intent.name, true);
         if (intent instanceof UnlikeArtistIntent) return this.setArtist(intent.name, false);
+        if (intent instanceof ChangeNameIntent) return this.changeNameHandler.handle({newFirstName: intent.firstName, newLastName: intent.lastName});
+        if (intent instanceof ChangeEmailIntent) return this.changeEmailHandler.handle({newEmail: intent.email});
+        if (intent instanceof ChangePasswordIntent) return this.changePasswordHandler.handle({oldPassword: intent.oldPassword, newPassword: intent.newPassword});
+        if (intent instanceof DeleteAccountIntent) return this.deleteAccount();
+    }
+
+    private async deleteAccount(): Promise<void> {
+        const user = await this.userRepository.get();
+        if (!user) return;
+        await this.deleteUserHandler.handle({username: user.username});
     }
 
     private async setGenre(name: string, liked: boolean): Promise<void> {

@@ -12,8 +12,12 @@ export class SecureRepository<T> implements IRepository<T> {
         return JSON.parse(raw) as T;
     }
 
-    async update(data: T): Promise<void> {
-        await SecureStore.setItemAsync(this.key, JSON.stringify(data));
+    async update(data: T | null): Promise<void> {
+        if (data === null) {
+            await SecureStore.deleteItemAsync(this.key);
+        } else {
+            await SecureStore.setItemAsync(this.key, JSON.stringify(data));
+        }
         this.listeners.forEach(l => l());
     }
 
