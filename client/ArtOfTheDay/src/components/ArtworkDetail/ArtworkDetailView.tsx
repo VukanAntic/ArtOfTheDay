@@ -5,6 +5,7 @@ import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedAr
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import ArtworkDetailHeader from './ArtworkDetailHeader';
 import ArtworkDetailInfoPanel from './ArtworkDetailInfoPanel';
+import {shareArtwork} from '@/src/utils/shareArtwork';
 
 const {height: SCREEN_H} = Dimensions.get('window');
 
@@ -39,6 +40,8 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
         onPreferenceIntent({type: next ? 'LIKE' : 'UNLIKE', artworkId: Number(artwork.id)});
     };
 
+    const handleShare = () => shareArtwork({title: artwork.title, artistName: artwork.artistName, imageURL: artwork.imageURL});
+
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
             if (event.contentOffset.y < CLOSE_THRESHOLD && !isClosing.value) {
@@ -66,7 +69,7 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
                 contentContainerStyle={{paddingBottom: 48}}
             >
                 <View style={{height: SPACER_HEIGHT}}/>
-                <ArtworkDetailInfoPanel artwork={artwork} isLiked={liked} onToggleLike={onToggleLike}/>
+                <ArtworkDetailInfoPanel artwork={artwork} isLiked={liked} onToggleLike={onToggleLike} onClose={onClose} onShare={handleShare}/>
             </Animated.ScrollView>
 
             <View

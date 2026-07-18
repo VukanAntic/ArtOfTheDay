@@ -14,6 +14,11 @@ import {ChangeNameCommandHandler} from '@/src/services/UserServices/commandHandl
 import {ChangeEmailCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeEmailCommandHandler';
 import {ChangePasswordCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangePasswordCommandHandler';
 import {DeleteUserCommandHandler} from '@/src/services/UserServices/commandHandlers/DeleteUserCommandHandler';
+import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
+import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
+import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
+import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
 import PersonalScreenViewData from '@/src/components/PersonalScreen/PersonalScreenViewData';
@@ -68,6 +73,10 @@ export class UserProfileController {
         private readonly changeEmailHandler: ChangeEmailCommandHandler,
         private readonly changePasswordHandler: ChangePasswordCommandHandler,
         private readonly deleteUserHandler: DeleteUserCommandHandler,
+        private readonly addLikedArtworkHandler: AddLikedArtworkCommandHandler,
+        private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
+        private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
+        private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
     ) {}
 
     async loadProfile(): Promise<UserProfileViewData | null> {
@@ -113,6 +122,24 @@ export class UserProfileController {
         const user = await this.userRepository.get();
         if (!user) return;
         await this.deleteUserHandler.handle({username: user.username});
+    }
+
+    dispatchPreference(intent: ArtworkPreferenceIntent): void {
+        this.handlePreference(intent)
+            .catch(e => console.error('[Profile] preference intent failed:', e));
+    }
+
+    private async handlePreference(intent: ArtworkPreferenceIntent): Promise<void> {
+        switch (intent.type) {
+            case 'LIKE':
+                return this.addLikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'UNLIKE':
+                return this.removeLikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'DISLIKE':
+                return this.addDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'UNDISLIKE':
+                return this.removeDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+        }
     }
 
     private async setGenre(name: string, liked: boolean): Promise<void> {

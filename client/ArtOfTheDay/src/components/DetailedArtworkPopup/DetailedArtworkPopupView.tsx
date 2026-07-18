@@ -3,6 +3,8 @@ import {Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} f
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Reanimated, {runOnJS, useAnimatedScrollHandler, useSharedValue} from 'react-native-reanimated';
 import DetailedArtworkPopupViewData from './DetailedArtworkPopupViewData';
+import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
+import {shareArtwork} from '@/src/utils/shareArtwork';
 import {useDetailedArtworkExpandAnimation} from '@/src/hooks/useDetailedArtworkExpandAnimation';
 import ArtworkDetailInfoPanel from '@/src/components/ArtworkDetail/ArtworkDetailInfoPanel';
 import s from './DetailedArtworkPopupViewStyle';
@@ -22,13 +24,23 @@ const imageHeaders = {
 type Props = {
     artwork: DetailedArtworkPopupViewData;
     onClose: () => void;
+    onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
 };
 
-export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
+export default function DetailedArtworkPopupView({artwork, onClose, onPreferenceIntent}: Props) {
     const {bottom: bottomInset} = useSafeAreaInsets();
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const [isExpanded, setIsExpanded] = useState(false);
     const isClosing = useSharedValue(false);
+    const [liked, setLiked] = useState(artwork.isImageLiked);
+
+    const onToggleLike = () => {
+        const next = !liked;
+        setLiked(next);
+        onPreferenceIntent({type: next ? 'LIKE' : 'UNLIKE', artworkId: Number(artwork.id)});
+    };
+
+    const handleShare = () => shareArtwork({title: artwork.title, artistName: artwork.artistName, imageURL: artwork.imageURL});
 
     const [cardW, setCardW] = useState(MAX_CARD_W);
     const [cardH, setCardH] = useState(MAX_CARD_H);
@@ -127,11 +139,11 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                         <Image source={require('@/assets/images/icons/Shrink.png')}></Image>
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
-                    <TouchableOpacity style={s.actionButton}>
-                        <Text style={s.actionButtonText}>{artwork.isImageLiked ? '♥' : '♡'}</Text>
+                    <TouchableOpacity style={s.actionButton} onPress={onToggleLike}>
+                        <Text style={s.actionButtonText}>{liked ? '♥' : '♡'}</Text>
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
-                    <TouchableOpacity style={s.actionButton}>
+                    <TouchableOpacity style={s.actionButton} onPress={handleShare}>
                         <Image source={require('@/assets/images/icons/Share_Android.png')}></Image>
                     </TouchableOpacity>
                 </View>
@@ -156,7 +168,7 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                     contentContainerStyle={{paddingBottom: 48}}
                 >
                     <View style={{height: SPACER_HEIGHT}}/>
-                    <ArtworkDetailInfoPanel artwork={artwork}/>
+                    <ArtworkDetailInfoPanel artwork={artwork} onClose={handleCollapseExpand} isLiked={liked} onToggleLike={onToggleLike} onShare={handleShare}/>
                 </Reanimated.ScrollView>
             </View>
 

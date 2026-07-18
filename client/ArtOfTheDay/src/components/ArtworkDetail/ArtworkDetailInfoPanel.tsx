@@ -18,15 +18,17 @@ type Props = {
     artwork: ArtworkPanelData;
     isLiked?: boolean;
     onToggleLike?: () => void;
+    onClose?: () => void;
+    onShare?: () => void;
 };
 
-export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike}: Props) {
+export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike, onClose, onShare}: Props) {
     return (
         <View>
             <View style={s.actionBar}>
                 <Text style={s.actionBarDate}>{formatDate(artwork.receivedAt)}</Text>
                 <View style={s.actionBarLine}/>
-                <TouchableOpacity style={s.actionButton}>
+                <TouchableOpacity style={s.actionButton} onPress={onClose}>
                     <Image source={require('@/assets/images/icons/Shrink.png')}></Image>
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
@@ -34,7 +36,7 @@ export default function ArtworkDetailInfoPanel({artwork, isLiked, onToggleLike}:
                     <Text style={s.actionButtonText}>{isLiked ? '♥' : '♡'}</Text>
                 </TouchableOpacity>
                 <View style={s.actionBarLine}/>
-                <TouchableOpacity style={s.actionButton}>
+                <TouchableOpacity style={s.actionButton} onPress={onShare}>
                     <Image source={require('@/assets/images/icons/Share_Android.png')}></Image>
                 </TouchableOpacity>
             </View>

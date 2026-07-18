@@ -9,7 +9,7 @@ import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
 import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
 import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
 import {ArtworkPreferenceIntent} from "@/src/services/PreferenceServices/ArtworkPreferenceIntent";
-import {homeScreenController} from "@/src/composition/AppCompositionRoot";
+import {homeScreenController, preferencesRepository} from "@/src/composition/AppCompositionRoot";
 
 const {width} = Dimensions.get('window');
 
@@ -36,7 +36,11 @@ export default function HomeScreenView() {
     useEffect(() => {
         load();
         homeScreenController.connectWebSocket(load);
-        return () => homeScreenController.disconnect();
+        const unsubscribe = preferencesRepository.subscribe(load);
+        return () => {
+            unsubscribe();
+            homeScreenController.disconnect();
+        };
     }, []);
     const [activeIndex, setActiveIndex] = useState(0);
     useEffect(() => {

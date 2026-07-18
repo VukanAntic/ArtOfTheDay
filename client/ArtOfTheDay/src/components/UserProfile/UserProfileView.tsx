@@ -31,6 +31,10 @@ import {
     changeEmailCommandHandler,
     changePasswordCommandHandler,
     deleteUserCommandHandler,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
 } from '@/src/composition/AppCompositionRoot';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
@@ -57,6 +61,10 @@ const controller = new UserProfileController(
     changeEmailCommandHandler,
     changePasswordCommandHandler,
     deleteUserCommandHandler,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
 );
 
 export default function UserProfileView() {
@@ -72,7 +80,9 @@ export default function UserProfileView() {
     });
 
     useEffect(() => {
-        controller.loadProfile().then(setViewData);
+        const reload = () => { controller.loadProfile().then(setViewData); };
+        reload();
+        return preferencesRepository.subscribe(reload);
     }, []);
 
     const handleTabPress = (index: number) => {
@@ -142,6 +152,7 @@ export default function UserProfileView() {
                 <DetailedArtworkPopupView
                     artwork={selectedArtwork}
                     onClose={() => setSelectedArtwork(null)}
+                    onPreferenceIntent={intent => controller.dispatchPreference(intent)}
                 />
             )}
         </View>

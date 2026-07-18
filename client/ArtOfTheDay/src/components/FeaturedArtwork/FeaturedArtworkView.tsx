@@ -1,4 +1,4 @@
-import {memo, useMemo, useState} from 'react';
+import {memo, useEffect, useMemo, useState} from 'react';
 import {Image, View} from 'react-native';
 import style from './FeaturedArtworkViewStyle';
 import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
@@ -20,6 +20,10 @@ function FeaturedArtworkView({id, imageURL, isLiked, onSeeMore, onPreferenceInte
     console.log('[FeaturedArtworkView] render', imageURL);
     const imageSource = useMemo(() => ({uri: imageURL, headers: imageHeaders}), [imageURL]);
     const [liked, setLiked] = useState(isLiked);
+
+    useEffect(() => {
+        setLiked(isLiked);
+    }, [isLiked]);
 
     const onToggleLike = () => {
         const next = !liked;
@@ -43,4 +47,4 @@ function FeaturedArtworkView({id, imageURL, isLiked, onSeeMore, onPreferenceInte
     );
 }
 
-export default memo(FeaturedArtworkView, (prev, next) => prev.id === next.id && prev.imageURL === next.imageURL);
+export default memo(FeaturedArtworkView, (prev, next) => prev.id === next.id && prev.imageURL === next.imageURL && prev.isLiked === next.isLiked);
