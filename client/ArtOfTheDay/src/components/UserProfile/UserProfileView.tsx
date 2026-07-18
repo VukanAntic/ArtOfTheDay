@@ -95,7 +95,7 @@ export default function UserProfileView() {
             )}
 
             <View style={style.header}>
-                <TouchableOpacity style={style.backButton} onPress={() => router.push('/')}>
+                <TouchableOpacity style={style.backButton} onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))}>
                     <Text style={style.backIcon}>‹</Text>
                 </TouchableOpacity>
                 <View style={style.titleContainer}>
