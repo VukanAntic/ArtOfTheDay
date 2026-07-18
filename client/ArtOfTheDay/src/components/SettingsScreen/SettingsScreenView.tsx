@@ -3,8 +3,8 @@ import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-
 import {router} from 'expo-router';
 import {
     AccountIntent,
-    ChangeNameIntent,
     ChangeEmailIntent,
+    ChangeNameIntent,
     ChangePasswordIntent,
     DeleteAccountIntent,
 } from '@/src/components/UserProfile/UserProfileController';
@@ -83,7 +83,7 @@ export default function SettingsScreenView({viewData, width, onAccountIntent}: P
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <Text style={style.welcome}>Welcome, {displayFirst} {displayLast}!</Text>
+                <Text style={style.welcome}>Welcome back, {displayFirst} {displayLast}!</Text>
 
                 <View style={style.section}>
                     <Text style={style.sectionTitle}>Name</Text>

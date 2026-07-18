@@ -4,6 +4,11 @@ import * as MediaLibrary from 'expo-media-library';
 import s from "./DownloadImageButtonViewStyle";
 import DownloadImageButtonViewData from "@/src/components/DownloadImageButton/DownloadImageButtonViewData";
 
+const imageHeaders = {
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.artic.edu/',
+};
+
 type Props = {
     data: DownloadImageButtonViewData;
 };
@@ -11,24 +16,21 @@ type Props = {
 export default function DownloadImageButton({data}: Props) {
     const downloadImage = async () => {
         try {
-            const {status} = await MediaLibrary.requestPermissionsAsync();
+            const {status} = await MediaLibrary.requestPermissionsAsync(true);
             if (status !== 'granted') {
                 Alert.alert('Permission required', 'Please allow access to save photos.');
                 return;
             }
 
-            const destination = new File(Paths.document, 'downloaded-image.jpg');
-            const output = await File.downloadFileAsync(data.imageURL, destination);
-
-            const asset = await MediaLibrary.createAssetAsync(output.uri);
-            const album = await MediaLibrary.getAlbumAsync('Download');
-            if (album) {
-                await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-            } else {
-                await MediaLibrary.createAlbumAsync('Download', asset, false);
+            const destination = new File(Paths.cache, 'downloaded-image.jpg');
+            if (destination.exists) {
+                destination.delete();
             }
+            const output = await File.downloadFileAsync(data.imageURL, destination, {headers: imageHeaders});
 
-            Alert.alert('Saved', 'Image saved to your gallery.');
+            await MediaLibrary.saveToLibraryAsync(output.uri);
+
+            Alert.alert('Saved', 'Image saved to your photos.');
         } catch (e) {
             Alert.alert('Error', 'Failed to download image.');
             console.error(e);
