@@ -6,6 +6,7 @@ import DetailedArtworkPopupViewData from './DetailedArtworkPopupViewData';
 import {useDetailedArtworkExpandAnimation} from '@/src/hooks/useDetailedArtworkExpandAnimation';
 import ArtworkDetailInfoPanel from '@/src/components/ArtworkDetail/ArtworkDetailInfoPanel';
 import s from './DetailedArtworkPopupViewStyle';
+import DownloadImageButton from "@/src/components/DownloadImageButton/DownloadImageButtonView";
 
 const {width: SCREEN_W, height: SCREEN_H} = Dimensions.get('window');
 const MAX_CARD_W = SCREEN_W * 0.85;
@@ -120,9 +121,7 @@ export default function DetailedArtworkPopupView({artwork, onClose}: Props) {
                 <View style={s.cardAreaFlex}/>
 
                 <View style={s.actionBar}>
-                    <TouchableOpacity style={s.actionButton}>
-                        <Image source={require('@/assets/images/icons/Cloud_Download.png')}></Image>
-                    </TouchableOpacity>
+                    <DownloadImageButton data={artwork}></DownloadImageButton>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton} onPress={handleExpand}>
                         <Image source={require('@/assets/images/icons/Shrink.png')}></Image>
