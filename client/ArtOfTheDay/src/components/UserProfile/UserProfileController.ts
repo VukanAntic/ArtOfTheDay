@@ -6,6 +6,7 @@ import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GenreData} from '@/src/domain/GenreData';
 import {ArtistData} from '@/src/domain/ArtistData';
 import {UserData} from '@/src/domain/UserData';
+import {ViewController} from '@/src/mvc/ViewController';
 import {
     AddLikedGenreCommandHandler
 } from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
@@ -38,6 +39,7 @@ import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/Artwork
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
 import PersonalScreenViewData from '@/src/components/PersonalScreen/PersonalScreenViewData';
+import UserProfileView from './UserProfileView';
 
 export class LikeGenreIntent {
     constructor(readonly name: string) {
@@ -80,8 +82,13 @@ export class DeleteAccountIntent {
 export type SettingsPreferenceIntent = LikeGenreIntent | UnlikeGenreIntent | LikeArtistIntent | UnlikeArtistIntent;
 export type AccountIntent = ChangeNameIntent | ChangeEmailIntent | ChangePasswordIntent | DeleteAccountIntent;
 export type UserProfileIntent = SettingsPreferenceIntent | AccountIntent;
+export type ProfileScreenIntent = UserProfileIntent | ArtworkPreferenceIntent;
 
-export class UserProfileController {
+export class UserProfileController extends ViewController<UserProfileViewData | null, ProfileScreenIntent> {
+    readonly View = UserProfileView;
+
+    private unsubscribe: (() => void) | null = null;
+
     constructor(
         private readonly preferencesRepository: IRepository<UserPreferencesData>,
         private readonly artworkRepository: IRepository<AllArtworksData>,
@@ -102,9 +109,32 @@ export class UserProfileController {
         private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
         private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
     ) {
+        super(null);
     }
 
-    async loadProfile(): Promise<UserProfileViewData | null> {
+    onMount(): void {
+        void this.reload();
+        this.unsubscribe = this.preferencesRepository.subscribe(() => void this.reload());
+    }
+
+    onUnmount(): void {
+        this.unsubscribe?.();
+        this.unsubscribe = null;
+    }
+
+    onMessage(intent: ProfileScreenIntent): void {
+        if ('type' in intent) {
+            this.dispatchPreference(intent);
+        } else {
+            this.dispatchProfile(intent);
+        }
+    }
+
+    private async reload(): Promise<void> {
+        this.setViewData(await this.loadProfile());
+    }
+
+    private async loadProfile(): Promise<UserProfileViewData | null> {
         const preferences = await this.preferencesRepository.get();
         if (!preferences) return null;
 
@@ -127,12 +157,12 @@ export class UserProfileController {
         );
     }
 
-    dispatch(intent: UserProfileIntent): void {
+    private dispatchProfile(intent: UserProfileIntent): void {
         this.handleIntent(intent)
             .catch(e => console.error('[Profile] intent failed:', e));
     }
 
-    dispatchPreference(intent: ArtworkPreferenceIntent): void {
+    private dispatchPreference(intent: ArtworkPreferenceIntent): void {
         this.handlePreference(intent)
             .catch(e => console.error('[Profile] preference intent failed:', e));
     }

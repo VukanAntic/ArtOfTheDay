@@ -1,15 +1,16 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Image, StyleSheet, View} from 'react-native';
 import Reanimated from 'react-native-reanimated';
-import FeaturedArtworkViewData from "@/src/components/FeaturedArtwork/FeaturedArtworkViewData";
-import FeaturedArtworksListView from "@/src/components/FeaturedArtworksList/FeaturedArtworksListView";
-import FeaturedArtworkDateListView from "@/src/components/FeaturedArtworkDateList/FeaturedArtworkDateListView";
-import ArtworkDetailView from "@/src/components/ArtworkDetail/ArtworkDetailView";
-import {useArtworkExpandAnimation} from "@/src/hooks/useArtworkExpandAnimation";
-import style from "@/src/components/HomeScreen/HomeScreenViewStyle";
-import ArtworkDetailHeader from "@/src/components/ArtworkDetail/ArtworkDetailHeader";
-import {ArtworkPreferenceIntent} from "@/src/services/PreferenceServices/ArtworkPreferenceIntent";
-import {homeScreenController, preferencesRepository} from "@/src/composition/AppCompositionRoot";
+import {ViewProps} from '@/src/mvc/ViewController';
+import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
+import FeaturedArtworksListView from '@/src/components/FeaturedArtworksList/FeaturedArtworksListView';
+import FeaturedArtworkDateListView from '@/src/components/FeaturedArtworkDateList/FeaturedArtworkDateListView';
+import ArtworkDetailView from '@/src/components/ArtworkDetail/ArtworkDetailView';
+import {useArtworkExpandAnimation} from '@/src/hooks/useArtworkExpandAnimation';
+import style from '@/src/components/HomeScreen/HomeScreenViewStyle';
+import ArtworkDetailHeader from '@/src/components/ArtworkDetail/ArtworkDetailHeader';
+import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
+import {HomeScreenViewData} from './HomeScreenViewData';
 
 const {width} = Dimensions.get('window');
 
@@ -18,34 +19,14 @@ const imageHeaders = {
     'Referer': 'https://www.artic.edu/',
 };
 
-export default function HomeScreenView() {
-    console.log('[HomeScreen] render');
-    const [artworks, setArtworks] = useState<FeaturedArtworkViewData[]>([]);
-    const [loaded, setLoaded] = useState(false);
-    const isLoading = useRef(false);
+export default function HomeScreenView({viewData, send}: ViewProps<HomeScreenViewData, ArtworkPreferenceIntent>) {
+    const artworks = viewData.artworks;
 
-    const load = () => {
-        if (isLoading.current) return;
-        isLoading.current = true;
-        homeScreenController.loadArtworks()
-            .then(data => { setArtworks(data); setLoaded(true); })
-            .catch(e => { console.error('[HomeScreen] loadArtworks failed:', e); setLoaded(true); })
-            .finally(() => { isLoading.current = false; });
-    };
-
-    useEffect(() => {
-        load();
-        homeScreenController.connectWebSocket(load);
-        const unsubscribe = preferencesRepository.subscribe(load);
-        return () => {
-            unsubscribe();
-            homeScreenController.disconnect();
-        };
-    }, []);
     const [activeIndex, setActiveIndex] = useState(0);
     useEffect(() => {
         if (artworks.length > 0) setActiveIndex(artworks.length - 1);
     }, [artworks.length]);
+
     const [selectedArtwork, setSelectedArtwork] = useState<FeaturedArtworkViewData | null>(null);
     const scrollX = useRef(new Animated.Value(0)).current;
     const {cardStyle, homeUIOpacity, detailUIOpacity, infoPanelStyle, open, close} = useArtworkExpandAnimation();
@@ -60,11 +41,11 @@ export default function HomeScreenView() {
     }, [close]);
 
     const onPreferenceIntent = useCallback(
-        (intent: ArtworkPreferenceIntent) => homeScreenController.dispatchPreference(intent),
-        [],
+        (intent: ArtworkPreferenceIntent) => send(intent),
+        [send],
     );
 
-    if (!loaded || artworks.length === 0) return <View style={style.container} />;
+    if (!viewData.loaded || artworks.length === 0) return <View style={style.container} />;
 
     return (
         <View style={style.container}>

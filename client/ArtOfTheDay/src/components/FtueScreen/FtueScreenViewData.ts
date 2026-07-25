@@ -1,21 +1,38 @@
-import {ArtworkData} from '@/src/domain/ArtworkData';
+import {FtueTimePickerViewData} from '@/src/components/FtueTimePicker/FtueTimePickerViewData';
+import {FtueImageChoiceViewData} from '@/src/components/FtueImageChoice/FtueImageChoiceViewData';
 
 export class FtueScreenViewData {
-    constructor(readonly rounds: ArtworkData[][]) {}
+    constructor(
+        readonly loading: boolean,
+        readonly totalSteps: number,
+        readonly currentStep: number,
+        readonly isTimePage: boolean,
+        readonly time: FtueTimePickerViewData,
+        readonly roundNumber: number,
+        readonly totalRounds: number,
+        readonly tiles: FtueImageChoiceViewData[],
+        readonly selectedId: number | null,
+        readonly canContinue: boolean,
+        readonly isLastPage: boolean,
+        readonly submitting: boolean,
+    ) {}
 
-    static fromArtworks(artworks: ArtworkData[], roundCount: number, perRound: number): FtueScreenViewData {
-        const pool = [...artworks];
-        for (let i = pool.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [pool[i], pool[j]] = [pool[j], pool[i]];
-        }
-
-        const rounds: ArtworkData[][] = [];
-        for (let r = 0; r < roundCount; r++) {
-            const slice = pool.slice(r * perRound, r * perRound + perRound);
-            if (slice.length === 0) break;
-            rounds.push(slice);
-        }
-        return new FtueScreenViewData(rounds);
+    static loading(): FtueScreenViewData {
+        return new FtueScreenViewData(
+            true, 0, 0, true, new FtueTimePickerViewData(9, 0, 'AM'),
+            0, 0, [], null, false, false, false,
+        );
     }
 }
+
+export class TimeChangedIntent {
+    constructor(readonly time: FtueTimePickerViewData) {}
+}
+
+export class TileSelectedIntent {
+    constructor(readonly artworkId: number) {}
+}
+
+export class ContinueIntent {}
+
+export type FtueScreenIntent = TimeChangedIntent | TileSelectedIntent | ContinueIntent;

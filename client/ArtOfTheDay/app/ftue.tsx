@@ -1,5 +1,6 @@
-import FtueScreenView from '@/src/components/FtueScreen/FtueScreenView';
+import {ControllerHost} from '@/src/mvc/ControllerHost';
+import {ftueScreenController} from '@/src/composition/AppCompositionRoot';
 
 export default function FtueRoute() {
-    return <FtueScreenView />;
+    return <ControllerHost controller={ftueScreenController} />;
 }

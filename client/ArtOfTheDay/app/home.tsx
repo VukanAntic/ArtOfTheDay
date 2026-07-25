@@ -1,10 +1,11 @@
-import HomeScreenView from '@/src/components/HomeScreen/HomeScreenView';
+import {ControllerHost} from '@/src/mvc/ControllerHost';
+import {homeScreenController} from '@/src/composition/AppCompositionRoot';
 import SafeArea from '@/src/components/SafeArea/SafeArea';
 
 export default function HomeRoute() {
     return (
         <SafeArea>
-            <HomeScreenView />
+            <ControllerHost controller={homeScreenController} />
         </SafeArea>
     );
 }

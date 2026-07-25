@@ -44,6 +44,7 @@ import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenContro
 import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
 import {SplashScreenController} from '@/src/components/SplashScreen/SplashScreenController';
 import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
+import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
 import {UserData} from '@/src/domain/UserData';
 import {RestUserClient} from '@/src/services/UserServices/rest/RestUserClient';
 import {GetCurrentUserCommandHandler} from '@/src/services/UserServices/commandHandlers/GetCurrentUserCommandHandler';
@@ -137,6 +138,27 @@ export const authScreenController = new AuthScreenController(
     registerCommandHandler,
     ftueScreenController,
     bootstrapSession,
+);
+
+export const userProfileController = new UserProfileController(
+    preferencesRepository,
+    artworkRepository,
+    genresRepository,
+    artistsRepository,
+    historyRepository,
+    userRepository,
+    addLikedGenreCommandHandler,
+    removeLikedGenreCommandHandler,
+    addLikedArtistCommandHandler,
+    removeLikedArtistCommandHandler,
+    changeNameCommandHandler,
+    changeEmailCommandHandler,
+    changePasswordCommandHandler,
+    deleteUserCommandHandler,
+    addLikedArtworkCommandHandler,
+    removeLikedArtworkCommandHandler,
+    addDislikedArtworkCommandHandler,
+    removeDislikedArtworkCommandHandler,
 );
 
 export async function bootstrapSession(): Promise<void> {

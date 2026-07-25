@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
     runOnUI,
@@ -8,6 +8,7 @@ import Animated, {
     useSharedValue,
 } from 'react-native-reanimated';
 import {router} from 'expo-router';
+import {ViewProps} from '@/src/mvc/ViewController';
 import CurvedTabIndicatorView from '@/src/components/CurvedTabIndicator/CurvedTabIndicatorView';
 import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenView';
 import PersonalScreenView from '@/src/components/PersonalScreen/PersonalScreenView';
@@ -15,27 +16,7 @@ import SettingsScreenView from '@/src/components/SettingsScreen/SettingsScreenVi
 import SettingsScreenViewData from '@/src/components/SettingsScreen/SettingsScreenViewData';
 import DetailedArtworkPopupViewData from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupViewData';
 import DetailedArtworkPopupView from '@/src/components/DetailedArtworkPopup/DetailedArtworkPopupView';
-import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
-import {
-    preferencesRepository,
-    artworkRepository,
-    genresRepository,
-    artistsRepository,
-    historyRepository,
-    userRepository,
-    addLikedGenreCommandHandler,
-    removeLikedGenreCommandHandler,
-    addLikedArtistCommandHandler,
-    removeLikedArtistCommandHandler,
-    changeNameCommandHandler,
-    changeEmailCommandHandler,
-    changePasswordCommandHandler,
-    deleteUserCommandHandler,
-    addLikedArtworkCommandHandler,
-    removeLikedArtworkCommandHandler,
-    addDislikedArtworkCommandHandler,
-    removeDislikedArtworkCommandHandler,
-} from '@/src/composition/AppCompositionRoot';
+import {ProfileScreenIntent} from '@/src/components/UserProfile/UserProfileController';
 import UserProfileViewData from './UserProfileViewData';
 import style from './UserProfileViewStyle';
 
@@ -46,29 +27,7 @@ const imageHeaders = {
     'Referer': 'https://www.artic.edu/',
 };
 
-const controller = new UserProfileController(
-    preferencesRepository,
-    artworkRepository,
-    genresRepository,
-    artistsRepository,
-    historyRepository,
-    userRepository,
-    addLikedGenreCommandHandler,
-    removeLikedGenreCommandHandler,
-    addLikedArtistCommandHandler,
-    removeLikedArtistCommandHandler,
-    changeNameCommandHandler,
-    changeEmailCommandHandler,
-    changePasswordCommandHandler,
-    deleteUserCommandHandler,
-    addLikedArtworkCommandHandler,
-    removeLikedArtworkCommandHandler,
-    addDislikedArtworkCommandHandler,
-    removeDislikedArtworkCommandHandler,
-);
-
-export default function UserProfileView() {
-    const [viewData, setViewData] = useState<UserProfileViewData | null>(null);
+export default function UserProfileView({viewData, send}: ViewProps<UserProfileViewData | null, ProfileScreenIntent>) {
     const pagerRef = useAnimatedRef<Animated.ScrollView>();
     const scrollProgress = useSharedValue(0);
     const [selectedArtwork, setSelectedArtwork] = useState<DetailedArtworkPopupViewData | null>(null);
@@ -78,12 +37,6 @@ export default function UserProfileView() {
             scrollProgress.value = event.contentOffset.x / SCREEN_WIDTH;
         },
     });
-
-    useEffect(() => {
-        const reload = () => { controller.loadProfile().then(setViewData); };
-        reload();
-        return preferencesRepository.subscribe(reload);
-    }, []);
 
     const handleTabPress = (index: number) => {
         runOnUI(() => {
@@ -138,13 +91,13 @@ export default function UserProfileView() {
                 <PersonalScreenView
                     viewData={viewData.personal}
                     width={SCREEN_WIDTH}
-                    onPreferenceIntent={intent => controller.dispatch(intent)}
+                    onPreferenceIntent={send}
                 />
 
                 <SettingsScreenView
                     viewData={new SettingsScreenViewData(viewData.user)}
                     width={SCREEN_WIDTH}
-                    onAccountIntent={intent => controller.dispatch(intent)}
+                    onAccountIntent={send}
                 />
             </Animated.ScrollView>
 
@@ -152,7 +105,7 @@ export default function UserProfileView() {
                 <DetailedArtworkPopupView
                     artwork={selectedArtwork}
                     onClose={() => setSelectedArtwork(null)}
-                    onPreferenceIntent={intent => controller.dispatchPreference(intent)}
+                    onPreferenceIntent={send}
                 />
             )}
         </View>
