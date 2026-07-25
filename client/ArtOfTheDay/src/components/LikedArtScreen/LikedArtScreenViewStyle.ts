@@ -17,6 +17,13 @@ export default StyleSheet.create({
         padding: GRID_PADDING,
         gap: CELL_GAP,
     },
+    emptyState: {},
+    emptyText: {
+        fontSize: 40,
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontFamily: 'Lato-Regular',
+    },
     row: {
         gap: CELL_GAP,
     },
