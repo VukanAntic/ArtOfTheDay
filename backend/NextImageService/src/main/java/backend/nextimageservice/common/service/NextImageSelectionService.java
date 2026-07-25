@@ -21,7 +21,7 @@ public class NextImageSelectionService {
     private final UserPreferenceServiceClient userPreferenceServiceClient;
     private final ImageServiceClient imageServiceClient;
     private final SelectionProbabilityConfig probabilityConfig;
-    private final Random random = new Random();
+    private static final Random random = new Random();
 
     public long selectNextArtworkId(String username, Set<Long> seenArtworkIds) {
         var preferences = userPreferenceServiceClient.getUserPreferences(username);

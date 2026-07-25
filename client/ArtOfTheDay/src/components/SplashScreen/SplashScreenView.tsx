@@ -2,11 +2,11 @@ import {useEffect, useRef} from 'react';
 import {Animated, Easing, StatusBar} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSplashScreenController} from '@/src/hooks/useSplashScreenController';
+import {ViewProps} from '@/src/mvc/ViewController';
+import {AnimationCompleteIntent, SplashScreenIntent, SplashScreenViewData} from './SplashScreenViewData';
 import style from './SplashScreenViewStyle';
 
-export default function SplashScreenView() {
-    const {onAnimationComplete} = useSplashScreenController();
+export default function SplashScreenView({send}: ViewProps<SplashScreenViewData, SplashScreenIntent>) {
     const {top} = useSafeAreaInsets();
 
     const titleOpacity = useRef(new Animated.Value(0)).current;
@@ -57,7 +57,7 @@ export default function SplashScreenView() {
                 easing: Easing.in(Easing.cubic),
                 useNativeDriver: true,
             }),
-        ]).start(() => onAnimationComplete());
+        ]).start(() => send(new AnimationCompleteIntent()));
     }, []);
 
     return (

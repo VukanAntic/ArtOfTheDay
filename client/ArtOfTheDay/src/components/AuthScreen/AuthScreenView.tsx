@@ -16,12 +16,9 @@ import {
 } from 'react-native';
 
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCommands';
+import {ViewProps} from '@/src/mvc/ViewController';
 import authBackgroundImages from '@/src/config/authBackgroundImages';
-import {router} from 'expo-router';
-import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
-import {loginCommandHandler, registerCommandHandler, bootstrapSession, ftueScreenController} from '@/src/composition/AppCompositionRoot';
-import AuthScreenViewData from '@/src/components/AuthScreen/AuthScreenViewData';
+import AuthScreenViewData, {AuthScreenIntent, LoginIntent, RegisterIntent} from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';
 
 const CYCLE_INTERVAL_MS = 5000;
@@ -55,7 +52,6 @@ function BackgroundCycler() {
             const afterIdx = (nextIdx + 1) % images.length;
 
             if (aIsCurrentRef.current) {
-                // A is showing — fade B in, then update A while it's hidden underneath
                 Animated.timing(bOpacity, {
                     toValue: 1,
                     duration: FADE_DURATION_MS,
@@ -65,7 +61,6 @@ function BackgroundCycler() {
                     aIsCurrentRef.current = false;
                 });
             } else {
-                // B is showing — fade B out (revealing A), then update B while it's hidden
                 Animated.timing(bOpacity, {
                     toValue: 0,
                     duration: FADE_DURATION_MS,
@@ -93,7 +88,7 @@ function BackgroundCycler() {
     );
 }
 
-function LoginForm({onSubmit, disabled}: { onSubmit: (c: LoginCommand) => void; disabled: boolean }) {
+function LoginForm({onSubmit, disabled}: { onSubmit: (intent: AuthScreenIntent) => void; disabled: boolean }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -117,7 +112,7 @@ function LoginForm({onSubmit, disabled}: { onSubmit: (c: LoginCommand) => void; 
             />
             <TouchableOpacity
                 style={[style.submitButton, disabled && style.submitButtonDisabled]}
-                onPress={() => onSubmit({username, password})}
+                onPress={() => onSubmit(new LoginIntent(username, password))}
                 disabled={disabled}
             >
                 <Text style={style.submitButtonText}>{disabled ? 'Logging in...' : 'Login'}</Text>
@@ -126,7 +121,7 @@ function LoginForm({onSubmit, disabled}: { onSubmit: (c: LoginCommand) => void; 
     );
 }
 
-function RegisterForm({onSubmit, disabled}: { onSubmit: (c: RegisterCommand) => void; disabled: boolean }) {
+function RegisterForm({onSubmit, disabled}: { onSubmit: (intent: AuthScreenIntent) => void; disabled: boolean }) {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
@@ -144,7 +139,7 @@ function RegisterForm({onSubmit, disabled}: { onSubmit: (c: RegisterCommand) => 
             <TextInput style={style.input} placeholder="Confirm password" placeholderTextColor="rgba(255,255,255,0.6)" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword}/>
             <TouchableOpacity
                 style={[style.submitButton, disabled && style.submitButtonDisabled]}
-                onPress={() => onSubmit({firstName, lastName, username, email, password, confirmPassword})}
+                onPress={() => onSubmit(new RegisterIntent(firstName, lastName, username, email, password, confirmPassword))}
                 disabled={disabled}
             >
                 <Text style={style.submitButtonText}>{disabled ? 'Registering...' : 'Register'}</Text>
@@ -153,74 +148,9 @@ function RegisterForm({onSubmit, disabled}: { onSubmit: (c: RegisterCommand) => 
     );
 }
 
-const controller = new AuthScreenController(loginCommandHandler, registerCommandHandler);
-
-export default function AuthScreenView() {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+export default function AuthScreenView({viewData, send}: ViewProps<AuthScreenViewData, AuthScreenIntent>) {
     const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
     const insets = useSafeAreaInsets();
-
-    const viewData = new AuthScreenViewData(isLoading, error);
-
-    const onLogin = async (command: LoginCommand) => {
-        const username = command.username.trim();
-        if (!username || !command.password) {
-            setError('Please enter your username and password.');
-            return;
-        }
-        setIsLoading(true);
-        setError(null);
-        try {
-            await controller.login({username, password: command.password});
-            await bootstrapSession();
-            router.replace('/home');
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Login failed');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const onRegister = async (command: RegisterCommand) => {
-        const firstName = command.firstName.trim();
-        const lastName = command.lastName.trim();
-        const username = command.username.trim();
-        const email = command.email.trim();
-        const {password, confirmPassword} = command;
-
-        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
-            setError('Please fill in all fields.');
-            return;
-        }
-        if (username.length < 6 || username.length > 20) {
-            setError('Username must be between 6 and 20 characters.');
-            return;
-        }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setError('Please enter a valid email address.');
-            return;
-        }
-        if (password.length < 6 || password.length > 20) {
-            setError('Password must be between 6 and 20 characters.');
-            return;
-        }
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-        setIsLoading(true);
-        setError(null);
-        try {
-            await controller.register({firstName, lastName, username, email, password, confirmPassword});
-            await ftueScreenController.loadRounds().catch(() => {});
-            router.replace('/ftue');
-        } catch (e) {
-            setError(e instanceof Error ? e.message : 'Registration failed');
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     return (
         <View style={style.container}>
@@ -251,8 +181,8 @@ export default function AuthScreenView() {
                     showsVerticalScrollIndicator={false}
                 >
                     {activeTab === 'login'
-                        ? <LoginForm onSubmit={onLogin} disabled={viewData.isLoading}/>
-                        : <RegisterForm onSubmit={onRegister} disabled={viewData.isLoading}/>
+                        ? <LoginForm onSubmit={send} disabled={viewData.isLoading}/>
+                        : <RegisterForm onSubmit={send} disabled={viewData.isLoading}/>
                     }
                     {viewData.error && <Text style={style.error}>{viewData.error}</Text>}
                 </ScrollView>
@@ -266,4 +196,3 @@ export default function AuthScreenView() {
         </View>
     );
 }
-

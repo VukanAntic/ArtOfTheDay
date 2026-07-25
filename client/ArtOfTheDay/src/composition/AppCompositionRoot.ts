@@ -42,6 +42,8 @@ import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/command
 import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
 import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
 import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
+import {SplashScreenController} from '@/src/components/SplashScreen/SplashScreenController';
+import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
 import {UserData} from '@/src/domain/UserData';
 import {RestUserClient} from '@/src/services/UserServices/rest/RestUserClient';
 import {GetCurrentUserCommandHandler} from '@/src/services/UserServices/commandHandlers/GetCurrentUserCommandHandler';
@@ -125,6 +127,15 @@ export const ftueScreenController = new FtueScreenController(
     preferencesRepository,
     artworkRepository,
     historyRepository,
+    bootstrapSession,
+);
+
+export const splashScreenController = new SplashScreenController(authRepository);
+
+export const authScreenController = new AuthScreenController(
+    loginCommandHandler,
+    registerCommandHandler,
+    ftueScreenController,
     bootstrapSession,
 );
 
