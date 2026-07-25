@@ -45,6 +45,10 @@ public class ArtworkService {
         }
         return artworkRepository.findRandomIdExcluding(excludeIds);
     }
+
+    public List<ArtworkDTO> getRandomArtworks(int count) {
+        return getAllArtworksFromIds(artworkRepository.findRandomIds(count));
+    }
 }
 
 

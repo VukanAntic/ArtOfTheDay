@@ -7,6 +7,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserEventPublisher {
 
@@ -40,8 +42,13 @@ public class UserEventPublisher {
         System.out.println("Message sent successfully!: " + userDeletedEvent);
     }
 
-    public void publishFtueCompletedEvent(String username) {
-        var event = FtueCompletedEvent.builder().username(username).build();
+    public void publishFtueCompletedEvent(String username, List<Long> artworkIds, List<String> genreIds, List<Long> artistIds) {
+        var event = FtueCompletedEvent.builder()
+                .username(username)
+                .artworkIds(artworkIds)
+                .genreIds(genreIds)
+                .artistIds(artistIds)
+                .build();
         rabbitTemplate.convertAndSend(userEventsExchange, ftueCompletedRoutingKey, event);
         System.out.println("Message sent successfully!: " + event);
     }

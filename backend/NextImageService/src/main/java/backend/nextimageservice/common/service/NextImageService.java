@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class NextImageService {
     private static final int INITIAL_SEED_COUNT = 10;
+    private static final int FTUE_PICK_COUNT = 4;
 
     private final UserHistoryRepository userHistoryRepository;
     private final NextImageSelectionService nextImageSelectionService;
@@ -37,15 +38,20 @@ public class NextImageService {
 
     public void initializeUserHistory(String username, String timeZoneId) {
         userHistoryRepository.persist(username, timeZoneId);
-        seedImages(username, new HashSet<>(), INITIAL_SEED_COUNT, ChronoUnit.DAYS, -INITIAL_SEED_COUNT);
+        seedImages(username, new HashSet<>(), INITIAL_SEED_COUNT, ChronoUnit.DAYS, -(INITIAL_SEED_COUNT + FTUE_PICK_COUNT));
     }
 
-    public void seedImagesAfterFtue(String username) {
-        var userHistory = userHistoryRepository.getUserHistory(username);
-        Set<Long> seenIds = userHistory != null
-                ? userHistory.getSeenArtworks().stream().map(SeenImage::getArtworkId).collect(Collectors.toSet())
-                : new HashSet<>();
-        seedImages(username, seenIds, INITIAL_SEED_COUNT, ChronoUnit.DAYS, 1);
+    public void seedImagesAfterFtue(String username, List<Long> likedArtworkIds) {
+        if (likedArtworkIds == null || likedArtworkIds.isEmpty()) {
+            return;
+        }
+        long now = Instant.now().toEpochMilli();
+        long dayMillis = ChronoUnit.DAYS.getDuration().toMillis();
+        int count = likedArtworkIds.size();
+        for (int i = 0; i < count; i++) {
+            long seenAt = now - (long) (count - i) * dayMillis;
+            userHistoryRepository.addNewImageForUserHistory(username, new SeenImage(likedArtworkIds.get(i), seenAt));
+        }
     }
 
     private void seedImages(String username, Set<Long> seenIds, int count, ChronoUnit unit, long startOffset) {

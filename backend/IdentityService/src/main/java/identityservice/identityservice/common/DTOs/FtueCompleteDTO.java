@@ -1,17 +1,14 @@
-package common.common.events;
+package identityservice.identityservice.common.DTOs;
 
 import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-@ToString
-@Builder
-public class FtueCompletedEvent {
-    private String username;
+@NoArgsConstructor
+@AllArgsConstructor
+public class FtueCompleteDTO {
     private List<Long> artworkIds;
     private List<String> genreIds;
     private List<Long> artistIds;

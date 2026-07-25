@@ -16,4 +16,5 @@ public class SetPreferredTimeForUpdateDTO {
     @Min(0)
     @Max(24)
     private int preferredTimeInHours;
+    private String timeZoneId;
 }

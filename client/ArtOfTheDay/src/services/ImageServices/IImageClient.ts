@@ -9,6 +9,7 @@ import {
     GetArtworksFromGenreCommand,
     GetArtworksFromIdsCommand,
     GetRandomArtworkIdCommand,
+    GetRandomArtworksCommand,
 } from './ImageCommands';
 
 export interface IImageClient {
@@ -21,4 +22,5 @@ export interface IImageClient {
     getAllGenresFromIds(command: GetAllGenresFromIdsCommand): Promise<GenreData[]>;
     getAllArtistsFromIds(command: GetAllArtistsFromIdsCommand): Promise<ArtistData[]>;
     getRandomArtworkId(command: GetRandomArtworkIdCommand): Promise<number>;
+    getRandomArtworks(command: GetRandomArtworksCommand): Promise<ArtworkData[]>;
 }

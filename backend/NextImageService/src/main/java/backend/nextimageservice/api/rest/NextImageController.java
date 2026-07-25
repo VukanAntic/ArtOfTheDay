@@ -39,8 +39,13 @@ public class NextImageController {
             return ResponseEntity.notFound().build();
         }
 
+        String timeZoneId = (setPreferredTimeForUpdateDTO.getTimeZoneId() != null
+                && !setPreferredTimeForUpdateDTO.getTimeZoneId().isBlank())
+                ? setPreferredTimeForUpdateDTO.getTimeZoneId()
+                : timeZone.getID();
+
         nextImageService.SetPreferredTimeForUser(username,
-                timeZone.getID(),
+                timeZoneId,
                 setPreferredTimeForUpdateDTO.getPreferredTimeInHours(),
                 setPreferredTimeForUpdateDTO.getPreferredTimeInMinutes());
         return ResponseEntity.ok().build();

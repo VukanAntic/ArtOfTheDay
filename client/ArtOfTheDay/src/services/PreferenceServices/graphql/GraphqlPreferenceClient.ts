@@ -12,7 +12,7 @@ import {
 } from '@/src/services/PreferenceServices/PreferenceCommands';
 
 export class GraphqlPreferenceClient implements IPreferenceClient {
-    getPreferences(_token: string): Promise<UserPreferencesData> {
+    getPreferences(): Promise<UserPreferencesData> {
         throw new Error('GraphQL not yet implemented');
     }
     addLikedArtwork(_command: AddLikedArtworkCommand): Promise<void> {

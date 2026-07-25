@@ -51,6 +51,11 @@ public class ImageController {
         return artworkService.getAllArtworksFromIds(artworkIds);
     }
 
+    @GetMapping("/get-random-artworks")
+    public List<ArtworkDTO> getRandomArtworks(@RequestParam(defaultValue = "16") int count) {
+        return artworkService.getRandomArtworks(count);
+    }
+
     @GetMapping("get-all-genres")
     public List<IdentityGenreDTO> getAllGenres() {
         return genreService.getAllGenres();

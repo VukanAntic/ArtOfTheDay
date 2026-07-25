@@ -6,52 +6,76 @@ import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GenreData} from '@/src/domain/GenreData';
 import {ArtistData} from '@/src/domain/ArtistData';
 import {UserData} from '@/src/domain/UserData';
-import {AddLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
-import {RemoveLikedGenreCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedGenreCommandHandler';
-import {AddLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtistCommandHandler';
-import {RemoveLikedArtistCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtistCommandHandler';
+import {
+    AddLikedGenreCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
+import {
+    RemoveLikedGenreCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedGenreCommandHandler';
+import {
+    AddLikedArtistCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtistCommandHandler';
+import {
+    RemoveLikedArtistCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtistCommandHandler';
 import {ChangeNameCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeNameCommandHandler';
 import {ChangeEmailCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeEmailCommandHandler';
 import {ChangePasswordCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangePasswordCommandHandler';
 import {DeleteUserCommandHandler} from '@/src/services/UserServices/commandHandlers/DeleteUserCommandHandler';
-import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
-import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
-import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
-import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {
+    AddLikedArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
+import {
+    RemoveLikedArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
+import {
+    AddDislikedArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
+import {
+    RemoveDislikedArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
 import PersonalScreenViewData from '@/src/components/PersonalScreen/PersonalScreenViewData';
 
 export class LikeGenreIntent {
-    constructor(readonly name: string) {}
+    constructor(readonly name: string) {
+    }
 }
 
 export class UnlikeGenreIntent {
-    constructor(readonly name: string) {}
+    constructor(readonly name: string) {
+    }
 }
 
 export class LikeArtistIntent {
-    constructor(readonly name: string) {}
+    constructor(readonly name: string) {
+    }
 }
 
 export class UnlikeArtistIntent {
-    constructor(readonly name: string) {}
+    constructor(readonly name: string) {
+    }
 }
 
 export class ChangeNameIntent {
-    constructor(readonly firstName: string, readonly lastName: string) {}
+    constructor(readonly firstName: string, readonly lastName: string) {
+    }
 }
 
 export class ChangeEmailIntent {
-    constructor(readonly email: string) {}
+    constructor(readonly email: string) {
+    }
 }
 
 export class ChangePasswordIntent {
-    constructor(readonly oldPassword: string, readonly newPassword: string) {}
+    constructor(readonly oldPassword: string, readonly newPassword: string) {
+    }
 }
 
-export class DeleteAccountIntent {}
+export class DeleteAccountIntent {
+}
 
 export type SettingsPreferenceIntent = LikeGenreIntent | UnlikeGenreIntent | LikeArtistIntent | UnlikeArtistIntent;
 export type AccountIntent = ChangeNameIntent | ChangeEmailIntent | ChangePasswordIntent | DeleteAccountIntent;
@@ -77,7 +101,8 @@ export class UserProfileController {
         private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
         private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
         private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
-    ) {}
+    ) {
+    }
 
     async loadProfile(): Promise<UserProfileViewData | null> {
         const preferences = await this.preferencesRepository.get();
@@ -92,7 +117,7 @@ export class UserProfileController {
         const history = await this.historyRepository.get() ?? [];
         const user = await this.userRepository.get();
 
-        const backgroundImageUrl = likedArtworks[0]?.imageUrl ?? null;
+        const backgroundImageUrl = 'https://www.artic.edu/iiif/2/815fb024-96bb-6f38-e6fc-d398d2103c65/full/843,/0/default.jpg';
 
         return new UserProfileViewData(
             new LikedArtScreenViewData(likedArtworks, history),
@@ -107,14 +132,25 @@ export class UserProfileController {
             .catch(e => console.error('[Profile] intent failed:', e));
     }
 
+    dispatchPreference(intent: ArtworkPreferenceIntent): void {
+        this.handlePreference(intent)
+            .catch(e => console.error('[Profile] preference intent failed:', e));
+    }
+
     private async handleIntent(intent: UserProfileIntent): Promise<void> {
         if (intent instanceof LikeGenreIntent) return this.setGenre(intent.name, true);
         if (intent instanceof UnlikeGenreIntent) return this.setGenre(intent.name, false);
         if (intent instanceof LikeArtistIntent) return this.setArtist(intent.name, true);
         if (intent instanceof UnlikeArtistIntent) return this.setArtist(intent.name, false);
-        if (intent instanceof ChangeNameIntent) return this.changeNameHandler.handle({newFirstName: intent.firstName, newLastName: intent.lastName});
+        if (intent instanceof ChangeNameIntent) return this.changeNameHandler.handle({
+            newFirstName: intent.firstName,
+            newLastName: intent.lastName
+        });
         if (intent instanceof ChangeEmailIntent) return this.changeEmailHandler.handle({newEmail: intent.email});
-        if (intent instanceof ChangePasswordIntent) return this.changePasswordHandler.handle({oldPassword: intent.oldPassword, newPassword: intent.newPassword});
+        if (intent instanceof ChangePasswordIntent) return this.changePasswordHandler.handle({
+            oldPassword: intent.oldPassword,
+            newPassword: intent.newPassword
+        });
         if (intent instanceof DeleteAccountIntent) return this.deleteAccount();
     }
 
@@ -122,11 +158,6 @@ export class UserProfileController {
         const user = await this.userRepository.get();
         if (!user) return;
         await this.deleteUserHandler.handle({username: user.username});
-    }
-
-    dispatchPreference(intent: ArtworkPreferenceIntent): void {
-        this.handlePreference(intent)
-            .catch(e => console.error('[Profile] preference intent failed:', e));
     }
 
     private async handlePreference(intent: ArtworkPreferenceIntent): Promise<void> {

@@ -1,6 +1,7 @@
 package identityservice.identityservice.common.services;
 
 import identityservice.identityservice.api.publishers.UserEventPublisher;
+import identityservice.identityservice.common.DTOs.FtueCompleteDTO;
 import identityservice.identityservice.infra.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ public class TutorialService {
     private final UserRepository userRepository;
     private final UserEventPublisher userEventPublisher;
 
-    public boolean completeFtue(String username) {
+    public boolean completeFtue(String username, FtueCompleteDTO request) {
         var optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
             return false;
@@ -25,7 +26,11 @@ public class TutorialService {
 
         user.setFtueCompleted(true);
         userRepository.save(user);
-        userEventPublisher.publishFtueCompletedEvent(username);
+        userEventPublisher.publishFtueCompletedEvent(
+                username,
+                request.getArtworkIds(),
+                request.getGenreIds(),
+                request.getArtistIds());
         return true;
     }
 }

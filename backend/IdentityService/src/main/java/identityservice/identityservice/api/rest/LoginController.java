@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/api/authentication", produces = {
         "application/json",
@@ -22,7 +24,7 @@ public class LoginController {
     private final IdentityService identityService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         var loginResult = identityService.loginUser(userLoginDTO);
         if (loginResult.isEmpty()) {
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect credentials!");

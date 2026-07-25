@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import java.util.TimeZone;
 
 @RestController
@@ -25,7 +26,7 @@ public class RegistrationController {
     private final JwtUtilComponent jwtUtilComponent;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRegisterDTO userRegisterDTO, TimeZone timeZone) {
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterDTO userRegisterDTO, TimeZone timeZone) {
         var user = identityService.registerUser(userRegisterDTO, timeZone.getID());
         if (user.isEmpty()) {
             return ResponseEntity.badRequest().body("Something is incorrect");

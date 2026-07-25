@@ -20,7 +20,7 @@ import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCom
 import authBackgroundImages from '@/src/config/authBackgroundImages';
 import {router} from 'expo-router';
 import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
-import {loginCommandHandler, registerCommandHandler, ftueCompleteCommandHandler, bootstrapSession} from '@/src/composition/AppCompositionRoot';
+import {loginCommandHandler, registerCommandHandler, bootstrapSession, ftueScreenController} from '@/src/composition/AppCompositionRoot';
 import AuthScreenViewData from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';
 
@@ -164,10 +164,15 @@ export default function AuthScreenView() {
     const viewData = new AuthScreenViewData(isLoading, error);
 
     const onLogin = async (command: LoginCommand) => {
+        const username = command.username.trim();
+        if (!username || !command.password) {
+            setError('Please enter your username and password.');
+            return;
+        }
         setIsLoading(true);
         setError(null);
         try {
-            await controller.login(command);
+            await controller.login({username, password: command.password});
             await bootstrapSession();
             router.replace('/home');
         } catch (e) {
@@ -178,13 +183,38 @@ export default function AuthScreenView() {
     };
 
     const onRegister = async (command: RegisterCommand) => {
+        const firstName = command.firstName.trim();
+        const lastName = command.lastName.trim();
+        const username = command.username.trim();
+        const email = command.email.trim();
+        const {password, confirmPassword} = command;
+
+        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
+            setError('Please fill in all fields.');
+            return;
+        }
+        if (username.length < 6 || username.length > 20) {
+            setError('Username must be between 6 and 20 characters.');
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+        if (password.length < 6 || password.length > 20) {
+            setError('Password must be between 6 and 20 characters.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
+        }
         setIsLoading(true);
         setError(null);
         try {
-            await controller.register(command);
-            await ftueCompleteCommandHandler.handle({});
-            await bootstrapSession();
-            router.replace('/home');
+            await controller.register({firstName, lastName, username, email, password, confirmPassword});
+            await ftueScreenController.loadRounds().catch(() => {});
+            router.replace('/ftue');
         } catch (e) {
             setError(e instanceof Error ? e.message : 'Registration failed');
         } finally {

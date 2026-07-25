@@ -1,1 +1,5 @@
-export interface FtueCompleteCommand {}
+export interface FtueCompleteCommand {
+    artworkIds: number[];
+    genreIds: string[];
+    artistIds: number[];
+}

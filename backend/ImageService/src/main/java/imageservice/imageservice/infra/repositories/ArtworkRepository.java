@@ -19,4 +19,7 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
     @Query(value = "SELECT id FROM artwork WHERE id NOT IN :excludeIds ORDER BY RANDOM() LIMIT 1", nativeQuery = true)
     Optional<Long> findRandomIdExcluding(@Param("excludeIds") Collection<Long> excludeIds);
+
+    @Query(value = "SELECT id FROM artwork ORDER BY RANDOM() LIMIT :count", nativeQuery = true)
+    List<Long> findRandomIds(@Param("count") int count);
 }

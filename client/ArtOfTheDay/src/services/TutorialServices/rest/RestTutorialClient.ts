@@ -6,7 +6,11 @@ import {restPost} from '@/src/services/rest/restFetch';
 const BASE = `${API_CONFIG.identityService}/api/tutorial`;
 
 export class RestTutorialClient implements ITutorialClient {
-    async ftueComplete(_command: FtueCompleteCommand): Promise<void> {
-        await restPost<void, void>(`${BASE}/ftue-complete`, undefined);
+    async ftueComplete(command: FtueCompleteCommand): Promise<void> {
+        await restPost<FtueCompleteCommand, void>(`${BASE}/ftue-complete`, {
+            artworkIds: command.artworkIds,
+            genreIds: command.genreIds,
+            artistIds: command.artistIds,
+        });
     }
 }

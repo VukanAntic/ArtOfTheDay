@@ -15,6 +15,6 @@ public class FtueCompletedEventHandler {
     @RabbitListener(queues = "${spring.rabbitmq.ftue_completed_queue}")
     public void receiveFtueCompletedEvent(FtueCompletedEvent event) {
         System.out.println("Received event! " + event);
-        nextImageService.seedImagesAfterFtue(event.getUsername());
+        nextImageService.seedImagesAfterFtue(event.getUsername(), event.getArtworkIds());
     }
 }

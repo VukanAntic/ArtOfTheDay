@@ -21,3 +21,7 @@ export interface GetAllArtistsFromIdsCommand {
 export interface GetRandomArtworkIdCommand {
     excludeIds: number[];
 }
+
+export interface GetRandomArtworksCommand {
+    count: number;
+}

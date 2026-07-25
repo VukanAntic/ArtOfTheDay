@@ -10,6 +10,7 @@ import {
     GetArtworksFromGenreCommand,
     GetArtworksFromIdsCommand,
     GetRandomArtworkIdCommand,
+    GetRandomArtworksCommand,
 } from '@/src/services/ImageServices/ImageCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
 import {restGet} from '@/src/services/rest/restFetch';
@@ -93,5 +94,10 @@ export class RestImageClient implements IImageClient {
 
     async getRandomArtworkId(command: GetRandomArtworkIdCommand): Promise<number> {
         return restGet<number>(`${BASE}/get-random-artwork-id?excludeIds=${command.excludeIds.join(',')}`);
+    }
+
+    async getRandomArtworks(command: GetRandomArtworksCommand): Promise<ArtworkData[]> {
+        const res = await restGet<ArtworkDTO[]>(`${BASE}/get-random-artworks?count=${command.count}`);
+        return res.map(toArtwork);
     }
 }

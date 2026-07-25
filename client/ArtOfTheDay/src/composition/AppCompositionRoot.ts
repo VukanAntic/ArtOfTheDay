@@ -27,6 +27,7 @@ import {GetArtworksFromArtistCommandHandler} from '@/src/services/ImageServices/
 import {GetAllGenresFromIdsCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetAllGenresFromIdsCommandHandler';
 import {GetAllArtistsFromIdsCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetAllArtistsFromIdsCommandHandler';
 import {GetRandomArtworkIdCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetRandomArtworkIdCommandHandler';
+import {GetRandomArtworksCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetRandomArtworksCommandHandler';
 import {GetPreferencesCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/GetPreferencesCommandHandler';
 import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddLikedArtworkCommandHandler';
 import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
@@ -38,7 +39,9 @@ import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceService
 import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
+import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
 import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
+import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
 import {UserData} from '@/src/domain/UserData';
 import {RestUserClient} from '@/src/services/UserServices/rest/RestUserClient';
 import {GetCurrentUserCommandHandler} from '@/src/services/UserServices/commandHandlers/GetCurrentUserCommandHandler';
@@ -76,6 +79,7 @@ export const getArtworksFromArtistCommandHandler = new GetArtworksFromArtistComm
 export const getAllGenresFromIdsCommandHandler = new GetAllGenresFromIdsCommandHandler(imageClient);
 export const getAllArtistsFromIdsCommandHandler = new GetAllArtistsFromIdsCommandHandler(imageClient);
 export const getRandomArtworkIdCommandHandler = new GetRandomArtworkIdCommandHandler(imageClient);
+export const getRandomArtworksCommandHandler = new GetRandomArtworksCommandHandler(imageClient);
 
 export const getPreferencesCommandHandler = new GetPreferencesCommandHandler(preferenceClient, preferencesRepository);
 export const addLikedArtworkCommandHandler = new AddLikedArtworkCommandHandler(preferenceClient, preferencesRepository);
@@ -91,6 +95,7 @@ export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutoria
 
 export const historyRepository = new InMemoryRepository<SeenImageData[]>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
+export const setPreferredTimeCommandHandler = new SetPreferredTimeCommandHandler(nextImageClient);
 export const nextImageWebSocketService = new NextImageWebSocketService();
 
 export const getCurrentUserCommandHandler = new GetCurrentUserCommandHandler(userClient, userRepository);
@@ -111,6 +116,16 @@ export const homeScreenController = new HomeScreenController(
     removeDislikedArtworkCommandHandler,
     preferencesRepository,
     artworkRepository,
+);
+
+export const ftueScreenController = new FtueScreenController(
+    getRandomArtworksCommandHandler,
+    setPreferredTimeCommandHandler,
+    ftueCompleteCommandHandler,
+    preferencesRepository,
+    artworkRepository,
+    historyRepository,
+    bootstrapSession,
 );
 
 export async function bootstrapSession(): Promise<void> {

@@ -10,6 +10,7 @@ import {
     GetArtworksFromGenreCommand,
     GetArtworksFromIdsCommand,
     GetRandomArtworkIdCommand,
+    GetRandomArtworksCommand,
 } from '@/src/services/ImageServices/ImageCommands';
 
 export class GrpcImageClient implements IImageClient {
@@ -22,4 +23,5 @@ export class GrpcImageClient implements IImageClient {
     getAllGenresFromIds(_: GetAllGenresFromIdsCommand): Promise<GenreData[]> { throw new Error('gRPC not yet implemented'); }
     getAllArtistsFromIds(_: GetAllArtistsFromIdsCommand): Promise<ArtistData[]> { throw new Error('gRPC not yet implemented'); }
     getRandomArtworkId(_: GetRandomArtworkIdCommand): Promise<number> { throw new Error('gRPC not yet implemented'); }
+    getRandomArtworks(_: GetRandomArtworksCommand): Promise<ArtworkData[]> { throw new Error('gRPC not yet implemented'); }
 }

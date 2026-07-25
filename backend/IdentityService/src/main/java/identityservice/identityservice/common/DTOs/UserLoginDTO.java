@@ -9,8 +9,8 @@ import jakarta.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 public class UserLoginDTO {
-    @NotEmpty(message = "Password must not be empty!")
-    @NotNull(message = "Email must not be null!")
+    @NotEmpty(message = "Username must not be empty!")
+    @NotNull(message = "Username must not be null!")
     private String username;
     @NotNull(message = "Password must not be null!")
     @NotEmpty(message = "Password must not be empty!")

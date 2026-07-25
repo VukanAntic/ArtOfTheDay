@@ -1,11 +1,7 @@
 package imageservice.imageservice.common.DTOs.Artwork;
 
-import imageservice.imageservice.common.DTOs.Artist.BaseArtistDTO;
 import imageservice.imageservice.common.DTOs.Artist.IdentityArtistDTO;
-import imageservice.imageservice.common.DTOs.Genre.BaseGenreDTO;
-import imageservice.imageservice.common.DTOs.Genre.GenreDTO;
-import imageservice.imageservice.infra.enitites.Artist;
-import imageservice.imageservice.infra.enitites.Genre;
+import imageservice.imageservice.common.DTOs.Genre.IdentityGenreDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +14,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArtworkDTO extends IdentityArtworkDTO {
-    private BaseArtistDTO artist;
-    private Set<BaseGenreDTO> genres;
+    private IdentityArtistDTO artist;
+    private Set<IdentityGenreDTO> genres;
 }

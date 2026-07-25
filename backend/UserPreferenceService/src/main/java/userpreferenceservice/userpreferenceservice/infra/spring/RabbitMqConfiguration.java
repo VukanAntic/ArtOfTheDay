@@ -30,6 +30,12 @@ public class RabbitMqConfiguration {
     @Value("${spring.rabbitmq.user_deleted_routing_key}")
     private String userDeletedRoutingKey;
 
+    @Value("${spring.rabbitmq.ftue_completed_queue}")
+    private String ftueCompletedQueueName;
+
+    @Value("${spring.rabbitmq.ftue_completed_routing_key}")
+    private String ftueCompletedRoutingKey;
+
 
     @Bean
     public Queue userCreatedQueue() {
@@ -39,6 +45,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Queue userDeletedQueue() {
         return new Queue(userDeletedQueueName, true);
+    }
+
+    @Bean
+    public Queue ftueCompletedQueue() {
+        return new Queue(ftueCompletedQueueName, true);
     }
 
     @Bean
@@ -54,6 +65,11 @@ public class RabbitMqConfiguration {
     @Bean
     public Binding userDeletedBinding(Queue userDeletedQueue, TopicExchange userEventsExchange) {
         return BindingBuilder.bind(userDeletedQueue).to(userEventsExchange).with(userDeletedRoutingKey);
+    }
+
+    @Bean
+    public Binding ftueCompletedBinding(Queue ftueCompletedQueue, TopicExchange userEventsExchange) {
+        return BindingBuilder.bind(ftueCompletedQueue).to(userEventsExchange).with(ftueCompletedRoutingKey);
     }
 
     @Bean

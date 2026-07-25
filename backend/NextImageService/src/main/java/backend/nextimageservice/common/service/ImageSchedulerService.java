@@ -20,7 +20,7 @@ public class ImageSchedulerService {
     private final NextImageEventPublisher nextImageEventPublisher;
     private final NextImageSelectionService nextImageSelectionService;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "10 * * * * *")
     public void checkShouldSendNewImage() {
         var allUserHistories = userHistoryRepository.getAllUsers();
         for (var userHistory : allUserHistories) {
