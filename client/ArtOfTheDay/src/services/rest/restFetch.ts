@@ -4,7 +4,7 @@ export function setTokenProvider(provider: () => Promise<string | null>) {
     tokenProvider = provider;
 }
 
-async function getAuthHeaders(): Promise<HeadersInit> {
+export async function getAuthHeaders(): Promise<HeadersInit> {
     const token = await tokenProvider?.();
     return token ? {Authorization: `Bearer ${token}`} : {};
 }

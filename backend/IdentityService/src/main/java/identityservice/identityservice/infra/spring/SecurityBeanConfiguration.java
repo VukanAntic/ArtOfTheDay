@@ -33,6 +33,7 @@ public class SecurityBeanConfiguration {
                         .requestMatchers("/api/authentication/login").permitAll()
                         .requestMatchers("/api/authentication/register").permitAll()
                         .requestMatchers("/api/authentication/refresh").permitAll()
+                        .requestMatchers("/graphql").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

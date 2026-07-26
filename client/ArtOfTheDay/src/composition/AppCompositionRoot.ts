@@ -48,7 +48,7 @@ import {SplashScreenController} from '@/src/components/SplashScreen/SplashScreen
 import {AuthScreenController} from '@/src/components/AuthScreen/AuthScreenController';
 import {UserProfileController} from '@/src/components/UserProfile/UserProfileController';
 import {UserData} from '@/src/domain/UserData';
-import {RestUserClient} from '@/src/services/UserServices/rest/RestUserClient';
+import {createUserClient} from '@/src/services/UserServices/createUserClient';
 import {GetCurrentUserCommandHandler} from '@/src/services/UserServices/commandHandlers/GetCurrentUserCommandHandler';
 import {ChangeEmailCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangeEmailCommandHandler';
 import {ChangePasswordCommandHandler} from '@/src/services/UserServices/commandHandlers/ChangePasswordCommandHandler';
@@ -60,7 +60,7 @@ const imageClient = createImageClient(CURRENT_PROTOCOL);
 const preferenceClient = createPreferenceClient(CURRENT_PROTOCOL);
 const tutorialClient = createTutorialClient(CURRENT_PROTOCOL);
 const nextImageClient = createNextImageClient(CURRENT_PROTOCOL);
-const userClient = new RestUserClient();
+const userClient = createUserClient(CURRENT_PROTOCOL);
 
 export const authRepository = new CachedRepository<AuthTokens>(
     new SecureRepository<AuthTokens>('auth_tokens'),

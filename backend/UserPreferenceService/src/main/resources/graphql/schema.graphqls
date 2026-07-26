@@ -1,0 +1,22 @@
+type UserPreferences {
+    username: String!
+    likedArtworkIds: [Int!]!
+    likedGenreIds: [ID!]!
+    dislikedArtworksIds: [ID!]!
+    likedArtistIds: [Int!]!
+}
+
+type Query {
+    preferences: UserPreferences
+}
+
+type Mutation {
+    addLikedArtwork(artworkId: Int!): Boolean!
+    removeLikedArtwork(artworkId: Int!): Boolean!
+    addLikedGenre(genreId: ID!): Boolean!
+    removeLikedGenre(genreId: ID!): Boolean!
+    addLikedArtist(artistId: Int!): Boolean!
+    removeLikedArtist(artistId: Int!): Boolean!
+    addDislikedArtwork(artworkId: ID!): Boolean!
+    removeDislikedArtwork(artworkId: ID!): Boolean!
+}

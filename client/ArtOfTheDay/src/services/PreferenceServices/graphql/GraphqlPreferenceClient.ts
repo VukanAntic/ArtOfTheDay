@@ -10,33 +10,99 @@ import {
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
 } from '@/src/services/PreferenceServices/PreferenceCommands';
+import {API_CONFIG} from '@/src/config/apiConfig';
+import {graphqlRequest} from '@/src/services/graphql/graphqlFetch';
+
+type UserPreferencesDTO = {
+    username: string;
+    likedArtworkIds: number[];
+    likedGenreIds: string[];
+    dislikedArtworksIds: number[];
+    likedArtistIds: number[];
+};
+
+const ENDPOINT = `${API_CONFIG.preferenceService}/graphql`;
+
+function toUserPreferences(dto: UserPreferencesDTO): UserPreferencesData {
+    return new UserPreferencesData(
+        dto.username,
+        dto.likedArtworkIds,
+        dto.likedGenreIds,
+        dto.dislikedArtworksIds,
+        dto.likedArtistIds,
+    );
+}
 
 export class GraphqlPreferenceClient implements IPreferenceClient {
-    getPreferences(): Promise<UserPreferencesData> {
-        throw new Error('GraphQL not yet implemented');
+    async getPreferences(): Promise<UserPreferencesData> {
+        const data = await graphqlRequest<{preferences: UserPreferencesDTO}>(
+            ENDPOINT,
+            `query { preferences { username likedArtworkIds likedGenreIds dislikedArtworksIds likedArtistIds } }`,
+        );
+        return toUserPreferences(data.preferences);
     }
-    addLikedArtwork(_command: AddLikedArtworkCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async addLikedArtwork(command: AddLikedArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artworkId: Int!) { addLikedArtwork(artworkId: $artworkId) }`,
+            {artworkId: command.artworkId},
+        );
     }
-    removeLikedArtwork(_command: RemoveLikedArtworkCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async removeLikedArtwork(command: RemoveLikedArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artworkId: Int!) { removeLikedArtwork(artworkId: $artworkId) }`,
+            {artworkId: command.artworkId},
+        );
     }
-    addLikedGenre(_command: AddLikedGenreCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async addLikedGenre(command: AddLikedGenreCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($genreId: ID!) { addLikedGenre(genreId: $genreId) }`,
+            {genreId: command.genreId},
+        );
     }
-    removeLikedGenre(_command: RemoveLikedGenreCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async removeLikedGenre(command: RemoveLikedGenreCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($genreId: ID!) { removeLikedGenre(genreId: $genreId) }`,
+            {genreId: command.genreId},
+        );
     }
-    addLikedArtist(_command: AddLikedArtistCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async addLikedArtist(command: AddLikedArtistCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artistId: Int!) { addLikedArtist(artistId: $artistId) }`,
+            {artistId: command.artistId},
+        );
     }
-    removeLikedArtist(_command: RemoveLikedArtistCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async removeLikedArtist(command: RemoveLikedArtistCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artistId: Int!) { removeLikedArtist(artistId: $artistId) }`,
+            {artistId: command.artistId},
+        );
     }
-    addDislikedArtwork(_command: AddDislikedArtworkCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async addDislikedArtwork(command: AddDislikedArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artworkId: ID!) { addDislikedArtwork(artworkId: $artworkId) }`,
+            {artworkId: command.artworkId},
+        );
     }
-    removeDislikedArtwork(_command: RemoveDislikedArtworkCommand): Promise<void> {
-        throw new Error('GraphQL not yet implemented');
+
+    async removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artworkId: ID!) { removeDislikedArtwork(artworkId: $artworkId) }`,
+            {artworkId: command.artworkId},
+        );
     }
 }
