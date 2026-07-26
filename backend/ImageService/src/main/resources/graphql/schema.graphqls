@@ -1,0 +1,38 @@
+type Artwork {
+    id: Int!
+    title: String!
+    description: String!
+    imageUrl: String!
+    artist: Artist!
+    genres: [Genre!]!
+}
+
+type IdentityArtwork {
+    id: Int!
+    title: String!
+    description: String!
+    imageUrl: String!
+}
+
+type Artist {
+    id: Int!
+    name: String!
+}
+
+type Genre {
+    id: ID!
+    name: String!
+}
+
+type Query {
+    allArtworks: [Artwork!]!
+    artworksFromIds(ids: [Int!]!): [Artwork!]!
+    artworksFromGenre(genreId: ID!): [IdentityArtwork!]!
+    artworksFromArtist(artistId: Int!): [IdentityArtwork!]!
+    allGenres: [Genre!]!
+    allArtists: [Artist!]!
+    genresFromIds(ids: [ID!]!): [Genre!]!
+    artistsFromIds(ids: [Int!]!): [Artist!]!
+    randomArtworks(count: Int! = 16): [Artwork!]!
+    randomArtworkId(excludeIds: [Int!]): Int
+}

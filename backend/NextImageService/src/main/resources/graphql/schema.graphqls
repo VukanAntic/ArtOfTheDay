@@ -1,0 +1,16 @@
+type SeenImage {
+    artworkId: Int!
+    seenAt: Float!
+}
+
+type Query {
+    history: [SeenImage!]!
+}
+
+type Mutation {
+    setPreferredTime(
+        preferredTimeInHours: Int!
+        preferredTimeInMinutes: Int!
+        timeZoneId: String!
+    ): Boolean!
+}
