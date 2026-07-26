@@ -1,4 +1,6 @@
-export class SplashScreenViewData {}
+export class SplashScreenViewData {
+    constructor(readonly loading: boolean = false) {}
+}
 
 export class AnimationCompleteIntent {}
 

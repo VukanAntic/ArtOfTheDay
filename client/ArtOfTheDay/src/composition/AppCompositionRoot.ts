@@ -40,6 +40,8 @@ import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServ
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
 import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
+import {WidgetPublisher} from '@/src/services/WidgetServices/WidgetPublisher';
+import {PublishLatestToWidgetCommandHandler} from '@/src/services/WidgetServices/commandHandlers/PublishLatestToWidgetCommandHandler';
 import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
 import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
 import {SplashScreenController} from '@/src/components/SplashScreen/SplashScreenController';
@@ -101,11 +103,33 @@ export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageCl
 export const setPreferredTimeCommandHandler = new SetPreferredTimeCommandHandler(nextImageClient);
 export const nextImageWebSocketService = new NextImageWebSocketService();
 
+export const widgetPublisher = new WidgetPublisher();
+export const publishLatestToWidgetCommandHandler = new PublishLatestToWidgetCommandHandler(
+    historyRepository,
+    artworkRepository,
+    widgetPublisher,
+);
+
 export const getCurrentUserCommandHandler = new GetCurrentUserCommandHandler(userClient, userRepository);
 export const changeEmailCommandHandler = new ChangeEmailCommandHandler(userClient, userRepository);
 export const changePasswordCommandHandler = new ChangePasswordCommandHandler(userClient, userRepository);
 export const changeNameCommandHandler = new ChangeNameCommandHandler(userClient, userRepository);
 export const deleteUserCommandHandler = new DeleteUserCommandHandler(userClient, authRepository, userRepository);
+
+let sessionBootstrap: Promise<void> | null = null;
+
+function ensureSessionBootstrapped(): Promise<void> {
+    sessionBootstrap ??= bootstrapSession().catch((e: unknown) => {
+        sessionBootstrap = null;
+        throw e;
+    });
+    return sessionBootstrap;
+}
+
+function startFreshSession(): Promise<void> {
+    sessionBootstrap = null;
+    return ensureSessionBootstrapped();
+}
 
 export const homeScreenController = new HomeScreenController(
     getHistoryCommandHandler,
@@ -119,6 +143,8 @@ export const homeScreenController = new HomeScreenController(
     removeDislikedArtworkCommandHandler,
     preferencesRepository,
     artworkRepository,
+    publishLatestToWidgetCommandHandler,
+    ensureSessionBootstrapped,
 );
 
 export const ftueScreenController = new FtueScreenController(
@@ -128,16 +154,16 @@ export const ftueScreenController = new FtueScreenController(
     preferencesRepository,
     artworkRepository,
     historyRepository,
-    bootstrapSession,
+    startFreshSession,
 );
 
-export const splashScreenController = new SplashScreenController(authRepository);
+export const splashScreenController = new SplashScreenController(authRepository, ensureSessionBootstrapped);
 
 export const authScreenController = new AuthScreenController(
     loginCommandHandler,
     registerCommandHandler,
     ftueScreenController,
-    bootstrapSession,
+    startFreshSession,
 );
 
 export const userProfileController = new UserProfileController(
@@ -169,6 +195,8 @@ export async function bootstrapSession(): Promise<void> {
         getCurrentUserCommandHandler.handle({}),
         loadHistoryAndArtworks(),
     ]);
+    await publishLatestToWidgetCommandHandler.handle({})
+        .catch(e => console.error('[Widget] publish on bootstrap failed:', e));
 }
 
 async function loadHistoryAndArtworks(): Promise<void> {

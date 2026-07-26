@@ -8,18 +8,32 @@ import {AnimationCompleteIntent, SplashScreenIntent, SplashScreenViewData} from 
 export class SplashScreenController extends ViewController<SplashScreenViewData, SplashScreenIntent> {
     readonly View = SplashScreenView;
 
-    constructor(private readonly authRepository: IRepository<AuthTokens>) {
+    constructor(
+        private readonly authRepository: IRepository<AuthTokens>,
+        private readonly bootstrapSession: () => Promise<void>,
+    ) {
         super(new SplashScreenViewData());
     }
 
     onMessage(intent: SplashScreenIntent): void {
         if (intent instanceof AnimationCompleteIntent) {
-            void this.navigateOnwards();
+            void this.enterSession();
         }
     }
 
-    private async navigateOnwards(): Promise<void> {
+    private async enterSession(): Promise<void> {
         const tokens = await this.authRepository.get();
-        router.replace(tokens ? '/home' : '/auth');
+        if (!tokens) {
+            router.replace('/auth');
+            return;
+        }
+
+        this.setViewData(new SplashScreenViewData(true));
+        try {
+            await this.bootstrapSession();
+        } catch (e) {
+            console.error('[Splash] session bootstrap failed:', e);
+        }
+        router.replace('/home');
     }
 }

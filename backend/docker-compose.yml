@@ -23,7 +23,7 @@ services:
     environment:
       - rabbit_mq_host=rabbitmq
     ports:
-      - "8081:8081"
+      - "9081:8081"
     depends_on:
       - rabbitmq
 

@@ -9,7 +9,14 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.artoftheday",
+      "appleTeamId": "3C5RFR93JB",
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.artoftheday.widget"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +47,8 @@
         }
       ],
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "@bacons/apple-targets"
     ],
     "experiments": {
       "typedRoutes": true,

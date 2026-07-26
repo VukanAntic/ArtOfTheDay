@@ -21,4 +21,7 @@ export default StyleSheet.create({
         letterSpacing: 5,
         marginTop: 10,
     },
+    spinner: {
+        marginTop: 28,
+    },
 });

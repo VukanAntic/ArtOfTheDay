@@ -1,19 +1,19 @@
 import {useEffect, useRef} from 'react';
-import {Animated, Easing, StatusBar} from 'react-native';
+import {ActivityIndicator, Animated, Easing, StatusBar} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ViewProps} from '@/src/mvc/ViewController';
 import {AnimationCompleteIntent, SplashScreenIntent, SplashScreenViewData} from './SplashScreenViewData';
 import style from './SplashScreenViewStyle';
 
-export default function SplashScreenView({send}: ViewProps<SplashScreenViewData, SplashScreenIntent>) {
+export default function SplashScreenView({viewData, send}: ViewProps<SplashScreenViewData, SplashScreenIntent>) {
     const {top} = useSafeAreaInsets();
 
     const titleOpacity = useRef(new Animated.Value(0)).current;
     const titleY = useRef(new Animated.Value(20)).current;
     const subtitleOpacity = useRef(new Animated.Value(0)).current;
     const subtitleY = useRef(new Animated.Value(12)).current;
-    const screenOpacity = useRef(new Animated.Value(1)).current;
+    const spinnerOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         SplashScreen.hideAsync();
@@ -50,18 +50,22 @@ export default function SplashScreenView({send}: ViewProps<SplashScreenViewData,
                     useNativeDriver: true,
                 }),
             ]),
-            Animated.delay(900),
-            Animated.timing(screenOpacity, {
-                toValue: 0,
-                duration: 700,
-                easing: Easing.in(Easing.cubic),
-                useNativeDriver: true,
-            }),
         ]).start(() => send(new AnimationCompleteIntent()));
     }, []);
 
+    useEffect(() => {
+        if (viewData.loading) {
+            Animated.timing(spinnerOpacity, {
+                toValue: 1,
+                duration: 400,
+                easing: Easing.out(Easing.cubic),
+                useNativeDriver: true,
+            }).start();
+        }
+    }, [viewData.loading]);
+
     return (
-        <Animated.View style={[style.container, {opacity: screenOpacity, marginTop: -top}]}>
+        <Animated.View style={[style.container, {marginTop: -top}]}>
             <StatusBar barStyle="light-content"/>
             <Animated.Text style={[style.title, {opacity: titleOpacity, transform: [{translateY: titleY}]}]}>
                 INSPIRA
@@ -69,6 +73,11 @@ export default function SplashScreenView({send}: ViewProps<SplashScreenViewData,
             <Animated.Text style={[style.subtitle, {opacity: subtitleOpacity, transform: [{translateY: subtitleY}]}]}>
                 daily
             </Animated.Text>
+            {viewData.loading && (
+                <Animated.View style={[style.spinner, {opacity: spinnerOpacity}]}>
+                    <ActivityIndicator color="rgba(255,255,255,0.7)"/>
+                </Animated.View>
+            )}
         </Animated.View>
     );
 }
