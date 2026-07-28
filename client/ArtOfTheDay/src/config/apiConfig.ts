@@ -3,4 +3,5 @@ export const API_CONFIG = {
     imageService:       process.env.EXPO_PUBLIC_IMAGE_SERVICE_URL       ?? 'http://localhost:8080',
     preferenceService:  process.env.EXPO_PUBLIC_PREFERENCE_SERVICE_URL  ?? 'http://localhost:8082',
     nextImageService:   process.env.EXPO_PUBLIC_NEXT_IMAGE_SERVICE_URL  ?? 'http://localhost:8084',
+    grpcWebUrl:         process.env.EXPO_PUBLIC_GRPC_WEB_URL            ?? 'http://localhost:8090',
 };

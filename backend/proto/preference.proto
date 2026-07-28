@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package preference;
+
+option java_multiple_files = true;
+option java_package = "userpreferenceservice.userpreferenceservice.grpc";
+option java_outer_classname = "PreferenceProto";
+
+service PreferenceGrpcService {
+  rpc GetPreferences (Empty) returns (Preferences);
+  rpc AddLikedArtwork (ArtworkIdRequest) returns (BoolResponse);
+  rpc RemoveLikedArtwork (ArtworkIdRequest) returns (BoolResponse);
+  rpc AddLikedGenre (GenreIdRequest) returns (BoolResponse);
+  rpc RemoveLikedGenre (GenreIdRequest) returns (BoolResponse);
+  rpc AddLikedArtist (ArtistIdRequest) returns (BoolResponse);
+  rpc RemoveLikedArtist (ArtistIdRequest) returns (BoolResponse);
+  rpc AddDislikedArtwork (DislikedArtworkIdRequest) returns (BoolResponse);
+  rpc RemoveDislikedArtwork (DislikedArtworkIdRequest) returns (BoolResponse);
+}
+
+message Empty {}
+message ArtworkIdRequest { int64 artwork_id = 1; }
+message DislikedArtworkIdRequest { string artwork_id = 1; }
+message GenreIdRequest { string genre_id = 1; }
+message ArtistIdRequest { int64 artist_id = 1; }
+message BoolResponse { bool success = 1; }
+
+message Preferences {
+  string username = 1;
+  repeated int64 liked_artwork_ids = 2;
+  repeated string liked_genre_ids = 3;
+  repeated string disliked_artworks_ids = 4;
+  repeated int64 liked_artist_ids = 5;
+}

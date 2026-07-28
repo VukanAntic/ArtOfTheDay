@@ -5,4 +5,4 @@ export enum ApiProtocol {
 }
 
 export const CURRENT_PROTOCOL: ApiProtocol =
-    (process.env.EXPO_PUBLIC_API_PROTOCOL as ApiProtocol) ?? ApiProtocol.GRAPHQL;
+    (process.env.EXPO_PUBLIC_API_PROTOCOL as ApiProtocol) ?? ApiProtocol.GRPC;

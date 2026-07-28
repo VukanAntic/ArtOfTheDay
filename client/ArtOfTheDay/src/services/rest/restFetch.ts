@@ -9,6 +9,10 @@ export async function getAuthHeaders(): Promise<HeadersInit> {
     return token ? {Authorization: `Bearer ${token}`} : {};
 }
 
+export async function getAuthToken(): Promise<string | null> {
+    return (await tokenProvider?.()) ?? null;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
     if (!response.ok) {
         const body = await response.text().catch(() => '');

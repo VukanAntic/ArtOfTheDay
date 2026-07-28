@@ -55,6 +55,15 @@ services:
     depends_on:
       - rabbitmq
 
+  envoy:
+    image: envoyproxy/envoy:v1.31-latest
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml:ro
+    ports:
+      - "8090:8090"
+    depends_on:
+      - next-image-service
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq

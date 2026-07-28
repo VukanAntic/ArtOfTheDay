@@ -1,0 +1,6 @@
+version: v2
+plugins:
+  - local: [npx, protoc-gen-es]
+    out: src/services/grpc/gen
+    opt:
+      - target=ts

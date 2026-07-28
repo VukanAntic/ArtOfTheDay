@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package image;
+
+option java_multiple_files = true;
+option java_package = "imageservice.imageservice.grpc";
+option java_outer_classname = "ImageProto";
+
+service ImageGrpcService {
+  rpc GetAllArtworks (Empty) returns (ArtworkList);
+  rpc GetArtworksFromIds (IdsInt64) returns (ArtworkList);
+  rpc GetArtworksFromGenre (GenreIdRequest) returns (IdentityArtworkList);
+  rpc GetArtworksFromArtist (ArtistIdRequest) returns (IdentityArtworkList);
+  rpc GetAllGenres (Empty) returns (GenreList);
+  rpc GetAllArtists (Empty) returns (ArtistList);
+  rpc GetGenresFromIds (IdsString) returns (GenreList);
+  rpc GetArtistsFromIds (IdsInt64) returns (ArtistList);
+  rpc GetRandomArtworks (CountRequest) returns (ArtworkList);
+  rpc GetRandomArtworkId (ExcludeIdsRequest) returns (ArtworkIdResponse);
+}
+
+message Empty {}
+message IdsInt64 { repeated int64 ids = 1; }
+message IdsString { repeated string ids = 1; }
+message GenreIdRequest { string genre_id = 1; }
+message ArtistIdRequest { int64 artist_id = 1; }
+message CountRequest { int32 count = 1; }
+message ExcludeIdsRequest { repeated int64 exclude_ids = 1; }
+message ArtworkIdResponse { int64 artwork_id = 1; bool found = 2; }
+
+message Artist { int64 id = 1; string name = 2; }
+message Genre { string id = 1; string name = 2; }
+
+message Artwork {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  string image_url = 4;
+  Artist artist = 5;
+  repeated Genre genres = 6;
+}
+
+message IdentityArtwork {
+  int64 id = 1;
+  string title = 2;
+  string description = 3;
+  string image_url = 4;
+}
+
+message ArtworkList { repeated Artwork artworks = 1; }
+message IdentityArtworkList { repeated IdentityArtwork artworks = 1; }
+message GenreList { repeated Genre genres = 1; }
+message ArtistList { repeated Artist artists = 1; }

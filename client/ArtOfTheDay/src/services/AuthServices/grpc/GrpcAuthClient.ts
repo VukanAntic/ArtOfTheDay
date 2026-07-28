@@ -1,17 +1,32 @@
+import {createClient} from '@connectrpc/connect';
 import {AuthTokens} from '@/src/domain/Auth';
 import {LoginCommand, RegisterCommand} from '@/src/services/AuthServices/AuthCommands';
 import {IAuthClient} from '@/src/services/AuthServices/IAuthClient';
+import {AuthGrpcService} from '@/src/services/grpc/gen/auth_pb';
+import {grpcTransport} from '@/src/services/grpc/grpcTransport';
 
 export class GrpcAuthClient implements IAuthClient {
-    login(_command: LoginCommand): Promise<AuthTokens> {
-        throw new Error('gRPC not yet implemented');
+    private readonly client = createClient(AuthGrpcService, grpcTransport);
+
+    async login(command: LoginCommand): Promise<AuthTokens> {
+        const res = await this.client.login({username: command.username, password: command.password});
+        return new AuthTokens(res.accessToken, res.refreshToken);
     }
 
-    register(_command: RegisterCommand): Promise<AuthTokens> {
-        throw new Error('gRPC not yet implemented');
+    async register(command: RegisterCommand): Promise<AuthTokens> {
+        const res = await this.client.register({
+            username: command.username,
+            email: command.email,
+            password: command.password,
+            confirmPassword: command.confirmPassword,
+            firstName: command.firstName,
+            lastName: command.lastName,
+        });
+        return new AuthTokens(res.accessToken, res.refreshToken);
     }
 
-    refresh(_refreshToken: string): Promise<AuthTokens> {
-        throw new Error('gRPC not yet implemented');
+    async refresh(refreshToken: string): Promise<AuthTokens> {
+        const res = await this.client.refresh({refreshToken});
+        return new AuthTokens(res.accessToken, res.refreshToken);
     }
 }

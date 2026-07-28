@@ -1,3 +1,4 @@
+import {createClient} from '@connectrpc/connect';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {IPreferenceClient} from '@/src/services/PreferenceServices/IPreferenceClient';
 import {
@@ -10,33 +11,52 @@ import {
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
 } from '@/src/services/PreferenceServices/PreferenceCommands';
+import {PreferenceGrpcService} from '@/src/services/grpc/gen/preference_pb';
+import {grpcTransport} from '@/src/services/grpc/grpcTransport';
 
 export class GrpcPreferenceClient implements IPreferenceClient {
-    getPreferences(): Promise<UserPreferencesData> {
-        throw new Error('gRPC not yet implemented');
+    private readonly client = createClient(PreferenceGrpcService, grpcTransport);
+
+    async getPreferences(): Promise<UserPreferencesData> {
+        const p = await this.client.getPreferences({});
+        return new UserPreferencesData(
+            p.username,
+            p.likedArtworkIds.map(Number),
+            p.likedGenreIds,
+            p.dislikedArtworksIds.map(Number),
+            p.likedArtistIds.map(Number),
+        );
     }
-    addLikedArtwork(_command: AddLikedArtworkCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async addLikedArtwork(command: AddLikedArtworkCommand): Promise<void> {
+        await this.client.addLikedArtwork({artworkId: BigInt(command.artworkId)});
     }
-    removeLikedArtwork(_command: RemoveLikedArtworkCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async removeLikedArtwork(command: RemoveLikedArtworkCommand): Promise<void> {
+        await this.client.removeLikedArtwork({artworkId: BigInt(command.artworkId)});
     }
-    addLikedGenre(_command: AddLikedGenreCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async addLikedGenre(command: AddLikedGenreCommand): Promise<void> {
+        await this.client.addLikedGenre({genreId: command.genreId});
     }
-    removeLikedGenre(_command: RemoveLikedGenreCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async removeLikedGenre(command: RemoveLikedGenreCommand): Promise<void> {
+        await this.client.removeLikedGenre({genreId: command.genreId});
     }
-    addLikedArtist(_command: AddLikedArtistCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async addLikedArtist(command: AddLikedArtistCommand): Promise<void> {
+        await this.client.addLikedArtist({artistId: BigInt(command.artistId)});
     }
-    removeLikedArtist(_command: RemoveLikedArtistCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async removeLikedArtist(command: RemoveLikedArtistCommand): Promise<void> {
+        await this.client.removeLikedArtist({artistId: BigInt(command.artistId)});
     }
-    addDislikedArtwork(_command: AddDislikedArtworkCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async addDislikedArtwork(command: AddDislikedArtworkCommand): Promise<void> {
+        await this.client.addDislikedArtwork({artworkId: String(command.artworkId)});
     }
-    removeDislikedArtwork(_command: RemoveDislikedArtworkCommand): Promise<void> {
-        throw new Error('gRPC not yet implemented');
+
+    async removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void> {
+        await this.client.removeDislikedArtwork({artworkId: String(command.artworkId)});
     }
 }

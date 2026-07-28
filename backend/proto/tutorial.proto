@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package tutorial;
+
+option java_multiple_files = true;
+option java_package = "identityservice.identityservice.grpc.tutorial";
+option java_outer_classname = "TutorialProto";
+
+service TutorialGrpcService {
+  rpc FtueComplete (FtueCompleteRequest) returns (BoolResponse);
+}
+
+message FtueCompleteRequest {
+  repeated int64 artwork_ids = 1;
+  repeated string genre_ids = 2;
+  repeated int64 artist_ids = 3;
+}
+
+message BoolResponse { bool success = 1; }

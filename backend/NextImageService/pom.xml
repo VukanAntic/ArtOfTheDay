@@ -155,6 +155,10 @@
                 <artifactId>protobuf-maven-plugin</artifactId>
                 <version>0.6.1</version>
                 <configuration>
+                    <protoSourceRoot>${basedir}/../proto</protoSourceRoot>
+                    <includes>
+                        <include>next_image.proto</include>
+                    </includes>
                     <protocArtifact>com.google.protobuf:protoc:${protobuf-java.version}:exe:${os.detected.classifier}
                     </protocArtifact>
                     <pluginId>grpc-java</pluginId>

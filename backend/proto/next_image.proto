@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package nextimage;
+
+option java_multiple_files = true;
+option java_package = "backend.nextimageservice.grpc";
+option java_outer_classname = "NextImageProto";
+
+service NextImageGrpcService {
+  rpc GetHistory (GetHistoryRequest) returns (GetHistoryResponse);
+  rpc SetPreferredTime (SetPreferredTimeRequest) returns (SetPreferredTimeResponse);
+}
+
+message GetHistoryRequest {}
+
+message SeenImage {
+  int64 artwork_id = 1;
+  int64 seen_at = 2;
+}
+
+message GetHistoryResponse {
+  repeated SeenImage seen_images = 1;
+}
+
+message SetPreferredTimeRequest {
+  int32 preferred_time_in_hours = 1;
+  int32 preferred_time_in_minutes = 2;
+  string time_zone_id = 3;
+}
+
+message SetPreferredTimeResponse {
+  bool success = 1;
+}

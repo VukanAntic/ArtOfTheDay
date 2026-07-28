@@ -2,6 +2,9 @@ FROM eclipse-temurin:21-jdk-ubi9-minimal AS build
 
 WORKDIR /app
 
+# Shared proto definitions (referenced by pom.xml as ${basedir}/../proto)
+COPY proto/ /proto/
+
 # Install common module into local Maven repo
 COPY common/.mvn/ common/.mvn/
 COPY common/mvnw common/pom.xml common/
