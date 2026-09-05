@@ -1,11 +1,54 @@
+import {memo, useMemo} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
 import {FtueImageChoiceViewData} from './FtueImageChoiceViewData';
-import style from './FtueImageChoiceViewStyle';
+import style, {LABEL_GRADIENT, LABEL_GRADIENT_LOCATIONS} from './FtueImageChoiceViewStyle';
 
 const imageHeaders = {
     'User-Agent': 'Mozilla/5.0',
     'Referer': 'https://www.artic.edu/',
 };
+
+type TileProps = {
+    tile: FtueImageChoiceViewData;
+    selected: boolean;
+    dimmed: boolean;
+    onSelect: (id: number) => void;
+};
+
+function Tile({tile, selected, dimmed, onSelect}: TileProps) {
+    const imageSource = useMemo(() => ({uri: tile.imageUrl, headers: imageHeaders}), [tile.imageUrl]);
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.85}
+            style={[style.tile, selected && style.tileSelected]}
+            onPress={() => onSelect(tile.id)}
+        >
+            <View style={[style.tileContent, dimmed && style.tileDimmed]}>
+                <Image source={imageSource} style={style.image} resizeMode="cover"/>
+                <LinearGradient
+                    colors={LABEL_GRADIENT}
+                    locations={LABEL_GRADIENT_LOCATIONS}
+                    style={style.labelOverlay}
+                >
+                    <Text style={style.title} numberOfLines={1}>{tile.title}</Text>
+                    <Text style={style.artist} numberOfLines={1}>{tile.artistName}</Text>
+                </LinearGradient>
+            </View>
+        </TouchableOpacity>
+    );
+}
+
+const MemoTile = memo(Tile, (prev, next) =>
+    prev.tile.id === next.tile.id
+    && prev.tile.imageUrl === next.tile.imageUrl
+    && prev.tile.title === next.tile.title
+    && prev.tile.artistName === next.tile.artistName
+    && prev.selected === next.selected
+    && prev.dimmed === next.dimmed
+    && prev.onSelect === next.onSelect,
+);
 
 type Props = {
     tiles: FtueImageChoiceViewData[];
@@ -19,36 +62,21 @@ export default function FtueImageChoiceView({tiles, selectedId, onSelect}: Props
         rows.push(tiles.slice(i, i + 2));
     }
 
+    const hasSelection = selectedId !== null;
+
     return (
         <View style={style.grid}>
             {rows.map((row, rowIndex) => (
                 <View key={rowIndex} style={style.row}>
-                    {row.map(tile => {
-                        const selected = tile.id === selectedId;
-                        return (
-                            <TouchableOpacity
-                                key={tile.id}
-                                activeOpacity={0.85}
-                                style={[style.tile, selected && style.tileSelected]}
-                                onPress={() => onSelect(tile.id)}
-                            >
-                                <Image
-                                    source={{uri: tile.imageUrl, headers: imageHeaders}}
-                                    style={style.image}
-                                    resizeMode="cover"
-                                />
-                                <View style={style.labelOverlay}>
-                                    <Text style={style.title} numberOfLines={1}>{tile.title}</Text>
-                                    <Text style={style.artist} numberOfLines={1}>{tile.artistName}</Text>
-                                </View>
-                                {selected && (
-                                    <View style={style.checkBadge}>
-                                        <Text style={style.checkText}>✓</Text>
-                                    </View>
-                                )}
-                            </TouchableOpacity>
-                        );
-                    })}
+                    {row.map(tile => (
+                        <MemoTile
+                            key={tile.id}
+                            tile={tile}
+                            selected={tile.id === selectedId}
+                            dimmed={hasSelection && tile.id !== selectedId}
+                            onSelect={onSelect}
+                        />
+                    ))}
                 </View>
             ))}
         </View>

@@ -1,5 +1,8 @@
 import {StyleSheet} from 'react-native';
 
+export const LABEL_GRADIENT = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.75)'] as const;
+export const LABEL_GRADIENT_LOCATIONS = [0, 0.62] as const;
+
 export default StyleSheet.create({
     grid: {
         gap: 12,
@@ -11,14 +14,21 @@ export default StyleSheet.create({
     tile: {
         flex: 1,
         aspectRatio: 0.86,
-        borderRadius: 10,
+        borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: '#eceae6',
-        borderWidth: 3,
+        backgroundColor: 'rgba(255,255,255,0.10)',
+        borderWidth: 2,
         borderColor: 'transparent',
     },
     tileSelected: {
-        borderColor: '#1a1a1a',
+        borderColor: '#ffffff',
+        transform: [{scale: 1.03}],
+    },
+    tileContent: {
+        flex: 1,
+    },
+    tileDimmed: {
+        opacity: 0.55,
     },
     image: {
         width: '100%',
@@ -31,7 +41,6 @@ export default StyleSheet.create({
         bottom: 0,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        backgroundColor: 'rgba(0,0,0,0.35)',
     },
     title: {
         color: '#ffffff',
@@ -42,22 +51,5 @@ export default StyleSheet.create({
         color: 'rgba(255,255,255,0.85)',
         fontSize: 10,
         fontFamily: 'Lato-Italic',
-    },
-    checkBadge: {
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        backgroundColor: '#1a1a1a',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    checkText: {
-        color: '#ffffff',
-        fontSize: 14,
-        lineHeight: 16,
-        fontFamily: 'Lato-Bold',
     },
 });

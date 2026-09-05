@@ -13,6 +13,7 @@ import {FtueImageChoiceViewData} from '@/src/components/FtueImageChoice/FtueImag
 import FtueScreenView from './FtueScreenView';
 import {
     ContinueIntent,
+    ExactTimeToggledIntent,
     FtueScreenIntent,
     FtueScreenViewData,
     TileSelectedIntent,
@@ -29,7 +30,8 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
     private rounds: ArtworkData[][] = [];
     private selected: (ArtworkData | null)[] = [];
     private page = 0;
-    private time = new FtueTimePickerViewData(9, 0, 'AM');
+    private time = new FtueTimePickerViewData(8, 0, 'AM');
+    private exactTime = false;
     private submitting = false;
     private loaded = false;
 
@@ -60,7 +62,8 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
     private async initialize(): Promise<void> {
         this.page = 0;
         this.submitting = false;
-        this.time = new FtueTimePickerViewData(9, 0, 'AM');
+        this.time = new FtueTimePickerViewData(8, 0, 'AM');
+        this.exactTime = false;
         if (!this.loaded) {
             try {
                 await this.loadRounds();
@@ -76,6 +79,9 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
     onMessage(intent: FtueScreenIntent): void {
         if (intent instanceof TimeChangedIntent) {
             this.time = intent.time;
+            this.rebuild();
+        } else if (intent instanceof ExactTimeToggledIntent) {
+            this.exactTime = intent.exact;
             this.rebuild();
         } else if (intent instanceof TileSelectedIntent) {
             this.selectTile(intent.artworkId);
@@ -160,6 +166,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
             this.page,
             isTimePage,
             this.time,
+            this.exactTime,
             roundIndex + 1,
             totalRounds,
             tiles,

@@ -1,8 +1,6 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useState} from 'react';
 import {
     ActivityIndicator,
-    Animated,
-    ImageSourcePropType,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -11,82 +9,16 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    useWindowDimensions,
     View,
 } from 'react-native';
 
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ViewProps} from '@/src/mvc/ViewController';
 import authBackgroundImages from '@/src/config/authBackgroundImages';
+import BackgroundCyclerView from '@/src/components/BackgroundCycler/BackgroundCyclerView';
+import {BackgroundCyclerViewData} from '@/src/components/BackgroundCycler/BackgroundCyclerViewData';
 import AuthScreenViewData, {AuthScreenIntent, LoginIntent, RegisterIntent} from '@/src/components/AuthScreen/AuthScreenViewData';
 import style from './AuthScreenViewStyle';
-
-const CYCLE_INTERVAL_MS = 5000;
-const FADE_DURATION_MS = 1500;
-
-function shuffle<T>(arr: T[]): T[] {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
-
-function BackgroundCycler() {
-    const {top} = useSafeAreaInsets();
-    const {width, height} = useWindowDimensions();
-    const images: ImageSourcePropType[] = useMemo(() => shuffle(authBackgroundImages), []);
-    const indexRef = useRef(0);
-    const [imageA, setImageA] = useState<ImageSourcePropType | undefined>(images[0]);
-    const [imageB, setImageB] = useState<ImageSourcePropType | undefined>(images.length > 1 ? images[1] : undefined);
-    const bOpacity = useRef(new Animated.Value(0)).current;
-    const aIsCurrentRef = useRef(true);
-
-    useEffect(() => {
-        if (images.length < 2) return;
-
-        const interval = setInterval(() => {
-            const nextIdx = (indexRef.current + 1) % images.length;
-            indexRef.current = nextIdx;
-            const afterIdx = (nextIdx + 1) % images.length;
-
-            if (aIsCurrentRef.current) {
-                Animated.timing(bOpacity, {
-                    toValue: 1,
-                    duration: FADE_DURATION_MS,
-                    useNativeDriver: true,
-                }).start(() => {
-                    setImageA(images[afterIdx]);
-                    aIsCurrentRef.current = false;
-                });
-            } else {
-                Animated.timing(bOpacity, {
-                    toValue: 0,
-                    duration: FADE_DURATION_MS,
-                    useNativeDriver: true,
-                }).start(() => {
-                    setImageB(images[afterIdx]);
-                    aIsCurrentRef.current = true;
-                });
-            }
-        }, CYCLE_INTERVAL_MS);
-
-        return () => clearInterval(interval);
-    }, [images]);
-
-    if (!imageA) return null;
-
-    const imgStyle = {width, height: height + top};
-
-    return (
-        <View style={[StyleSheet.absoluteFillObject, {top: -top}]}>
-            <Animated.Image source={imageA} style={imgStyle} blurRadius={6} resizeMode="cover"/>
-            {imageB && <Animated.Image source={imageB} style={[imgStyle, {opacity: bOpacity, position: 'absolute', top: 0, left: 0}]} blurRadius={6} resizeMode="cover"/>}
-            <View style={[StyleSheet.absoluteFillObject, style.overlay]}/>
-        </View>
-    );
-}
 
 function LoginForm({onSubmit, disabled}: { onSubmit: (intent: AuthScreenIntent) => void; disabled: boolean }) {
     const [username, setUsername] = useState('');
@@ -155,7 +87,9 @@ export default function AuthScreenView({viewData, send}: ViewProps<AuthScreenVie
     return (
         <View style={style.container}>
             <StatusBar barStyle="light-content" translucent backgroundColor="transparent"/>
-            <BackgroundCycler/>
+            <BackgroundCyclerView
+                viewData={new BackgroundCyclerViewData(authBackgroundImages, 6, 'rgba(0,0,0,0.38)', -insets.top)}
+            />
 
             <KeyboardAvoidingView
                 style={style.content}

@@ -6,13 +6,14 @@ export const VISIBLE_COUNT = 3;
 export default StyleSheet.create({
     container: {
         borderWidth: 1,
-        borderColor: '#e0ded9',
+        borderColor: 'rgba(255,255,255,0.18)',
         borderRadius: 16,
         height: ITEM_HEIGHT * VISIBLE_COUNT,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
+        backgroundColor: 'rgba(0,0,0,0.35)',
     },
     selectionBand: {
         position: 'absolute',
@@ -20,7 +21,7 @@ export default StyleSheet.create({
         right: 14,
         top: ITEM_HEIGHT,
         height: ITEM_HEIGHT,
-        backgroundColor: '#f5f4f1',
+        backgroundColor: 'rgba(255,255,255,0.22)',
         borderRadius: 10,
     },
     wheel: {
@@ -37,17 +38,17 @@ export default StyleSheet.create({
     },
     itemText: {
         fontSize: 18,
-        color: '#c9c7c2',
+        color: 'rgba(255,255,255,0.45)',
         fontFamily: 'Lato-Regular',
     },
     itemTextActive: {
         fontSize: 20,
-        color: '#1a1a1a',
+        color: '#ffffff',
         fontFamily: 'Lato-Bold',
     },
     separator: {
         fontSize: 20,
-        color: '#1a1a1a',
+        color: '#ffffff',
         fontFamily: 'Lato-Bold',
         marginHorizontal: 2,
     },

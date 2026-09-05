@@ -8,6 +8,7 @@ export class FtueScreenViewData {
         readonly currentStep: number,
         readonly isTimePage: boolean,
         readonly time: FtueTimePickerViewData,
+        readonly isExactTime: boolean,
         readonly roundNumber: number,
         readonly totalRounds: number,
         readonly tiles: FtueImageChoiceViewData[],
@@ -19,7 +20,7 @@ export class FtueScreenViewData {
 
     static loading(): FtueScreenViewData {
         return new FtueScreenViewData(
-            true, 0, 0, true, new FtueTimePickerViewData(9, 0, 'AM'),
+            true, 0, 0, true, new FtueTimePickerViewData(8, 0, 'AM'), false,
             0, 0, [], null, false, false, false,
         );
     }
@@ -29,10 +30,14 @@ export class TimeChangedIntent {
     constructor(readonly time: FtueTimePickerViewData) {}
 }
 
+export class ExactTimeToggledIntent {
+    constructor(readonly exact: boolean) {}
+}
+
 export class TileSelectedIntent {
     constructor(readonly artworkId: number) {}
 }
 
 export class ContinueIntent {}
 
-export type FtueScreenIntent = TimeChangedIntent | TileSelectedIntent | ContinueIntent;
+export type FtueScreenIntent = TimeChangedIntent | ExactTimeToggledIntent | TileSelectedIntent | ContinueIntent;
