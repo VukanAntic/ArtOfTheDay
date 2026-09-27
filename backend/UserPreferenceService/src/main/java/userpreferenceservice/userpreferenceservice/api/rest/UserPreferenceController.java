@@ -126,4 +126,26 @@ public class UserPreferenceController {
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.badRequest().build();
     }
+
+    @PutMapping("/set-profile-artwork")
+    public ResponseEntity<Void> setProfileArtwork(@RequestBody SetProfileArtworkDTO setProfileArtworkDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.setProfileArtwork(username, setProfileArtworkDTO.getArtworkId()) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
+
+    @PutMapping("/clear-profile-artwork")
+    public ResponseEntity<Void> clearProfileArtwork() {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return userPreferenceService.clearProfileArtwork(username) == AddToDBStatus.SUCCESS
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
+    }
 }

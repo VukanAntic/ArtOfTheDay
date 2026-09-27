@@ -4,10 +4,12 @@ import {
     AddLikedArtistCommand,
     AddLikedArtworkCommand,
     AddLikedGenreCommand,
+    ClearProfileArtworkCommand,
     RemoveDislikedArtworkCommand,
     RemoveLikedArtistCommand,
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
+    SetProfileArtworkCommand,
 } from './PreferenceCommands';
 
 export interface IPreferenceClient {
@@ -20,4 +22,6 @@ export interface IPreferenceClient {
     removeLikedArtist(command: RemoveLikedArtistCommand): Promise<void>;
     addDislikedArtwork(command: AddDislikedArtworkCommand): Promise<void>;
     removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void>;
+    setProfileArtwork(command: SetProfileArtworkCommand): Promise<void>;
+    clearProfileArtwork(command: ClearProfileArtworkCommand): Promise<void>;
 }

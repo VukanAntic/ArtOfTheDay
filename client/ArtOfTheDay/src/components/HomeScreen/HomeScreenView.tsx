@@ -57,7 +57,10 @@ export default function HomeScreenView({viewData, send}: ViewProps<HomeScreenVie
             />
 
             <Reanimated.View style={[style.headerContainer, homeUIOpacity]}>
-                <ArtworkDetailHeader backgroundImageUrl={artworks[activeIndex].imageURL}/>
+                <ArtworkDetailHeader
+                    backgroundImageUrl={artworks[activeIndex].imageURL}
+                    profileImageUrl={viewData.profileImageUrl}
+                />
             </Reanimated.View>
 
             <Reanimated.View style={[{flex: 1}, homeUIOpacity]}>
@@ -87,6 +90,7 @@ export default function HomeScreenView({viewData, send}: ViewProps<HomeScreenVie
                     infoPanelStyle={infoPanelStyle}
                     onClose={handleClose}
                     onPreferenceIntent={onPreferenceIntent}
+                    profileImageUrl={viewData.profileImageUrl}
                 />
             )}
         </View>

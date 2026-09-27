@@ -1,5 +1,5 @@
 import {ReactNode, useState} from 'react';
-import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {router} from 'expo-router';
 import {
@@ -25,6 +25,11 @@ type Props = {
 type RowKey = 'name' | 'email' | 'password' | 'time';
 
 const PLACEHOLDER = 'rgba(255,255,255,0.4)';
+
+const imageHeaders = {
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.artic.edu/',
+};
 
 function Row({label, value, open, onPress}: {label: string; value: string; open: boolean; onPress: () => void}) {
     return (
@@ -158,7 +163,15 @@ export default function SettingsScreenView({viewData, width, onAccountIntent}: P
             >
                 <View style={style.identity}>
                     <View style={style.avatar}>
-                        <Text style={style.avatarText}>{initials}</Text>
+                        {viewData.profileImageUrl ? (
+                            <Image
+                                source={{uri: viewData.profileImageUrl, headers: imageHeaders}}
+                                style={style.avatarImage}
+                                resizeMode="cover"
+                            />
+                        ) : (
+                            <Text style={style.avatarText}>{initials}</Text>
+                        )}
                     </View>
                     <View style={style.identityText}>
                         <Text style={style.identityName} numberOfLines={1}>{displayFirst} {displayLast}</Text>

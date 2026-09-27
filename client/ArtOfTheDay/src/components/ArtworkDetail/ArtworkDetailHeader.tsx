@@ -3,14 +3,20 @@ import Animated from 'react-native-reanimated';
 import style from './ArtworkDetailHeaderStyle';
 import {router} from "expo-router";
 
+const imageHeaders = {
+    'User-Agent': 'Mozilla/5.0',
+    'Referer': 'https://www.artic.edu/',
+};
+
 type Props = {
     onClose?: () => void;
     backButtonOpacity?: any;
     /** URL of the currently active artwork — forwarded to the profile screen as background */
     backgroundImageUrl?: string;
+    profileImageUrl?: string | null;
 };
 
-export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgroundImageUrl}: Props) {
+export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgroundImageUrl, profileImageUrl}: Props) {
 
     const goToUserProfile = () => {
         router.push({pathname: '/profile', params: {bg: backgroundImageUrl ?? ''}});
@@ -32,7 +38,15 @@ export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgro
             </View>
 
             <TouchableOpacity style={style.profileButton} onPress={goToUserProfile}>
-                <Image source={require('@/assets/images/User/User_02.png')}/>
+                {profileImageUrl ? (
+                    <Image
+                        source={{uri: profileImageUrl, headers: imageHeaders}}
+                        style={style.profileImage}
+                        resizeMode="cover"
+                    />
+                ) : (
+                    <Image source={require('@/assets/images/User/User_02.png')}/>
+                )}
             </TouchableOpacity>
         </View>
     );

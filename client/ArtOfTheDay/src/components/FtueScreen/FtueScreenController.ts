@@ -206,6 +206,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
             [...new Set([...(prefs?.likedGenreIds ?? []), ...genreIds])],
             prefs?.dislikedArtworkIds ?? [],
             [...new Set([...(prefs?.likedArtistIds ?? []), ...artistIds])],
+            prefs?.profileArtworkId ?? null,
         ));
 
         const allArtworks = await this.artworkRepository.get();

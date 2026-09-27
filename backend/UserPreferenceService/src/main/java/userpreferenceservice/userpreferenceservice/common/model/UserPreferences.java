@@ -21,4 +21,5 @@ public class UserPreferences {
     private Set<String> dislikedArtworksIds = new HashSet<>();
     @Builder.Default
     private Set<Long> likedArtistIds = new HashSet<>();
+    private Long profileArtworkId;
 }

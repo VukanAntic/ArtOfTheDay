@@ -11,6 +11,12 @@ import {AddLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/c
 import {RemoveLikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveLikedArtworkCommandHandler';
 import {AddDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/AddDislikedArtworkCommandHandler';
 import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {
+    SetProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/SetProfileArtworkCommandHandler';
+import {
+    ClearProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/ClearProfileArtworkCommandHandler';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import {PublishLatestToWidgetCommandHandler} from '@/src/services/WidgetServices/commandHandlers/PublishLatestToWidgetCommandHandler';
 import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
@@ -38,8 +44,10 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         private readonly artworkRepository: IRepository<AllArtworksData>,
         private readonly publishLatestToWidgetHandler: PublishLatestToWidgetCommandHandler,
         private readonly ensureSession: () => Promise<void>,
+        private readonly setProfileArtworkHandler: SetProfileArtworkCommandHandler,
+        private readonly clearProfileArtworkHandler: ClearProfileArtworkCommandHandler,
     ) {
-        super(new HomeScreenViewData([], false));
+        super(new HomeScreenViewData([], false, null));
     }
 
     onMount(): void {
@@ -78,10 +86,10 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         this.loading = true;
         try {
             const artworks = await this.buildArtworks();
-            this.setViewData(new HomeScreenViewData(artworks, true));
+            this.setViewData(new HomeScreenViewData(artworks, true, await this.buildProfileImageUrl()));
         } catch (e) {
             console.error('[HomeScreen] loadArtworks failed:', e);
-            this.setViewData(new HomeScreenViewData(this.getSnapshot().artworks, true));
+            this.setViewData(new HomeScreenViewData(this.getSnapshot().artworks, true, this.getSnapshot().profileImageUrl));
         } finally {
             this.loading = false;
         }
@@ -102,6 +110,13 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
                 return artwork ? new FeaturedArtworkViewData(artwork, seenImage, likedIds.has(artwork.id)) : null;
             })
             .filter((item): item is FeaturedArtworkViewData => item !== null);
+    }
+
+    private async buildProfileImageUrl(): Promise<string | null> {
+        const preferences = await this.preferencesRepository.get();
+        if (!preferences?.profileArtworkId) return null;
+        const allArtworks = await this.artworkRepository.get();
+        return allArtworks?.getById(preferences.profileArtworkId)?.imageUrl ?? null;
     }
 
     private async connectWebSocket(): Promise<void> {
@@ -142,6 +157,10 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
                 return this.addDislikedArtworkHandler.handle({artworkId: intent.artworkId});
             case 'UNDISLIKE':
                 return this.removeDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'SET_PROFILE':
+                return this.setProfileArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'CLEAR_PROFILE':
+                return this.clearProfileArtworkHandler.handle({});
         }
     }
 }

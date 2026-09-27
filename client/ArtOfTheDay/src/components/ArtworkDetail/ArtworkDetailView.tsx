@@ -28,9 +28,10 @@ type Props = {
     infoPanelStyle: any;
     onClose: () => void;
     onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
+    profileImageUrl?: string | null;
 };
 
-export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, infoPanelStyle, onClose, onPreferenceIntent}: Props) {
+export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, infoPanelStyle, onClose, onPreferenceIntent, profileImageUrl}: Props) {
     const isClosing = useSharedValue(false);
     const [liked, setLiked] = useState(artwork.isLiked);
 
@@ -76,7 +77,7 @@ export default function ArtworkDetailView({artwork, cardStyle, detailUIOpacity, 
                 style={StyleSheet.absoluteFillObject}
                 pointerEvents="box-none"
             >
-                <ArtworkDetailHeader onClose={onClose} backButtonOpacity={detailUIOpacity}/>
+                <ArtworkDetailHeader onClose={onClose} backButtonOpacity={detailUIOpacity} profileImageUrl={profileImageUrl}/>
             </View>
         </View>
     );

@@ -13,10 +13,10 @@ export class LikedArtworkCellViewData {
     readonly dateLabel: string;
     readonly popupData: DetailedArtworkPopupViewData;
 
-    constructor(artwork: ArtworkData, receivedAt: Date | null) {
+    constructor(artwork: ArtworkData, receivedAt: Date | null, isProfileArtwork: boolean = false) {
         this.id = String(artwork.id);
         this.imageUrl = artwork.imageUrl;
         this.dateLabel = receivedAt ? formatDate(receivedAt) : '';
-        this.popupData = new DetailedArtworkPopupViewData(artwork, receivedAt);
+        this.popupData = new DetailedArtworkPopupViewData(artwork, receivedAt, isProfileArtwork);
     }
 }

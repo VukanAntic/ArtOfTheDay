@@ -16,6 +16,8 @@ service PreferenceGrpcService {
   rpc RemoveLikedArtist (ArtistIdRequest) returns (BoolResponse);
   rpc AddDislikedArtwork (DislikedArtworkIdRequest) returns (BoolResponse);
   rpc RemoveDislikedArtwork (DislikedArtworkIdRequest) returns (BoolResponse);
+  rpc SetProfileArtwork (ArtworkIdRequest) returns (BoolResponse);
+  rpc ClearProfileArtwork (Empty) returns (BoolResponse);
 }
 
 message Empty {}
@@ -31,4 +33,5 @@ message Preferences {
   repeated string liked_genre_ids = 3;
   repeated string disliked_artworks_ids = 4;
   repeated int64 liked_artist_ids = 5;
+  optional int64 profile_artwork_id = 6;
 }

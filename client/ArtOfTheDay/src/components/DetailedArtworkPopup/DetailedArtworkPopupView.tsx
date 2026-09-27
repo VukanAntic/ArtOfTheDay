@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Ionicons} from '@expo/vector-icons';
 import Reanimated, {runOnJS, useAnimatedScrollHandler, useSharedValue} from 'react-native-reanimated';
 import DetailedArtworkPopupViewData from './DetailedArtworkPopupViewData';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
@@ -33,11 +34,18 @@ export default function DetailedArtworkPopupView({artwork, onClose, onPreference
     const [isExpanded, setIsExpanded] = useState(false);
     const isClosing = useSharedValue(false);
     const [liked, setLiked] = useState(artwork.isImageLiked);
+    const [isProfileArtwork, setIsProfileArtwork] = useState(artwork.isProfileArtwork);
 
     const onToggleLike = () => {
         const next = !liked;
         setLiked(next);
         onPreferenceIntent({type: next ? 'LIKE' : 'UNLIKE', artworkId: Number(artwork.id)});
+    };
+
+    const onToggleProfileArtwork = () => {
+        const next = !isProfileArtwork;
+        setIsProfileArtwork(next);
+        onPreferenceIntent({type: next ? 'SET_PROFILE' : 'CLEAR_PROFILE', artworkId: Number(artwork.id)});
     };
 
     const handleShare = () => shareArtwork({title: artwork.title, artistName: artwork.artistName, imageURL: artwork.imageURL});
@@ -141,6 +149,10 @@ export default function DetailedArtworkPopupView({artwork, onClose, onPreference
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton} onPress={onToggleLike}>
                         <Text style={s.actionButtonText}>{liked ? '♥' : '♡'}</Text>
+                    </TouchableOpacity>
+                    <View style={s.actionBarLine}/>
+                    <TouchableOpacity style={s.actionButton} onPress={onToggleProfileArtwork}>
+                        <Ionicons name={isProfileArtwork ? 'person' : 'person-outline'} size={18} color="#fff"/>
                     </TouchableOpacity>
                     <View style={s.actionBarLine}/>
                     <TouchableOpacity style={s.actionButton} onPress={handleShare}>

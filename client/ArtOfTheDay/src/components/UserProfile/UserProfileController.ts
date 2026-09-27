@@ -35,6 +35,12 @@ import {
 import {
     RemoveDislikedArtworkCommandHandler
 } from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
+import {
+    SetProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/SetProfileArtworkCommandHandler';
+import {
+    ClearProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/ClearProfileArtworkCommandHandler';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
 import {FtueTimePickerViewData} from '@/src/components/FtueTimePicker/FtueTimePickerViewData';
@@ -118,6 +124,8 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
         private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
         private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
         private readonly setPreferredTimeHandler: SetPreferredTimeCommandHandler,
+        private readonly setProfileArtworkHandler: SetProfileArtworkCommandHandler,
+        private readonly clearProfileArtworkHandler: ClearProfileArtworkCommandHandler,
     ) {
         super(null);
     }
@@ -164,8 +172,12 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
 
         const backgroundImageUrl = 'https://www.artic.edu/iiif/2/815fb024-96bb-6f38-e6fc-d398d2103c65/full/843,/0/default.jpg';
 
+        const profileImageUrl = preferences.profileArtworkId
+            ? allArtworks?.getById(preferences.profileArtworkId)?.imageUrl ?? null
+            : null;
+
         return new UserProfileViewData(
-            new LikedArtScreenViewData(likedArtworks, history),
+            new LikedArtScreenViewData(likedArtworks, history, preferences.profileArtworkId),
             new PersonalScreenViewData(allGenres, allArtists, preferences.likedGenreIds, preferences.likedArtistIds),
             user,
             FtueTimePickerViewData.from24Hour(
@@ -173,6 +185,7 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
                 userHistory?.preferredTimeInMinutes ?? 0,
             ),
             backgroundImageUrl,
+            profileImageUrl,
         );
     }
 
@@ -229,6 +242,10 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
                 return this.addDislikedArtworkHandler.handle({artworkId: intent.artworkId});
             case 'UNDISLIKE':
                 return this.removeDislikedArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'SET_PROFILE':
+                return this.setProfileArtworkHandler.handle({artworkId: intent.artworkId});
+            case 'CLEAR_PROFILE':
+                return this.clearProfileArtworkHandler.handle({});
         }
     }
 

@@ -4,5 +4,6 @@ export class HomeScreenViewData {
     constructor(
         readonly artworks: FeaturedArtworkViewData[],
         readonly loaded: boolean,
+        readonly profileImageUrl: string | null,
     ) {}
 }

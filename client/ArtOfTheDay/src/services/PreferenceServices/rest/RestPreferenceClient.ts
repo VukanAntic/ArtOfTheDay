@@ -5,10 +5,12 @@ import {
     AddLikedArtistCommand,
     AddLikedArtworkCommand,
     AddLikedGenreCommand,
+    ClearProfileArtworkCommand,
     RemoveDislikedArtworkCommand,
     RemoveLikedArtistCommand,
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
+    SetProfileArtworkCommand,
 } from '@/src/services/PreferenceServices/PreferenceCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
 import {restGet, restPut} from '@/src/services/rest/restFetch';
@@ -19,6 +21,7 @@ type UserPreferencesDTO = {
     likedGenreIds: string[];
     dislikedArtworksIds: number[];
     likedArtistIds: number[];
+    profileArtworkId: number | null;
 };
 
 const BASE = `${API_CONFIG.preferenceService}/api/preference`;
@@ -30,6 +33,7 @@ function toUserPreferences(dto: UserPreferencesDTO): UserPreferencesData {
         dto.likedGenreIds,
         dto.dislikedArtworksIds,
         dto.likedArtistIds,
+        dto.profileArtworkId ?? null,
     );
 }
 
@@ -69,5 +73,13 @@ export class RestPreferenceClient implements IPreferenceClient {
 
     async removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void> {
         await restPut(`${BASE}/remove-disliked-artwork`, {artworkId: command.artworkId});
+    }
+
+    async setProfileArtwork(command: SetProfileArtworkCommand): Promise<void> {
+        await restPut(`${BASE}/set-profile-artwork`, {artworkId: command.artworkId});
+    }
+
+    async clearProfileArtwork(_command: ClearProfileArtworkCommand): Promise<void> {
+        await restPut(`${BASE}/clear-profile-artwork`, {});
     }
 }

@@ -4,6 +4,7 @@ type UserPreferences {
     likedGenreIds: [ID!]!
     dislikedArtworksIds: [ID!]!
     likedArtistIds: [Int!]!
+    profileArtworkId: Int
 }
 
 type Query {
@@ -19,4 +20,6 @@ type Mutation {
     removeLikedArtist(artistId: Int!): Boolean!
     addDislikedArtwork(artworkId: ID!): Boolean!
     removeDislikedArtwork(artworkId: ID!): Boolean!
+    setProfileArtwork(artworkId: Int!): Boolean!
+    clearProfileArtwork: Boolean!
 }

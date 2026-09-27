@@ -65,6 +65,16 @@ public class PreferenceGraphqlController {
         return userPreferenceService.removeDislikedArtwork(requireUsername(), artworkId) == AddToDBStatus.SUCCESS;
     }
 
+    @MutationMapping
+    public boolean setProfileArtwork(@Argument Long artworkId) {
+        return userPreferenceService.setProfileArtwork(requireUsername(), artworkId) == AddToDBStatus.SUCCESS;
+    }
+
+    @MutationMapping
+    public boolean clearProfileArtwork() {
+        return userPreferenceService.clearProfileArtwork(requireUsername()) == AddToDBStatus.SUCCESS;
+    }
+
     private String requireUsername() {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {

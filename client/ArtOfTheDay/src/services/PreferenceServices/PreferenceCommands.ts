@@ -31,3 +31,9 @@ export interface AddDislikedArtworkCommand {
 export interface RemoveDislikedArtworkCommand {
     artworkId: number;
 }
+
+export interface SetProfileArtworkCommand {
+    artworkId: number;
+}
+
+export interface ClearProfileArtworkCommand {}

@@ -5,10 +5,12 @@ import {
     AddLikedArtistCommand,
     AddLikedArtworkCommand,
     AddLikedGenreCommand,
+    ClearProfileArtworkCommand,
     RemoveDislikedArtworkCommand,
     RemoveLikedArtistCommand,
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
+    SetProfileArtworkCommand,
 } from '@/src/services/PreferenceServices/PreferenceCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
 import {graphqlRequest} from '@/src/services/graphql/graphqlFetch';
@@ -19,6 +21,7 @@ type UserPreferencesDTO = {
     likedGenreIds: string[];
     dislikedArtworksIds: number[];
     likedArtistIds: number[];
+    profileArtworkId: number | null;
 };
 
 const ENDPOINT = `${API_CONFIG.preferenceService}/graphql`;
@@ -30,6 +33,7 @@ function toUserPreferences(dto: UserPreferencesDTO): UserPreferencesData {
         dto.likedGenreIds,
         dto.dislikedArtworksIds,
         dto.likedArtistIds,
+        dto.profileArtworkId ?? null,
     );
 }
 
@@ -37,7 +41,7 @@ export class GraphqlPreferenceClient implements IPreferenceClient {
     async getPreferences(): Promise<UserPreferencesData> {
         const data = await graphqlRequest<{preferences: UserPreferencesDTO}>(
             ENDPOINT,
-            `query { preferences { username likedArtworkIds likedGenreIds dislikedArtworksIds likedArtistIds } }`,
+            `query { preferences { username likedArtworkIds likedGenreIds dislikedArtworksIds likedArtistIds profileArtworkId } }`,
         );
         return toUserPreferences(data.preferences);
     }
@@ -103,6 +107,21 @@ export class GraphqlPreferenceClient implements IPreferenceClient {
             ENDPOINT,
             `mutation($artworkId: ID!) { removeDislikedArtwork(artworkId: $artworkId) }`,
             {artworkId: command.artworkId},
+        );
+    }
+
+    async setProfileArtwork(command: SetProfileArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($artworkId: Int!) { setProfileArtwork(artworkId: $artworkId) }`,
+            {artworkId: command.artworkId},
+        );
+    }
+
+    async clearProfileArtwork(_command: ClearProfileArtworkCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation { clearProfileArtwork }`,
         );
     }
 }

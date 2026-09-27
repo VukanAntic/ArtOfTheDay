@@ -28,13 +28,16 @@ public class PreferenceGrpcController extends PreferenceGrpcServiceGrpc.Preferen
             return;
         }
         var p = opt.get();
-        obs.onNext(Preferences.newBuilder()
+        var builder = Preferences.newBuilder()
                 .setUsername(p.getUsername() == null ? "" : p.getUsername())
                 .addAllLikedArtworkIds(p.getLikedArtworkIds())
                 .addAllLikedGenreIds(p.getLikedGenreIds())
                 .addAllDislikedArtworksIds(p.getDislikedArtworksIds())
-                .addAllLikedArtistIds(p.getLikedArtistIds())
-                .build());
+                .addAllLikedArtistIds(p.getLikedArtistIds());
+        if (p.getProfileArtworkId() != null) {
+            builder.setProfileArtworkId(p.getProfileArtworkId());
+        }
+        obs.onNext(builder.build());
         obs.onCompleted();
     }
 
@@ -92,6 +95,20 @@ public class PreferenceGrpcController extends PreferenceGrpcServiceGrpc.Preferen
         var u = AuthenticatedUser.getUsername();
         if (u == null) { unauth(obs); return; }
         bool(userPreferenceService.removeDislikedArtwork(u, request.getArtworkId()), obs);
+    }
+
+    @Override
+    public void setProfileArtwork(ArtworkIdRequest request, StreamObserver<BoolResponse> obs) {
+        var u = AuthenticatedUser.getUsername();
+        if (u == null) { unauth(obs); return; }
+        bool(userPreferenceService.setProfileArtwork(u, request.getArtworkId()), obs);
+    }
+
+    @Override
+    public void clearProfileArtwork(Empty request, StreamObserver<BoolResponse> obs) {
+        var u = AuthenticatedUser.getUsername();
+        if (u == null) { unauth(obs); return; }
+        bool(userPreferenceService.clearProfileArtwork(u), obs);
     }
 
     private void bool(AddToDBStatus status, StreamObserver<BoolResponse> obs) {

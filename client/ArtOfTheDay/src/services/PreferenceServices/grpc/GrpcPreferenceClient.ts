@@ -6,10 +6,12 @@ import {
     AddLikedArtistCommand,
     AddLikedArtworkCommand,
     AddLikedGenreCommand,
+    ClearProfileArtworkCommand,
     RemoveDislikedArtworkCommand,
     RemoveLikedArtistCommand,
     RemoveLikedArtworkCommand,
     RemoveLikedGenreCommand,
+    SetProfileArtworkCommand,
 } from '@/src/services/PreferenceServices/PreferenceCommands';
 import {PreferenceGrpcService} from '@/src/services/grpc/gen/preference_pb';
 import {grpcTransport} from '@/src/services/grpc/grpcTransport';
@@ -25,6 +27,7 @@ export class GrpcPreferenceClient implements IPreferenceClient {
             p.likedGenreIds,
             p.dislikedArtworksIds.map(Number),
             p.likedArtistIds.map(Number),
+            p.profileArtworkId === undefined ? null : Number(p.profileArtworkId),
         );
     }
 
@@ -58,5 +61,13 @@ export class GrpcPreferenceClient implements IPreferenceClient {
 
     async removeDislikedArtwork(command: RemoveDislikedArtworkCommand): Promise<void> {
         await this.client.removeDislikedArtwork({artworkId: String(command.artworkId)});
+    }
+
+    async setProfileArtwork(command: SetProfileArtworkCommand): Promise<void> {
+        await this.client.setProfileArtwork({artworkId: BigInt(command.artworkId)});
+    }
+
+    async clearProfileArtwork(_command: ClearProfileArtworkCommand): Promise<void> {
+        await this.client.clearProfileArtwork({});
     }
 }

@@ -6,11 +6,13 @@ export default class SettingsScreenViewData {
     readonly lastName: string;
     readonly email: string;
     readonly preferredTime: FtueTimePickerViewData;
+    readonly profileImageUrl: string | null;
 
-    constructor(user: UserData | null, preferredTime: FtueTimePickerViewData) {
+    constructor(user: UserData | null, preferredTime: FtueTimePickerViewData, profileImageUrl: string | null = null) {
         this.firstName = user?.firstName ?? '';
         this.lastName = user?.lastName ?? '';
         this.email = user?.email ?? '';
         this.preferredTime = preferredTime;
+        this.profileImageUrl = profileImageUrl;
     }
 }

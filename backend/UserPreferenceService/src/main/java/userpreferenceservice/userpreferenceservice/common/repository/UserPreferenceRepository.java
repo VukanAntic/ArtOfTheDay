@@ -17,4 +17,6 @@ public interface UserPreferenceRepository {
     AddToDBStatus removeDislikedArtwork(String username, String artworkId);
     AddToDBStatus addLikedArtist(String username, Long artistId);
     AddToDBStatus removeLikedArtist(String username, Long artistId);
+    AddToDBStatus setProfileArtwork(String username, Long artworkId);
+    AddToDBStatus clearProfileArtwork(String username);
 }

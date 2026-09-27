@@ -48,4 +48,12 @@ public class UserPreferenceService {
     public AddToDBStatus removeLikedArtist(String username, Long artistId) {
         return userPreferenceDBRepository.removeLikedArtist(username, artistId);
     }
+
+    public AddToDBStatus setProfileArtwork(String username, Long artworkId) {
+        return userPreferenceDBRepository.setProfileArtwork(username, artworkId);
+    }
+
+    public AddToDBStatus clearProfileArtwork(String username) {
+        return userPreferenceDBRepository.clearProfileArtwork(username);
+    }
 }

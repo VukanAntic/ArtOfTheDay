@@ -155,6 +155,32 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
         return AddToDBStatus.SUCCESS;
     }
 
+    @Override
+    public AddToDBStatus setProfileArtwork(String username, Long artworkId) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        userEntity.setProfileArtworkId(artworkId);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
+    @Override
+    public AddToDBStatus clearProfileArtwork(String username) {
+        var userEntityOptional = userPreferenceMongoRepository.findById(username);
+        if (userEntityOptional.isEmpty()) {
+            return AddToDBStatus.FAILURE;
+        }
+
+        var userEntity = userEntityOptional.get();
+        userEntity.setProfileArtworkId(null);
+        userPreferenceMongoRepository.save(userEntity);
+        return AddToDBStatus.SUCCESS;
+    }
+
     public Optional<UserPreferences> getUserPreferences(String username) {
         var userPreferencesEntityOptional = userPreferenceMongoRepository.findById(username);
         if (userPreferencesEntityOptional.isEmpty()) {
@@ -171,6 +197,7 @@ public class UserPreferenceDBRepository implements UserPreferenceRepository {
                 .likedArtistIds(userPreferencesEntity.getLikedArtistIds())
                 .dislikedArtworksIds(userPreferencesEntity.getDislikedArtworksIds())
                 .likedGenreIds(userPreferencesEntity.getLikedGenreIds())
+                .profileArtworkId(userPreferencesEntity.getProfileArtworkId())
                 .build()
         );
     }

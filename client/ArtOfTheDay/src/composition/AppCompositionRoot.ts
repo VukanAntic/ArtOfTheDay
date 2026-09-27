@@ -3,6 +3,12 @@ import {setTokenProvider} from '@/src/services/rest/restFetch';
 import {createAuthClient} from '@/src/services/AuthServices/createAuthClient';
 import {createImageClient} from '@/src/services/ImageServices/createImageClient';
 import {createPreferenceClient} from '@/src/services/PreferenceServices/createPreferenceClient';
+import {
+    SetProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/SetProfileArtworkCommandHandler';
+import {
+    ClearProfileArtworkCommandHandler
+} from '@/src/services/PreferenceServices/commandHandlers/ClearProfileArtworkCommandHandler';
 import {createTutorialClient} from '@/src/services/TutorialServices/createTutorialClient';
 import {createNextImageClient} from '@/src/services/NextImageServices/createNextImageClient';
 import {NextImageWebSocketService} from '@/src/services/NextImageServices/NextImageWebSocketService';
@@ -95,6 +101,8 @@ export const addLikedArtistCommandHandler = new AddLikedArtistCommandHandler(pre
 export const removeLikedArtistCommandHandler = new RemoveLikedArtistCommandHandler(preferenceClient, preferencesRepository);
 export const addDislikedArtworkCommandHandler = new AddDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
 export const removeDislikedArtworkCommandHandler = new RemoveDislikedArtworkCommandHandler(preferenceClient, preferencesRepository);
+export const setProfileArtworkCommandHandler = new SetProfileArtworkCommandHandler(preferenceClient, preferencesRepository);
+export const clearProfileArtworkCommandHandler = new ClearProfileArtworkCommandHandler(preferenceClient, preferencesRepository);
 
 export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutorialClient);
 
@@ -145,6 +153,8 @@ export const homeScreenController = new HomeScreenController(
     artworkRepository,
     publishLatestToWidgetCommandHandler,
     ensureSessionBootstrapped,
+    setProfileArtworkCommandHandler,
+    clearProfileArtworkCommandHandler,
 );
 
 export const ftueScreenController = new FtueScreenController(
@@ -186,6 +196,8 @@ export const userProfileController = new UserProfileController(
     addDislikedArtworkCommandHandler,
     removeDislikedArtworkCommandHandler,
     setPreferredTimeCommandHandler,
+    setProfileArtworkCommandHandler,
+    clearProfileArtworkCommandHandler,
 );
 
 export async function bootstrapSession(): Promise<void> {
