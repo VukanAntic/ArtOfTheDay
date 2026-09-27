@@ -3,8 +3,14 @@ type SeenImage {
     seenAt: Float!
 }
 
+type UserHistory {
+    seenImages: [SeenImage!]!
+    preferredTimeInHours: Int!
+    preferredTimeInMinutes: Int!
+}
+
 type Query {
-    history: [SeenImage!]!
+    history: UserHistory!
 }
 
 type Mutation {

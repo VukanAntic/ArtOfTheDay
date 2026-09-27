@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file next_image.proto.
  */
 export const file_next_image: GenFile = /*@__PURE__*/
-  fileDesc("ChBuZXh0X2ltYWdlLnByb3RvEgluZXh0aW1hZ2UiEwoRR2V0SGlzdG9yeVJlcXVlc3QiMAoJU2VlbkltYWdlEhIKCmFydHdvcmtfaWQYASABKAMSDwoHc2Vlbl9hdBgCIAEoAyI/ChJHZXRIaXN0b3J5UmVzcG9uc2USKQoLc2Vlbl9pbWFnZXMYASADKAsyFC5uZXh0aW1hZ2UuU2VlbkltYWdlInMKF1NldFByZWZlcnJlZFRpbWVSZXF1ZXN0Eh8KF3ByZWZlcnJlZF90aW1lX2luX2hvdXJzGAEgASgFEiEKGXByZWZlcnJlZF90aW1lX2luX21pbnV0ZXMYAiABKAUSFAoMdGltZV96b25lX2lkGAMgASgJIisKGFNldFByZWZlcnJlZFRpbWVSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIMr4BChROZXh0SW1hZ2VHcnBjU2VydmljZRJJCgpHZXRIaXN0b3J5EhwubmV4dGltYWdlLkdldEhpc3RvcnlSZXF1ZXN0Gh0ubmV4dGltYWdlLkdldEhpc3RvcnlSZXNwb25zZRJbChBTZXRQcmVmZXJyZWRUaW1lEiIubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXF1ZXN0GiMubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXNwb25zZUIxCh1iYWNrZW5kLm5leHRpbWFnZXNlcnZpY2UuZ3JwY0IOTmV4dEltYWdlUHJvdG9QAWIGcHJvdG8z");
+  fileDesc("ChBuZXh0X2ltYWdlLnByb3RvEgluZXh0aW1hZ2UiEwoRR2V0SGlzdG9yeVJlcXVlc3QiMAoJU2VlbkltYWdlEhIKCmFydHdvcmtfaWQYASABKAMSDwoHc2Vlbl9hdBgCIAEoAyKDAQoSR2V0SGlzdG9yeVJlc3BvbnNlEikKC3NlZW5faW1hZ2VzGAEgAygLMhQubmV4dGltYWdlLlNlZW5JbWFnZRIfChdwcmVmZXJyZWRfdGltZV9pbl9ob3VycxgCIAEoBRIhChlwcmVmZXJyZWRfdGltZV9pbl9taW51dGVzGAMgASgFInMKF1NldFByZWZlcnJlZFRpbWVSZXF1ZXN0Eh8KF3ByZWZlcnJlZF90aW1lX2luX2hvdXJzGAEgASgFEiEKGXByZWZlcnJlZF90aW1lX2luX21pbnV0ZXMYAiABKAUSFAoMdGltZV96b25lX2lkGAMgASgJIisKGFNldFByZWZlcnJlZFRpbWVSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIMr4BChROZXh0SW1hZ2VHcnBjU2VydmljZRJJCgpHZXRIaXN0b3J5EhwubmV4dGltYWdlLkdldEhpc3RvcnlSZXF1ZXN0Gh0ubmV4dGltYWdlLkdldEhpc3RvcnlSZXNwb25zZRJbChBTZXRQcmVmZXJyZWRUaW1lEiIubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXF1ZXN0GiMubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXNwb25zZUIxCh1iYWNrZW5kLm5leHRpbWFnZXNlcnZpY2UuZ3JwY0IOTmV4dEltYWdlUHJvdG9QAWIGcHJvdG8z");
 
 /**
  * @generated from message nextimage.GetHistoryRequest
@@ -55,6 +55,16 @@ export type GetHistoryResponse = Message<"nextimage.GetHistoryResponse"> & {
    * @generated from field: repeated nextimage.SeenImage seen_images = 1;
    */
   seenImages: SeenImage[];
+
+  /**
+   * @generated from field: int32 preferred_time_in_hours = 2;
+   */
+  preferredTimeInHours: number;
+
+  /**
+   * @generated from field: int32 preferred_time_in_minutes = 3;
+   */
+  preferredTimeInMinutes: number;
 };
 
 /**

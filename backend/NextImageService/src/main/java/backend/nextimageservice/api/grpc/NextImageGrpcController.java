@@ -29,8 +29,11 @@ public class NextImageGrpcController extends NextImageGrpcServiceGrpc.NextImageG
                     .withDescription("No authenticated user").asRuntimeException());
             return;
         }
-        var builder = GetHistoryResponse.newBuilder();
-        for (var dto : nextImageService.getUserHistory(username)) {
+        var history = nextImageService.getUserHistory(username);
+        var builder = GetHistoryResponse.newBuilder()
+                .setPreferredTimeInHours(history.getPreferredTimeInHours())
+                .setPreferredTimeInMinutes(history.getPreferredTimeInMinutes());
+        for (var dto : history.getSeenImages()) {
             builder.addSeenImages(SeenImage.newBuilder()
                     .setArtworkId(dto.getArtworkId())
                     .setSeenAt(dto.getSeenAt())

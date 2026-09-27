@@ -20,7 +20,7 @@ export class FtueScreenViewData {
 
     static loading(): FtueScreenViewData {
         return new FtueScreenViewData(
-            true, 0, 0, true, new FtueTimePickerViewData(8, 0, 'AM'), false,
+            true, 0, 0, true, new FtueTimePickerViewData(9, 0, 'AM'), false,
             0, 0, [], null, false, false, false,
         );
     }

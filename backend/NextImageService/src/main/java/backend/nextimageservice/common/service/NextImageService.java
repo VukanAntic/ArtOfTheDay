@@ -1,6 +1,7 @@
 package backend.nextimageservice.common.service;
 
 import backend.nextimageservice.common.DTO.SeenImageDTO;
+import backend.nextimageservice.common.DTO.UserHistoryDTO;
 import backend.nextimageservice.common.model.SeenImage;
 import backend.nextimageservice.common.repository.UserHistoryRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class NextImageService {
+
+    private static final int DEFAULT_PREFERRED_TIME_IN_HOURS = 9;
+    private static final int DEFAULT_PREFERRED_TIME_IN_MINUTES = 0;
     private static final int INITIAL_SEED_COUNT = 10;
     private static final int FTUE_PICK_COUNT = 4;
 
@@ -26,14 +30,12 @@ public class NextImageService {
         userHistoryRepository.setPreferredTimeForUser(username, timeZoneId, preferredUpdateTimeInHours, preferredUpdateTimeInMinutes);
     }
 
-    public List<SeenImageDTO> getUserHistory(String username) {
+    public UserHistoryDTO getUserHistory(String username) {
         var userHistory = userHistoryRepository.getUserHistory(username);
         if (userHistory == null) {
-            return List.of();
+            return new UserHistoryDTO(List.of(), DEFAULT_PREFERRED_TIME_IN_HOURS, DEFAULT_PREFERRED_TIME_IN_MINUTES);
         }
-        return userHistory.getSeenArtworks().stream()
-                .map(SeenImageDTO::new)
-                .collect(Collectors.toList());
+        return new UserHistoryDTO(userHistory);
     }
 
     public void initializeUserHistory(String username, String timeZoneId) {

@@ -1,5 +1,5 @@
 import {IRepository} from '@/src/repositories/IRepository';
-import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {CommandHandler} from '@/src/services/CommandHandler';
 import {IWidgetPublisher} from '@/src/services/WidgetServices/IWidgetPublisher';
@@ -9,7 +9,7 @@ export class PublishLatestToWidgetCommandHandler extends CommandHandler {
     private publishing = false;
 
     constructor(
-        private readonly historyRepository: IRepository<SeenImageData[]>,
+        private readonly historyRepository: IRepository<UserHistoryData>,
         private readonly artworkRepository: IRepository<AllArtworksData>,
         private readonly publisher: IWidgetPublisher,
     ) {
@@ -23,7 +23,7 @@ export class PublishLatestToWidgetCommandHandler extends CommandHandler {
         this.publishing = true;
         try {
             await this.timed('PublishLatestToWidget', async () => {
-                const history = await this.historyRepository.get() ?? [];
+                const history = (await this.historyRepository.get())?.seenImages ?? [];
                 if (history.length === 0) return;
 
                 const sorted = [...history].sort((a, b) => a.seenAt.getTime() - b.seenAt.getTime());

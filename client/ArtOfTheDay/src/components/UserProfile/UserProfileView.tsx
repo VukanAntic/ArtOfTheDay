@@ -95,7 +95,7 @@ export default function UserProfileView({viewData, send}: ViewProps<UserProfileV
                 />
 
                 <SettingsScreenView
-                    viewData={new SettingsScreenViewData(viewData.user)}
+                    viewData={new SettingsScreenViewData(viewData.user, viewData.preferredTime)}
                     width={SCREEN_WIDTH}
                     onAccountIntent={send}
                 />

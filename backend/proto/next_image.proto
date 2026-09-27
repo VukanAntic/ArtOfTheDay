@@ -20,6 +20,8 @@ message SeenImage {
 
 message GetHistoryResponse {
   repeated SeenImage seen_images = 1;
+  int32 preferred_time_in_hours = 2;
+  int32 preferred_time_in_minutes = 3;
 }
 
 message SetPreferredTimeRequest {

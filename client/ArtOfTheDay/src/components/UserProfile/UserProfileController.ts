@@ -1,6 +1,6 @@
 import {IRepository} from '@/src/repositories/IRepository';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
-import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {ArtworkData} from '@/src/domain/ArtworkData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GenreData} from '@/src/domain/GenreData';
@@ -36,6 +36,8 @@ import {
     RemoveDislikedArtworkCommandHandler
 } from '@/src/services/PreferenceServices/commandHandlers/RemoveDislikedArtworkCommandHandler';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
+import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
+import {FtueTimePickerViewData} from '@/src/components/FtueTimePicker/FtueTimePickerViewData';
 import UserProfileViewData from '@/src/components/UserProfile/UserProfileViewData';
 import LikedArtScreenViewData from '@/src/components/LikedArtScreen/LikedArtScreenViewData';
 import PersonalScreenViewData from '@/src/components/PersonalScreen/PersonalScreenViewData';
@@ -76,25 +78,32 @@ export class ChangePasswordIntent {
     }
 }
 
+export class ChangePreferredTimeIntent {
+    constructor(readonly time: FtueTimePickerViewData) {
+    }
+}
+
 export class DeleteAccountIntent {
 }
 
 export type SettingsPreferenceIntent = LikeGenreIntent | UnlikeGenreIntent | LikeArtistIntent | UnlikeArtistIntent;
-export type AccountIntent = ChangeNameIntent | ChangeEmailIntent | ChangePasswordIntent | DeleteAccountIntent;
+export type AccountIntent = ChangeNameIntent | ChangeEmailIntent | ChangePasswordIntent | ChangePreferredTimeIntent | DeleteAccountIntent;
 export type UserProfileIntent = SettingsPreferenceIntent | AccountIntent;
 export type ProfileScreenIntent = UserProfileIntent | ArtworkPreferenceIntent;
+
+const DEFAULT_PREFERRED_TIME_IN_HOURS = 9;
 
 export class UserProfileController extends ViewController<UserProfileViewData | null, ProfileScreenIntent> {
     readonly View = UserProfileView;
 
-    private unsubscribe: (() => void) | null = null;
+    private unsubscribers: (() => void)[] = [];
 
     constructor(
         private readonly preferencesRepository: IRepository<UserPreferencesData>,
         private readonly artworkRepository: IRepository<AllArtworksData>,
         private readonly genresRepository: IRepository<GenreData[]>,
         private readonly artistsRepository: IRepository<ArtistData[]>,
-        private readonly historyRepository: IRepository<SeenImageData[]>,
+        private readonly historyRepository: IRepository<UserHistoryData>,
         private readonly userRepository: IRepository<UserData>,
         private readonly addLikedGenreHandler: AddLikedGenreCommandHandler,
         private readonly removeLikedGenreHandler: RemoveLikedGenreCommandHandler,
@@ -108,18 +117,23 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
         private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
         private readonly addDislikedArtworkHandler: AddDislikedArtworkCommandHandler,
         private readonly removeDislikedArtworkHandler: RemoveDislikedArtworkCommandHandler,
+        private readonly setPreferredTimeHandler: SetPreferredTimeCommandHandler,
     ) {
         super(null);
     }
 
     onMount(): void {
         void this.reload();
-        this.unsubscribe = this.preferencesRepository.subscribe(() => void this.reload());
+        this.unsubscribers = [
+            this.preferencesRepository.subscribe(() => void this.reload()),
+            this.userRepository.subscribe(() => void this.reload()),
+            this.historyRepository.subscribe(() => void this.reload()),
+        ];
     }
 
     onUnmount(): void {
-        this.unsubscribe?.();
-        this.unsubscribe = null;
+        this.unsubscribers.forEach(unsubscribe => unsubscribe());
+        this.unsubscribers = [];
     }
 
     onMessage(intent: ProfileScreenIntent): void {
@@ -144,7 +158,8 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
             .filter((a): a is ArtworkData => a !== undefined);
         const allGenres = await this.genresRepository.get() ?? [];
         const allArtists = await this.artistsRepository.get() ?? [];
-        const history = await this.historyRepository.get() ?? [];
+        const userHistory = await this.historyRepository.get();
+        const history = userHistory?.seenImages ?? [];
         const user = await this.userRepository.get();
 
         const backgroundImageUrl = 'https://www.artic.edu/iiif/2/815fb024-96bb-6f38-e6fc-d398d2103c65/full/843,/0/default.jpg';
@@ -153,6 +168,10 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
             new LikedArtScreenViewData(likedArtworks, history),
             new PersonalScreenViewData(allGenres, allArtists, preferences.likedGenreIds, preferences.likedArtistIds),
             user,
+            FtueTimePickerViewData.from24Hour(
+                userHistory?.preferredTimeInHours ?? DEFAULT_PREFERRED_TIME_IN_HOURS,
+                userHistory?.preferredTimeInMinutes ?? 0,
+            ),
             backgroundImageUrl,
         );
     }
@@ -181,7 +200,17 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
             oldPassword: intent.oldPassword,
             newPassword: intent.newPassword
         });
+        if (intent instanceof ChangePreferredTimeIntent) return this.setPreferredTime(intent.time);
         if (intent instanceof DeleteAccountIntent) return this.deleteAccount();
+    }
+
+    private async setPreferredTime(time: FtueTimePickerViewData): Promise<void> {
+        const {hours24, minutes} = time.to24Hour();
+        await this.setPreferredTimeHandler.handle({
+            preferredTimeInHours: hours24,
+            preferredTimeInMinutes: minutes,
+            timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        });
     }
 
     private async deleteAccount(): Promise<void> {

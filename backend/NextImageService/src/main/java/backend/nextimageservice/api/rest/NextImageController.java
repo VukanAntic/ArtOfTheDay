@@ -1,6 +1,6 @@
 package backend.nextimageservice.api.rest;
 
-import backend.nextimageservice.common.DTO.SeenImageDTO;
+import backend.nextimageservice.common.DTO.UserHistoryDTO;
 import backend.nextimageservice.common.DTO.SetPreferredTimeForUpdateDTO;
 import backend.nextimageservice.common.service.NextImageService;
 import common.common.authentication.AuthenticatedUser;
@@ -22,7 +22,7 @@ public class NextImageController {
     private final NextImageService nextImageService;
 
     @GetMapping("/history")
-    public ResponseEntity<List<SeenImageDTO>> getHistory() {
+    public ResponseEntity<UserHistoryDTO> getHistory() {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             return ResponseEntity.notFound().build();

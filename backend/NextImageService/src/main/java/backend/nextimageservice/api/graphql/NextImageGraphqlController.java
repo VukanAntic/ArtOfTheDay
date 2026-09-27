@@ -1,6 +1,6 @@
 package backend.nextimageservice.api.graphql;
 
-import backend.nextimageservice.common.DTO.SeenImageDTO;
+import backend.nextimageservice.common.DTO.UserHistoryDTO;
 import backend.nextimageservice.common.service.NextImageService;
 import common.common.authentication.AuthenticatedUser;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class NextImageGraphqlController {
     private final NextImageService nextImageService;
 
     @QueryMapping
-    public List<SeenImageDTO> history() {
+    public UserHistoryDTO history() {
         var username = AuthenticatedUser.getUsername();
         if (username == null) {
             throw new IllegalStateException("No authenticated user");

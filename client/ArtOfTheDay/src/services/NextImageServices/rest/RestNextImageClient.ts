@@ -1,4 +1,5 @@
 import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {INextImageClient} from '@/src/services/NextImageServices/INextImageClient';
 import {SetPreferredTimeCommand} from '@/src/services/NextImageServices/NextImageCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
@@ -9,12 +10,22 @@ type SeenImageDTO = {
     seenAt: number;
 };
 
+type UserHistoryDTO = {
+    seenImages: SeenImageDTO[];
+    preferredTimeInHours: number;
+    preferredTimeInMinutes: number;
+};
+
 const BASE = `${API_CONFIG.nextImageService}/api/next-image`;
 
 export class RestNextImageClient implements INextImageClient {
-    async getHistory(): Promise<SeenImageData[]> {
-        const res = await restGet<SeenImageDTO[]>(`${BASE}/history`);
-        return res.map(dto => new SeenImageData(dto.artworkId, new Date(dto.seenAt)));
+    async getHistory(): Promise<UserHistoryData> {
+        const res = await restGet<UserHistoryDTO>(`${BASE}/history`);
+        return new UserHistoryData(
+            res.seenImages.map(dto => new SeenImageData(dto.artworkId, new Date(dto.seenAt))),
+            res.preferredTimeInHours,
+            res.preferredTimeInMinutes,
+        );
     }
 
     async setPreferredTime(command: SetPreferredTimeCommand): Promise<void> {

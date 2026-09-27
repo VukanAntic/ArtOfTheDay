@@ -10,7 +10,7 @@ export class FtueTimePresetsViewData {
 
     static defaults(): FtueTimePresetsViewData[] {
         return [
-            new FtueTimePresetsViewData('Morning', 'partly-sunny-outline', new FtueTimePickerViewData(8, 0, 'AM')),
+            new FtueTimePresetsViewData('Morning', 'partly-sunny-outline', new FtueTimePickerViewData(9, 0, 'AM')),
             new FtueTimePresetsViewData('Midday', 'sunny-outline', new FtueTimePickerViewData(12, 0, 'PM')),
             new FtueTimePresetsViewData('Evening', 'cloudy-night-outline', new FtueTimePickerViewData(6, 0, 'PM')),
             new FtueTimePresetsViewData('Night', 'moon-outline', new FtueTimePickerViewData(9, 0, 'PM')),

@@ -1,5 +1,5 @@
 import {IRepository} from '@/src/repositories/IRepository';
-import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {CommandHandler} from '@/src/services/CommandHandler';
 import {INextImageClient} from '@/src/services/NextImageServices/INextImageClient';
 import {GetHistoryCommand} from '@/src/services/NextImageServices/NextImageCommands';
@@ -7,7 +7,7 @@ import {GetHistoryCommand} from '@/src/services/NextImageServices/NextImageComma
 export class GetHistoryCommandHandler extends CommandHandler {
     constructor(
         private readonly client: INextImageClient,
-        private readonly repository: IRepository<SeenImageData[]>,
+        private readonly repository: IRepository<UserHistoryData>,
     ) {
         super();
     }

@@ -11,7 +11,7 @@ import {SecureRepository} from '@/src/repositories/SecureRepository';
 import {InMemoryRepository} from '@/src/repositories/InMemoryRepository';
 import {AuthTokens} from '@/src/domain/Auth';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
-import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {GenreData} from '@/src/domain/GenreData';
 import {ArtistData} from '@/src/domain/ArtistData';
@@ -98,9 +98,9 @@ export const removeDislikedArtworkCommandHandler = new RemoveDislikedArtworkComm
 
 export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutorialClient);
 
-export const historyRepository = new InMemoryRepository<SeenImageData[]>();
+export const historyRepository = new InMemoryRepository<UserHistoryData>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
-export const setPreferredTimeCommandHandler = new SetPreferredTimeCommandHandler(nextImageClient);
+export const setPreferredTimeCommandHandler = new SetPreferredTimeCommandHandler(nextImageClient, historyRepository);
 export const nextImageWebSocketService = new NextImageWebSocketService();
 
 export const widgetPublisher = new WidgetPublisher();
@@ -185,6 +185,7 @@ export const userProfileController = new UserProfileController(
     removeLikedArtworkCommandHandler,
     addDislikedArtworkCommandHandler,
     removeDislikedArtworkCommandHandler,
+    setPreferredTimeCommandHandler,
 );
 
 export async function bootstrapSession(): Promise<void> {
@@ -201,7 +202,7 @@ export async function bootstrapSession(): Promise<void> {
 
 async function loadHistoryAndArtworks(): Promise<void> {
     await getHistoryCommandHandler.handle({});
-    const history = await historyRepository.get() ?? [];
+    const history = (await historyRepository.get())?.seenImages ?? [];
     if (history.length > 0) {
         await getArtworksFromIdsCommandHandler.handle({artworkIds: history.map(s => s.artworkId)});
     }

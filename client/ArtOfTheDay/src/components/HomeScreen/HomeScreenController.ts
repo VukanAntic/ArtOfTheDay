@@ -1,6 +1,6 @@
 import {AppState} from 'react-native';
 import {IRepository} from '@/src/repositories/IRepository';
-import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {ViewController} from '@/src/mvc/ViewController';
@@ -28,7 +28,7 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         private readonly getHistoryHandler: GetHistoryCommandHandler,
         private readonly getArtworksFromIdsHandler: GetArtworksFromIdsCommandHandler,
         private readonly getValidToken: () => Promise<string | null>,
-        private readonly historyRepository: IRepository<SeenImageData[]>,
+        private readonly historyRepository: IRepository<UserHistoryData>,
         private readonly webSocketService: NextImageWebSocketService,
         private readonly addLikedArtworkHandler: AddLikedArtworkCommandHandler,
         private readonly removeLikedArtworkHandler: RemoveLikedArtworkCommandHandler,
@@ -88,7 +88,7 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
     }
 
     private async buildArtworks(): Promise<FeaturedArtworkViewData[]> {
-        const history = await this.historyRepository.get() ?? [];
+        const history = (await this.historyRepository.get())?.seenImages ?? [];
         if (history.length === 0) return [];
 
         const allArtworks = await this.artworkRepository.get();
@@ -116,7 +116,7 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
 
     private async refreshOnNewImage(): Promise<void> {
         await this.getHistoryHandler.handle({});
-        const history = await this.historyRepository.get() ?? [];
+        const history = (await this.historyRepository.get())?.seenImages ?? [];
         const allArtworks = await this.artworkRepository.get();
         const missingIds = history
             .map(s => s.artworkId)

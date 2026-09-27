@@ -3,6 +3,7 @@ import {IRepository} from '@/src/repositories/IRepository';
 import {ArtworkData} from '@/src/domain/ArtworkData';
 import {AllArtworksData} from '@/src/domain/AllArtworksData';
 import {SeenImageData} from '@/src/domain/SeenImageData';
+import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {ViewController} from '@/src/mvc/ViewController';
 import {GetRandomArtworksCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetRandomArtworksCommandHandler';
@@ -30,7 +31,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
     private rounds: ArtworkData[][] = [];
     private selected: (ArtworkData | null)[] = [];
     private page = 0;
-    private time = new FtueTimePickerViewData(8, 0, 'AM');
+    private time = new FtueTimePickerViewData(9, 0, 'AM');
     private exactTime = false;
     private submitting = false;
     private loaded = false;
@@ -41,7 +42,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
         private readonly ftueCompleteHandler: FtueCompleteCommandHandler,
         private readonly preferencesRepository: IRepository<UserPreferencesData>,
         private readonly artworkRepository: IRepository<AllArtworksData>,
-        private readonly historyRepository: IRepository<SeenImageData[]>,
+        private readonly historyRepository: IRepository<UserHistoryData>,
         private readonly refreshSession: () => Promise<void>,
     ) {
         super(FtueScreenViewData.loading());
@@ -62,7 +63,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
     private async initialize(): Promise<void> {
         this.page = 0;
         this.submitting = false;
-        this.time = new FtueTimePickerViewData(8, 0, 'AM');
+        this.time = new FtueTimePickerViewData(9, 0, 'AM');
         this.exactTime = false;
         if (!this.loaded) {
             try {
@@ -210,14 +211,17 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
         const allArtworks = await this.artworkRepository.get();
         await this.artworkRepository.update((allArtworks ?? new AllArtworksData()).append(selectedArtworks));
 
-        const history = await this.historyRepository.get() ?? [];
+        const userHistory = await this.historyRepository.get();
+        const history = userHistory?.seenImages ?? [];
         const existing = new Set(history.map(seen => seen.artworkId));
         const now = Date.now();
         const additions = selectedArtworks
             .map((artwork, i) => new SeenImageData(artwork.id, new Date(now - (selectedArtworks.length - i) * DAY_MS)))
             .filter(seen => !existing.has(seen.artworkId));
         if (additions.length > 0) {
-            await this.historyRepository.update([...history, ...additions]);
+            const {hours24, minutes} = this.time.to24Hour();
+            const base = userHistory ?? new UserHistoryData([], hours24, minutes);
+            await this.historyRepository.update(base.withSeenImages([...history, ...additions]));
         }
     }
 }
