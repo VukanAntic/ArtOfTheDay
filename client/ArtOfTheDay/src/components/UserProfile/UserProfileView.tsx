@@ -1,5 +1,5 @@
-import {useState} from 'react';
-import {Dimensions, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useMemo, useState} from 'react';
+import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import Animated, {
     runOnUI,
     scrollTo,
@@ -7,8 +7,12 @@ import Animated, {
     useAnimatedScrollHandler,
     useSharedValue,
 } from 'react-native-reanimated';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {router} from 'expo-router';
 import {ViewProps} from '@/src/mvc/ViewController';
+import authBackgroundImages from '@/src/config/authBackgroundImages';
+import BackgroundCyclerView from '@/src/components/BackgroundCycler/BackgroundCyclerView';
+import {BackgroundCyclerViewData} from '@/src/components/BackgroundCycler/BackgroundCyclerViewData';
 import CurvedTabIndicatorView from '@/src/components/CurvedTabIndicator/CurvedTabIndicatorView';
 import LikedArtScreenView from '@/src/components/LikedArtScreen/LikedArtScreenView';
 import PersonalScreenView from '@/src/components/PersonalScreen/PersonalScreenView';
@@ -31,6 +35,15 @@ export default function UserProfileView({viewData, send}: ViewProps<UserProfileV
     const pagerRef = useAnimatedRef<Animated.ScrollView>();
     const scrollProgress = useSharedValue(0);
     const [selectedArtwork, setSelectedArtwork] = useState<DetailedArtworkPopupViewData | null>(null);
+    const insets = useSafeAreaInsets();
+
+    const backgroundImageUrls = viewData?.backgroundImageUrls;
+    const backgroundImages = useMemo(
+        () => (backgroundImageUrls && backgroundImageUrls.length > 0
+            ? backgroundImageUrls.map(uri => ({uri, headers: imageHeaders}))
+            : authBackgroundImages),
+        [backgroundImageUrls],
+    );
 
     const scrollHandler = useAnimatedScrollHandler({
         onScroll: (event) => {
@@ -48,14 +61,15 @@ export default function UserProfileView({viewData, send}: ViewProps<UserProfileV
 
     return (
         <View style={style.root}>
-            {viewData.backgroundImageUrl && (
-                <Image
-                    source={{uri: viewData.backgroundImageUrl, headers: imageHeaders}}
-                    style={[StyleSheet.absoluteFillObject, {transform: [{scale: 1.5}]}]}
-                    blurRadius={80}
-                    resizeMode="cover"
-                />
-            )}
+            <BackgroundCyclerView
+                viewData={new BackgroundCyclerViewData(
+                    backgroundImages,
+                    80,
+                    'rgba(0,0,0,0.38)',
+                    -insets.top,
+                    1.5,
+                )}
+            />
 
             <View style={style.header}>
                 <TouchableOpacity style={style.backButton} onPress={() => (router.canGoBack() ? router.back() : router.replace('/home'))}>

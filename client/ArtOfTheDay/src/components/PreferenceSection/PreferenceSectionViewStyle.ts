@@ -80,14 +80,11 @@ export default StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 20,
-        borderWidth: 1,
-        borderStyle: 'dashed',
-        borderColor: '#b0aea9',
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255,255,255,0.14)',
     },
     suggestionText: {
         fontSize: 12,
         fontFamily: 'Lato-Regular',
-        color: '#555',
+        color: '#ffffff',
     },
 });

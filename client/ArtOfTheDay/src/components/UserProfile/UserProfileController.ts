@@ -98,6 +98,7 @@ export type UserProfileIntent = SettingsPreferenceIntent | AccountIntent;
 export type ProfileScreenIntent = UserProfileIntent | ArtworkPreferenceIntent;
 
 const DEFAULT_PREFERRED_TIME_IN_HOURS = 9;
+const BACKGROUND_IMAGE_LIMIT = 8;
 
 export class UserProfileController extends ViewController<UserProfileViewData | null, ProfileScreenIntent> {
     readonly View = UserProfileView;
@@ -170,7 +171,13 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
         const history = userHistory?.seenImages ?? [];
         const user = await this.userRepository.get();
 
-        const backgroundImageUrl = 'https://www.artic.edu/iiif/2/815fb024-96bb-6f38-e6fc-d398d2103c65/full/843,/0/default.jpg';
+        const likedImageUrls = likedArtworks.map(artwork => artwork.imageUrl);
+        const seenImageUrls = history
+            .map(seen => allArtworks?.getById(seen.artworkId))
+            .filter((a): a is ArtworkData => a !== undefined)
+            .map(artwork => artwork.imageUrl);
+        const backgroundImageUrls = (likedImageUrls.length > 0 ? likedImageUrls : seenImageUrls)
+            .slice(-BACKGROUND_IMAGE_LIMIT);
 
         const profileImageUrl = preferences.profileArtworkId
             ? allArtworks?.getById(preferences.profileArtworkId)?.imageUrl ?? null
@@ -184,7 +191,7 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
                 userHistory?.preferredTimeInHours ?? DEFAULT_PREFERRED_TIME_IN_HOURS,
                 userHistory?.preferredTimeInMinutes ?? 0,
             ),
-            backgroundImageUrl,
+            backgroundImageUrls,
             profileImageUrl,
         );
     }

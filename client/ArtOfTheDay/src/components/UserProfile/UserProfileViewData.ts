@@ -8,8 +8,8 @@ export default class UserProfileViewData {
     personal: PersonalScreenViewData;
     user: UserData | null;
     preferredTime: FtueTimePickerViewData;
-    /** Image shown blurred across the full background of the profile screen */
-    backgroundImageUrl: string | null;
+    /** Artworks cycled, blurred, across the full background of the profile screen */
+    backgroundImageUrls: string[];
     profileImageUrl: string | null;
 
     constructor(
@@ -17,14 +17,14 @@ export default class UserProfileViewData {
         personal: PersonalScreenViewData,
         user: UserData | null,
         preferredTime: FtueTimePickerViewData,
-        backgroundImageUrl: string | null,
+        backgroundImageUrls: string[],
         profileImageUrl: string | null,
     ) {
         this.likedArt = likedArt;
         this.personal = personal;
         this.user = user;
         this.preferredTime = preferredTime;
-        this.backgroundImageUrl = backgroundImageUrl;
+        this.backgroundImageUrls = backgroundImageUrls;
         this.profileImageUrl = profileImageUrl;
     }
 }

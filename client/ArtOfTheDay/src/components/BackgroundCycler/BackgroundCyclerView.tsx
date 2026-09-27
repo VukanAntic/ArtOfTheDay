@@ -62,7 +62,7 @@ export default function BackgroundCyclerView({viewData}: Props) {
 
     if (!imageA) return null;
 
-    const imgStyle = {width, height: height - viewData.topOffset};
+    const imgStyle = {width, height: height - viewData.topOffset, transform: [{scale: viewData.scale}]};
 
     return (
         <View style={[style.root, {top: viewData.topOffset}]}>

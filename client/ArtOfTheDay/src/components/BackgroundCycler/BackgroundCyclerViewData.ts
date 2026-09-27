@@ -6,5 +6,6 @@ export class BackgroundCyclerViewData {
         readonly blurRadius: number = 6,
         readonly overlayColor: string = 'rgba(0,0,0,0.38)',
         readonly topOffset: number = 0,
+        readonly scale: number = 1,
     ) {}
 }
