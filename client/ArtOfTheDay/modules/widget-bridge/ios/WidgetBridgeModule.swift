@@ -26,7 +26,7 @@ struct PublishParams: Record {
   @Field var title: String
   @Field var artistName: String
   @Field var imageDateISO: String
-  @Field var maxDimension: Double = 1000
+  @Field var maxPixels: Double = 350_000
   @Field var jpegQuality: Double = 0.8
 }
 
@@ -70,7 +70,7 @@ public class WidgetBridgeModule: Module {
       throw WidgetBridgeError.imageUnreadable(sourcePath)
     }
 
-    let scaled = downscale(sourceImage, maxDimension: CGFloat(params.maxDimension))
+    let scaled = downscale(sourceImage, maxPixels: CGFloat(params.maxPixels))
     guard let jpegData = scaled.jpegData(compressionQuality: CGFloat(params.jpegQuality)) else {
       throw WidgetBridgeError.encodingFailed
     }
@@ -91,10 +91,10 @@ public class WidgetBridgeModule: Module {
     }
   }
 
-  private func downscale(_ image: UIImage, maxDimension: CGFloat) -> UIImage {
-    let longest = max(image.size.width, image.size.height)
-    guard longest > maxDimension, longest > 0 else { return image }
-    let scale = maxDimension / longest
+  private func downscale(_ image: UIImage, maxPixels: CGFloat) -> UIImage {
+    let pixels = image.size.width * image.size.height
+    guard pixels > maxPixels, pixels > 0 else { return image }
+    let scale = (maxPixels / pixels).squareRoot()
     let newSize = CGSize(width: image.size.width * scale, height: image.size.height * scale)
     let format = UIGraphicsImageRendererFormat.default()
     format.scale = 1

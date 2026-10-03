@@ -5,7 +5,7 @@ export type PublishLatestImageParams = {
     title: string;
     artistName: string;
     imageDateISO: string;
-    maxDimension?: number;
+    maxPixels?: number;
     jpegQuality?: number;
 };
 

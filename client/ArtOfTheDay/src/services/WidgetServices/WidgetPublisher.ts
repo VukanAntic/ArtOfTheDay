@@ -1,6 +1,6 @@
 import {File, Paths} from 'expo-file-system';
 import {isWidgetBridgeAvailable, publishLatestImage} from '@/modules/widget-bridge';
-import {WIDGET_APP_GROUP, WIDGET_IMAGE_JPEG_QUALITY, WIDGET_IMAGE_MAX_DIMENSION} from '@/src/config/widgetConfig';
+import {WIDGET_APP_GROUP, WIDGET_IMAGE_JPEG_QUALITY, WIDGET_IMAGE_MAX_PIXELS} from '@/src/config/widgetConfig';
 import {IWidgetPublisher, WidgetPublishInput} from '@/src/services/WidgetServices/IWidgetPublisher';
 
 const imageHeaders = {
@@ -25,7 +25,7 @@ export class WidgetPublisher implements IWidgetPublisher {
                 title: input.title,
                 artistName: input.artistName,
                 imageDateISO: input.imageDateISO,
-                maxDimension: WIDGET_IMAGE_MAX_DIMENSION,
+                maxPixels: WIDGET_IMAGE_MAX_PIXELS,
                 jpegQuality: WIDGET_IMAGE_JPEG_QUALITY,
             });
         } finally {

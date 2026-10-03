@@ -1,7 +1,8 @@
+import {useCallback, useRef} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Animated from 'react-native-reanimated';
 import style from './ArtworkDetailHeaderStyle';
-import {router} from "expo-router";
+import {router, useFocusEffect} from "expo-router";
 
 const imageHeaders = {
     'User-Agent': 'Mozilla/5.0',
@@ -18,7 +19,15 @@ type Props = {
 
 export default function ArtworkDetailHeader({onClose, backButtonOpacity, backgroundImageUrl, profileImageUrl}: Props) {
 
+    const isOpeningProfile = useRef(false);
+
+    useFocusEffect(useCallback(() => {
+        isOpeningProfile.current = false;
+    }, []));
+
     const goToUserProfile = () => {
+        if (isOpeningProfile.current) return;
+        isOpeningProfile.current = true;
         router.push({pathname: '/profile', params: {bg: backgroundImageUrl ?? ''}});
     };
 
