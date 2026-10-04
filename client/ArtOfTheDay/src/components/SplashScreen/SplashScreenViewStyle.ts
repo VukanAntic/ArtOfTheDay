@@ -3,9 +3,12 @@ import {StyleSheet} from 'react-native';
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#374D54',
+        backgroundColor: '#3D6579',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    background: {
+        ...StyleSheet.absoluteFillObject,
     },
     title: {
         color: '#fff',

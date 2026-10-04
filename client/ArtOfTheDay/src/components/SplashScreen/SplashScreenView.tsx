@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {ActivityIndicator, Animated, Easing, StatusBar} from 'react-native';
+import {ActivityIndicator, Animated, Easing, Image, StatusBar} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ViewProps} from '@/src/mvc/ViewController';
@@ -67,6 +67,7 @@ export default function SplashScreenView({viewData, send}: ViewProps<SplashScree
     return (
         <Animated.View style={[style.container, {marginTop: -top}]}>
             <StatusBar barStyle="light-content"/>
+            <Image source={require('@/assets/images/splash-background.jpg')} style={style.background} resizeMode="cover"/>
             <Animated.Text style={[style.title, {opacity: titleOpacity, transform: [{translateY: titleY}]}]}>
                 INSPIRA
             </Animated.Text>
