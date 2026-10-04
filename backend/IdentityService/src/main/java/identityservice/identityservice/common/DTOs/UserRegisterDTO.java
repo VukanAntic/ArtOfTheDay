@@ -26,4 +26,5 @@ public class UserRegisterDTO {
     @NotNull(message = "LastName must not be null!")
     @NotEmpty(message = "LastName must not be empty!")
     private String lastName;
+    private String timeZoneId;
 }

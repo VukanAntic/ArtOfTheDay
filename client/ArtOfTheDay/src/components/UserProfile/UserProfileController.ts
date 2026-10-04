@@ -7,6 +7,7 @@ import {GenreData} from '@/src/domain/GenreData';
 import {ArtistData} from '@/src/domain/ArtistData';
 import {UserData} from '@/src/domain/UserData';
 import {ViewController} from '@/src/mvc/ViewController';
+import {getDeviceTimeZoneId} from '@/src/utils/deviceTimeZone';
 import {
     AddLikedGenreCommandHandler
 } from '@/src/services/PreferenceServices/commandHandlers/AddLikedGenreCommandHandler';
@@ -229,7 +230,7 @@ export class UserProfileController extends ViewController<UserProfileViewData | 
         await this.setPreferredTimeHandler.handle({
             preferredTimeInHours: hours24,
             preferredTimeInMinutes: minutes,
-            timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timeZoneId: getDeviceTimeZoneId(),
         });
     }
 

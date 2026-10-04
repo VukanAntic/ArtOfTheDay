@@ -21,6 +21,7 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
             var userEntity = UserHistoryMongoEntity.builder()
                     .username(username)
                     .timeZoneId(timeZoneId)
+                    .deliveryEnabled(false)
                     .build();
             userHistoryMongoRepository.save(userEntity);
         } catch (Exception e) {
@@ -40,6 +41,36 @@ public class UserHistoryDBRepository implements UserHistoryRepository {
             userEntity.setTimeZoneId(timeZoneId);
             userEntity.setPreferredTimeForUpdateInHours(preferredUpdateTimeInHours);
             userEntity.setPreferredTimeForUpdateInMinutes(preferredUpdateTimeInMinutes);
+            userHistoryMongoRepository.save(userEntity);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void setTimeZoneForUser(String username, String timeZoneId) {
+        try {
+            var userEntity = userHistoryMongoRepository.findById(username).orElse(null);
+            if (userEntity == null || timeZoneId.equals(userEntity.getTimeZoneId())) {
+                return;
+            }
+            userEntity.setTimeZoneId(timeZoneId);
+            userHistoryMongoRepository.save(userEntity);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void enableDeliveryForUser(String username) {
+        try {
+            var userEntity = userHistoryMongoRepository.findById(username).orElse(null);
+            if (userEntity == null || Boolean.TRUE.equals(userEntity.getDeliveryEnabled())) {
+                return;
+            }
+            userEntity.setDeliveryEnabled(true);
             userHistoryMongoRepository.save(userEntity);
         }
         catch (Exception e) {

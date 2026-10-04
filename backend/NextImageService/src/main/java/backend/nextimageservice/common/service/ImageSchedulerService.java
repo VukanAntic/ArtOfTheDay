@@ -25,6 +25,7 @@ public class ImageSchedulerService {
         var allUserHistories = userHistoryRepository.getAllUsers();
         for (var userHistory : allUserHistories) {
             try {
+                if (!userHistory.isDeliveryEnabled()) continue;
                 if (!userHistory.hasValidTimeZone()) {
                     System.out.println("Skipping user " + userHistory.getUsername() + ": no valid timezone configured");
                     continue;

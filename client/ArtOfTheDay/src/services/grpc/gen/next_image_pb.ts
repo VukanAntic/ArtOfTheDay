@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file next_image.proto.
  */
 export const file_next_image: GenFile = /*@__PURE__*/
-  fileDesc("ChBuZXh0X2ltYWdlLnByb3RvEgluZXh0aW1hZ2UiEwoRR2V0SGlzdG9yeVJlcXVlc3QiMAoJU2VlbkltYWdlEhIKCmFydHdvcmtfaWQYASABKAMSDwoHc2Vlbl9hdBgCIAEoAyKDAQoSR2V0SGlzdG9yeVJlc3BvbnNlEikKC3NlZW5faW1hZ2VzGAEgAygLMhQubmV4dGltYWdlLlNlZW5JbWFnZRIfChdwcmVmZXJyZWRfdGltZV9pbl9ob3VycxgCIAEoBRIhChlwcmVmZXJyZWRfdGltZV9pbl9taW51dGVzGAMgASgFInMKF1NldFByZWZlcnJlZFRpbWVSZXF1ZXN0Eh8KF3ByZWZlcnJlZF90aW1lX2luX2hvdXJzGAEgASgFEiEKGXByZWZlcnJlZF90aW1lX2luX21pbnV0ZXMYAiABKAUSFAoMdGltZV96b25lX2lkGAMgASgJIisKGFNldFByZWZlcnJlZFRpbWVSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIMr4BChROZXh0SW1hZ2VHcnBjU2VydmljZRJJCgpHZXRIaXN0b3J5EhwubmV4dGltYWdlLkdldEhpc3RvcnlSZXF1ZXN0Gh0ubmV4dGltYWdlLkdldEhpc3RvcnlSZXNwb25zZRJbChBTZXRQcmVmZXJyZWRUaW1lEiIubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXF1ZXN0GiMubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXNwb25zZUIxCh1iYWNrZW5kLm5leHRpbWFnZXNlcnZpY2UuZ3JwY0IOTmV4dEltYWdlUHJvdG9QAWIGcHJvdG8z");
+  fileDesc("ChBuZXh0X2ltYWdlLnByb3RvEgluZXh0aW1hZ2UiEwoRR2V0SGlzdG9yeVJlcXVlc3QiMAoJU2VlbkltYWdlEhIKCmFydHdvcmtfaWQYASABKAMSDwoHc2Vlbl9hdBgCIAEoAyKDAQoSR2V0SGlzdG9yeVJlc3BvbnNlEikKC3NlZW5faW1hZ2VzGAEgAygLMhQubmV4dGltYWdlLlNlZW5JbWFnZRIfChdwcmVmZXJyZWRfdGltZV9pbl9ob3VycxgCIAEoBRIhChlwcmVmZXJyZWRfdGltZV9pbl9taW51dGVzGAMgASgFInMKF1NldFByZWZlcnJlZFRpbWVSZXF1ZXN0Eh8KF3ByZWZlcnJlZF90aW1lX2luX2hvdXJzGAEgASgFEiEKGXByZWZlcnJlZF90aW1lX2luX21pbnV0ZXMYAiABKAUSFAoMdGltZV96b25lX2lkGAMgASgJIisKGFNldFByZWZlcnJlZFRpbWVSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIIioKElNldFRpbWVab25lUmVxdWVzdBIUCgx0aW1lX3pvbmVfaWQYASABKAkiJgoTU2V0VGltZVpvbmVSZXNwb25zZRIPCgdzdWNjZXNzGAEgASgIMowCChROZXh0SW1hZ2VHcnBjU2VydmljZRJJCgpHZXRIaXN0b3J5EhwubmV4dGltYWdlLkdldEhpc3RvcnlSZXF1ZXN0Gh0ubmV4dGltYWdlLkdldEhpc3RvcnlSZXNwb25zZRJbChBTZXRQcmVmZXJyZWRUaW1lEiIubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXF1ZXN0GiMubmV4dGltYWdlLlNldFByZWZlcnJlZFRpbWVSZXNwb25zZRJMCgtTZXRUaW1lWm9uZRIdLm5leHRpbWFnZS5TZXRUaW1lWm9uZVJlcXVlc3QaHi5uZXh0aW1hZ2UuU2V0VGltZVpvbmVSZXNwb25zZUIxCh1iYWNrZW5kLm5leHRpbWFnZXNlcnZpY2UuZ3JwY0IOTmV4dEltYWdlUHJvdG9QAWIGcHJvdG8z");
 
 /**
  * @generated from message nextimage.GetHistoryRequest
@@ -119,6 +119,40 @@ export const SetPreferredTimeResponseSchema: GenMessage<SetPreferredTimeResponse
   messageDesc(file_next_image, 4);
 
 /**
+ * @generated from message nextimage.SetTimeZoneRequest
+ */
+export type SetTimeZoneRequest = Message<"nextimage.SetTimeZoneRequest"> & {
+  /**
+   * @generated from field: string time_zone_id = 1;
+   */
+  timeZoneId: string;
+};
+
+/**
+ * Describes the message nextimage.SetTimeZoneRequest.
+ * Use `create(SetTimeZoneRequestSchema)` to create a new message.
+ */
+export const SetTimeZoneRequestSchema: GenMessage<SetTimeZoneRequest> = /*@__PURE__*/
+  messageDesc(file_next_image, 5);
+
+/**
+ * @generated from message nextimage.SetTimeZoneResponse
+ */
+export type SetTimeZoneResponse = Message<"nextimage.SetTimeZoneResponse"> & {
+  /**
+   * @generated from field: bool success = 1;
+   */
+  success: boolean;
+};
+
+/**
+ * Describes the message nextimage.SetTimeZoneResponse.
+ * Use `create(SetTimeZoneResponseSchema)` to create a new message.
+ */
+export const SetTimeZoneResponseSchema: GenMessage<SetTimeZoneResponse> = /*@__PURE__*/
+  messageDesc(file_next_image, 6);
+
+/**
  * @generated from service nextimage.NextImageGrpcService
  */
 export const NextImageGrpcService: GenService<{
@@ -137,6 +171,14 @@ export const NextImageGrpcService: GenService<{
     methodKind: "unary";
     input: typeof SetPreferredTimeRequestSchema;
     output: typeof SetPreferredTimeResponseSchema;
+  },
+  /**
+   * @generated from rpc nextimage.NextImageGrpcService.SetTimeZone
+   */
+  setTimeZone: {
+    methodKind: "unary";
+    input: typeof SetTimeZoneRequestSchema;
+    output: typeof SetTimeZoneResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_next_image, 0);

@@ -36,6 +36,9 @@ public class WidgetBridgeModule: Module {
     static let artistName = "widgetArtistName"
     static let imageFileName = "widgetImageFileName"
     static let imageDateISO = "widgetImageDateISO"
+    static let deliveryHour = "widgetDeliveryHour"
+    static let deliveryMinute = "widgetDeliveryMinute"
+    static let syncedAtISO = "widgetSyncedAtISO"
   }
 
   private static let imagePrefix = "latest-"
@@ -49,6 +52,16 @@ public class WidgetBridgeModule: Module {
 
     AsyncFunction("publishLatestImage") { (params: PublishParams) throws in
       try self.publish(params)
+    }
+
+    AsyncFunction("publishSchedule") { (appGroup: String, hours: Int, minutes: Int, syncedAtISO: String) in
+      let defaults = UserDefaults(suiteName: appGroup)
+      defaults?.set(hours, forKey: Keys.deliveryHour)
+      defaults?.set(minutes, forKey: Keys.deliveryMinute)
+      defaults?.set(syncedAtISO, forKey: Keys.syncedAtISO)
+      if #available(iOS 14.0, *) {
+        WidgetCenter.shared.reloadAllTimelines()
+      }
     }
 
     Function("reload") {

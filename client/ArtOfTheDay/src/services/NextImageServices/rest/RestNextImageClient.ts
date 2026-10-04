@@ -1,7 +1,7 @@
 import {SeenImageData} from '@/src/domain/SeenImageData';
 import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {INextImageClient} from '@/src/services/NextImageServices/INextImageClient';
-import {SetPreferredTimeCommand} from '@/src/services/NextImageServices/NextImageCommands';
+import {SetPreferredTimeCommand, SetTimeZoneCommand} from '@/src/services/NextImageServices/NextImageCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
 import {restGet, restPost} from '@/src/services/rest/restFetch';
 
@@ -37,5 +37,9 @@ export class RestNextImageClient implements INextImageClient {
                 timeZoneId: command.timeZoneId,
             },
         );
+    }
+
+    async setTimeZone(command: SetTimeZoneCommand): Promise<void> {
+        await restPost<SetTimeZoneCommand, void>(`${BASE}/set-time-zone`, {timeZoneId: command.timeZoneId});
     }
 }

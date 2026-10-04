@@ -5,3 +5,7 @@ export interface SetPreferredTimeCommand {
     preferredTimeInMinutes: number;
     timeZoneId: string;
 }
+
+export interface SetTimeZoneCommand {
+    timeZoneId: string;
+}

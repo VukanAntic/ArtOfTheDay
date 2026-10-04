@@ -9,6 +9,7 @@ option java_outer_classname = "NextImageProto";
 service NextImageGrpcService {
   rpc GetHistory (GetHistoryRequest) returns (GetHistoryResponse);
   rpc SetPreferredTime (SetPreferredTimeRequest) returns (SetPreferredTimeResponse);
+  rpc SetTimeZone (SetTimeZoneRequest) returns (SetTimeZoneResponse);
 }
 
 message GetHistoryRequest {}
@@ -31,5 +32,13 @@ message SetPreferredTimeRequest {
 }
 
 message SetPreferredTimeResponse {
+  bool success = 1;
+}
+
+message SetTimeZoneRequest {
+  string time_zone_id = 1;
+}
+
+message SetTimeZoneResponse {
   bool success = 1;
 }

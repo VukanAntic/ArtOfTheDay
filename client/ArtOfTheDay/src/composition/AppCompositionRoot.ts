@@ -46,8 +46,11 @@ import {RemoveDislikedArtworkCommandHandler} from '@/src/services/PreferenceServ
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
 import {GetHistoryCommandHandler} from '@/src/services/NextImageServices/commandHandlers/GetHistoryCommandHandler';
 import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
+import {SetTimeZoneCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetTimeZoneCommandHandler';
+import {getDeviceTimeZoneId} from '@/src/utils/deviceTimeZone';
 import {WidgetPublisher} from '@/src/services/WidgetServices/WidgetPublisher';
 import {PublishLatestToWidgetCommandHandler} from '@/src/services/WidgetServices/commandHandlers/PublishLatestToWidgetCommandHandler';
+import {PublishScheduleToWidgetCommandHandler} from '@/src/services/WidgetServices/commandHandlers/PublishScheduleToWidgetCommandHandler';
 import {HomeScreenController} from '@/src/components/HomeScreen/HomeScreenController';
 import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
 import {SplashScreenController} from '@/src/components/SplashScreen/SplashScreenController';
@@ -109,6 +112,7 @@ export const ftueCompleteCommandHandler = new FtueCompleteCommandHandler(tutoria
 export const historyRepository = new InMemoryRepository<UserHistoryData>();
 export const getHistoryCommandHandler = new GetHistoryCommandHandler(nextImageClient, historyRepository);
 export const setPreferredTimeCommandHandler = new SetPreferredTimeCommandHandler(nextImageClient, historyRepository);
+export const setTimeZoneCommandHandler = new SetTimeZoneCommandHandler(nextImageClient);
 export const nextImageWebSocketService = new NextImageWebSocketService();
 
 export const widgetPublisher = new WidgetPublisher();
@@ -117,6 +121,14 @@ export const publishLatestToWidgetCommandHandler = new PublishLatestToWidgetComm
     artworkRepository,
     widgetPublisher,
 );
+export const publishScheduleToWidgetCommandHandler = new PublishScheduleToWidgetCommandHandler(
+    historyRepository,
+    widgetPublisher,
+);
+historyRepository.subscribe(() => {
+    publishScheduleToWidgetCommandHandler.handle({})
+        .catch(e => console.error('[Widget] schedule publish failed:', e));
+});
 
 export const getCurrentUserCommandHandler = new GetCurrentUserCommandHandler(userClient, userRepository);
 export const changeEmailCommandHandler = new ChangeEmailCommandHandler(userClient, userRepository);
@@ -155,6 +167,7 @@ export const homeScreenController = new HomeScreenController(
     ensureSessionBootstrapped,
     setProfileArtworkCommandHandler,
     clearProfileArtworkCommandHandler,
+    setTimeZoneCommandHandler,
 );
 
 export const ftueScreenController = new FtueScreenController(
@@ -207,6 +220,7 @@ export async function bootstrapSession(): Promise<void> {
         getAllArtistsCommandHandler.handle(),
         getCurrentUserCommandHandler.handle({}),
         loadHistoryAndArtworks(),
+        setTimeZoneCommandHandler.handle({timeZoneId: getDeviceTimeZoneId()}),
     ]);
     await publishLatestToWidgetCommandHandler.handle({})
         .catch(e => console.error('[Widget] publish on bootstrap failed:', e));

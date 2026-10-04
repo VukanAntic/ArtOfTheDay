@@ -12,5 +12,6 @@ export type PublishLatestImageParams = {
 export type WidgetBridgeModule = {
     isAvailable(): boolean;
     publishLatestImage(params: PublishLatestImageParams): Promise<void>;
+    publishSchedule(appGroup: string, hours: number, minutes: number, syncedAtISO: string): Promise<void>;
     reload(): void;
 };

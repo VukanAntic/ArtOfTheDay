@@ -13,6 +13,8 @@ public interface UserHistoryRepository {
                                  String timeZoneId,
                                  int preferredUpdateTimeInHours,
                                  int preferredUpdateTimeInMinutes);
+    void setTimeZoneForUser(String username, String timeZoneId);
+    void enableDeliveryForUser(String username);
 
     List<UserHistory> getAllUsers();
     void addNewImageForUserHistory(String username, SeenImage newSeenImageForUserHistory);

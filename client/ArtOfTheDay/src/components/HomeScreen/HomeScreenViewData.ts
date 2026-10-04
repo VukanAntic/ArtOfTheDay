@@ -5,5 +5,6 @@ export class HomeScreenViewData {
         readonly artworks: FeaturedArtworkViewData[],
         readonly loaded: boolean,
         readonly profileImageUrl: string | null,
+        readonly jumpToLatestRequest: number = 0,
     ) {}
 }

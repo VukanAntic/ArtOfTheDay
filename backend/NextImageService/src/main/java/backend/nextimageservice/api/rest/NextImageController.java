@@ -2,6 +2,7 @@ package backend.nextimageservice.api.rest;
 
 import backend.nextimageservice.common.DTO.UserHistoryDTO;
 import backend.nextimageservice.common.DTO.SetPreferredTimeForUpdateDTO;
+import backend.nextimageservice.common.DTO.SetTimeZoneDTO;
 import backend.nextimageservice.common.service.NextImageService;
 import common.common.authentication.AuthenticatedUser;
 import lombok.AllArgsConstructor;
@@ -48,6 +49,20 @@ public class NextImageController {
                 timeZoneId,
                 setPreferredTimeForUpdateDTO.getPreferredTimeInHours(),
                 setPreferredTimeForUpdateDTO.getPreferredTimeInMinutes());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/set-time-zone")
+    public ResponseEntity<Void> setTimeZone(@RequestBody SetTimeZoneDTO setTimeZoneDTO) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            return ResponseEntity.notFound().build();
+        }
+        try {
+            nextImageService.setTimeZoneForUser(username, setTimeZoneDTO.getTimeZoneId());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok().build();
     }
 }

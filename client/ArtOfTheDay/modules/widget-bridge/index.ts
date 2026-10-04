@@ -24,6 +24,11 @@ export async function publishLatestImage(params: PublishLatestImageParams): Prom
     await nativeModule.publishLatestImage(params);
 }
 
+export async function publishSchedule(appGroup: string, hours: number, minutes: number, syncedAtISO: string): Promise<void> {
+    if (!nativeModule) return;
+    await nativeModule.publishSchedule(appGroup, hours, minutes, syncedAtISO);
+}
+
 export function reloadWidgets(): void {
     nativeModule?.reload();
 }

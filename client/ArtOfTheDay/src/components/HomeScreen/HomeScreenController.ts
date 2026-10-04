@@ -1,4 +1,4 @@
-import {AppState} from 'react-native';
+import {AppState, AppStateStatus} from 'react-native';
 import {IRepository} from '@/src/repositories/IRepository';
 import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
@@ -19,14 +19,21 @@ import {
 } from '@/src/services/PreferenceServices/commandHandlers/ClearProfileArtworkCommandHandler';
 import {ArtworkPreferenceIntent} from '@/src/services/PreferenceServices/ArtworkPreferenceIntent';
 import {PublishLatestToWidgetCommandHandler} from '@/src/services/WidgetServices/commandHandlers/PublishLatestToWidgetCommandHandler';
+import {SetTimeZoneCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetTimeZoneCommandHandler';
+import {getDeviceTimeZoneId} from '@/src/utils/deviceTimeZone';
 import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
 import HomeScreenView from './HomeScreenView';
 import {HomeScreenViewData} from './HomeScreenViewData';
+
+const RESUME_SYNC_AFTER_MS = 60_000;
 
 export class HomeScreenController extends ViewController<HomeScreenViewData, ArtworkPreferenceIntent> {
     readonly View = HomeScreenView;
 
     private loading = false;
+    private resyncing = false;
+    private backgroundedAt: number | null = null;
+    private jumpToLatestRequest = 0;
     private unsubscribe: (() => void) | null = null;
     private appStateSubscription: ReturnType<typeof AppState.addEventListener> | null = null;
 
@@ -46,6 +53,7 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         private readonly ensureSession: () => Promise<void>,
         private readonly setProfileArtworkHandler: SetProfileArtworkCommandHandler,
         private readonly clearProfileArtworkHandler: ClearProfileArtworkCommandHandler,
+        private readonly setTimeZoneHandler: SetTimeZoneCommandHandler,
     ) {
         super(new HomeScreenViewData([], false, null));
     }
@@ -54,9 +62,56 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         void this.initialize();
         void this.connectWebSocket();
         this.unsubscribe = this.preferencesRepository.subscribe(() => void this.load());
-        this.appStateSubscription = AppState.addEventListener('change', state => {
-            if (state === 'active') void this.publishToWidget();
-        });
+        this.appStateSubscription = AppState.addEventListener('change', state => this.onAppStateChange(state));
+    }
+
+    private onAppStateChange(state: AppStateStatus): void {
+        if (state === 'background') {
+            this.backgroundedAt ??= Date.now();
+            return;
+        }
+        if (state !== 'active') return;
+
+        const awayMs = this.backgroundedAt === null ? 0 : Date.now() - this.backgroundedAt;
+        this.backgroundedAt = null;
+        if (awayMs >= RESUME_SYNC_AFTER_MS) {
+            void this.resumeSync();
+        } else {
+            void this.publishToWidget();
+        }
+    }
+
+    private async resumeSync(): Promise<void> {
+        if (this.resyncing) return;
+        this.resyncing = true;
+        try {
+            const newestBefore = await this.newestSeenAtMs();
+
+            this.webSocketService.disconnect();
+            void this.connectWebSocket();
+
+            await this.setTimeZoneHandler.handle({timeZoneId: getDeviceTimeZoneId()})
+                .catch(e => console.error('[HomeScreen] time zone sync failed:', e));
+            await this.refreshOnNewImage();
+            await this.load();
+
+            if (await this.newestSeenAtMs() > newestBefore) this.requestJumpToLatest();
+        } catch (e) {
+            console.error('[HomeScreen] resume sync failed:', e);
+        } finally {
+            this.resyncing = false;
+        }
+    }
+
+    private async newestSeenAtMs(): Promise<number> {
+        const history = (await this.historyRepository.get())?.seenImages ?? [];
+        return history.reduce((newest, seen) => Math.max(newest, seen.seenAt.getTime()), 0);
+    }
+
+    private requestJumpToLatest(): void {
+        this.jumpToLatestRequest += 1;
+        const snapshot = this.getSnapshot();
+        this.setViewData(new HomeScreenViewData(snapshot.artworks, snapshot.loaded, snapshot.profileImageUrl, this.jumpToLatestRequest));
     }
 
     onUnmount(): void {
@@ -86,10 +141,10 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         this.loading = true;
         try {
             const artworks = await this.buildArtworks();
-            this.setViewData(new HomeScreenViewData(artworks, true, await this.buildProfileImageUrl()));
+            this.setViewData(new HomeScreenViewData(artworks, true, await this.buildProfileImageUrl(), this.jumpToLatestRequest));
         } catch (e) {
             console.error('[HomeScreen] loadArtworks failed:', e);
-            this.setViewData(new HomeScreenViewData(this.getSnapshot().artworks, true, this.getSnapshot().profileImageUrl));
+            this.setViewData(new HomeScreenViewData(this.getSnapshot().artworks, true, this.getSnapshot().profileImageUrl, this.jumpToLatestRequest));
         } finally {
             this.loading = false;
         }
@@ -119,10 +174,8 @@ export class HomeScreenController extends ViewController<HomeScreenViewData, Art
         return allArtworks?.getById(preferences.profileArtworkId)?.imageUrl ?? null;
     }
 
-    private async connectWebSocket(): Promise<void> {
-        const token = await this.getValidToken();
-        if (!token) return;
-        this.webSocketService.connect(token, () => {
+    private connectWebSocket(): void {
+        this.webSocketService.connect(this.getValidToken, () => {
             this.refreshOnNewImage()
                 .then(() => this.load())
                 .catch(e => console.error('[HomeScreen] new-image refresh failed:', e));

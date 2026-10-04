@@ -26,6 +26,8 @@ public class UserHistory {
     @Builder.Default
     private int preferredTimeForUpdateInHours = 9;
     private String timeZoneId;
+    @Builder.Default
+    private boolean deliveryEnabled = true;
 
 
     public UserHistory(UserHistoryMongoEntity userHistoryMongoEntity) {
@@ -34,6 +36,7 @@ public class UserHistory {
         preferredTimeForUpdateInHours = userHistoryMongoEntity.getPreferredTimeForUpdateInHours();
         preferredTimeForUpdateInMinutes = userHistoryMongoEntity.getPreferredTimeForUpdateInMinutes();
         timeZoneId = userHistoryMongoEntity.getTimeZoneId();
+        deliveryEnabled = userHistoryMongoEntity.getDeliveryEnabled() == null || userHistoryMongoEntity.getDeliveryEnabled();
     }
 
     public boolean hasUpdateTimePassed() {

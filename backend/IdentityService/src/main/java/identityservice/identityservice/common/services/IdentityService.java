@@ -13,6 +13,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.DateTimeException;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -25,7 +27,7 @@ public class IdentityService {
 
     // TODO [vukana] : Should these methods take in dtos?
     //  When we do other ways of client/backend communication it would be cool to use all the same methods
-    public Optional<User> registerUser(UserRegisterDTO userRegisterDTO, String timeZoneId) {
+    public Optional<User> registerUser(UserRegisterDTO userRegisterDTO) {
         if (!userRegisterDTO.getPassword().equals(userRegisterDTO.getConfirmPassword())) {
             return Optional.empty();
         }
@@ -41,12 +43,23 @@ public class IdentityService {
                 .build();
         try {
             userRepository.save(user);
-            userEventPublisher.publishUserCreatedEvent(user.getUsername(), timeZoneId);
+            userEventPublisher.publishUserCreatedEvent(user.getUsername(), validTimeZoneIdOrEmpty(userRegisterDTO.getTimeZoneId()));
             return Optional.of(user);
         }
         catch (DataIntegrityViolationException e) {
             System.out.println(e.getMessage());
             return Optional.empty();
+        }
+    }
+
+    private static String validTimeZoneIdOrEmpty(String timeZoneId) {
+        if (timeZoneId == null || timeZoneId.isBlank()) {
+            return "";
+        }
+        try {
+            return ZoneId.of(timeZoneId).getId();
+        } catch (DateTimeException e) {
+            return "";
         }
     }
 

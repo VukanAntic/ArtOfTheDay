@@ -1,6 +1,7 @@
-import {memo, useMemo, useState} from 'react';
-import {Animated, StyleSheet, View} from 'react-native';
+import {memo, useEffect, useMemo, useRef, useState} from 'react';
+import {Animated, FlatList, StyleSheet, View} from 'react-native';
 import FeaturedArtworksListViewData from '@/src/components/FeaturedArtworksList/FeaturedArtworksListViewData';
+import FeaturedArtworkViewData from '@/src/components/FeaturedArtwork/FeaturedArtworkViewData';
 import FeaturedArtworkView from '@/src/components/FeaturedArtwork/FeaturedArtworkView';
 
 const imageHeaders = {
@@ -13,6 +14,16 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
     const [containerSize, setContainerSize] = useState({width: 0, height: 0});
     const [activeIndex, setActiveIndex] = useState(Math.max(0, data.artworkViews.length - 1));
     const itemCount = data.artworkViews.length || 1;
+    const listRef = useRef<FlatList<FeaturedArtworkViewData>>(null);
+
+    useEffect(() => {
+        if (!data.jumpToLatestRequest) return;
+        const last = data.artworkViews.length - 1;
+        if (last < 0) return;
+        listRef.current?.scrollToIndex({index: last, animated: true});
+        setActiveIndex(last);
+        data.onIndexChanged(last);
+    }, [data.jumpToLatestRequest]);
 
     const onLayout = (e: any) => {
         const {width, height} = e.nativeEvent.layout;
@@ -62,6 +73,7 @@ function FeaturedArtworksListView(data: FeaturedArtworksListViewData) {
                     {backgrounds}
 
                     <Animated.FlatList
+                        ref={listRef}
                         data={data.artworkViews}
                         keyExtractor={(item) => item.id}
                         horizontal

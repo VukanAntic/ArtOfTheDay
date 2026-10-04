@@ -42,4 +42,14 @@ public class NextImageGraphqlController {
                 username, resolvedTimeZoneId, preferredTimeInHours, preferredTimeInMinutes);
         return true;
     }
+
+    @MutationMapping
+    public boolean setTimeZone(@Argument String timeZoneId) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            throw new IllegalStateException("No authenticated user");
+        }
+        nextImageService.setTimeZoneForUser(username, timeZoneId);
+        return true;
+    }
 }

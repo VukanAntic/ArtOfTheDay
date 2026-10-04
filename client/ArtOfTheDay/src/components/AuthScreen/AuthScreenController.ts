@@ -3,6 +3,7 @@ import {ViewController} from '@/src/mvc/ViewController';
 import {LoginCommandHandler} from '@/src/services/AuthServices/commandHandlers/LoginCommandHandler';
 import {RegisterCommandHandler} from '@/src/services/AuthServices/commandHandlers/RegisterCommandHandler';
 import {FtueScreenController} from '@/src/components/FtueScreen/FtueScreenController';
+import {getDeviceTimeZoneId} from '@/src/utils/deviceTimeZone';
 import AuthScreenView from './AuthScreenView';
 import AuthScreenViewData, {AuthScreenIntent, LoginIntent, RegisterIntent} from './AuthScreenViewData';
 
@@ -77,7 +78,15 @@ export class AuthScreenController extends ViewController<AuthScreenViewData, Aut
         }
         this.setViewData(new AuthScreenViewData(true, null));
         try {
-            await this.registerHandler.handle({firstName, lastName, username, email, password, confirmPassword});
+            await this.registerHandler.handle({
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+                confirmPassword,
+                timeZoneId: getDeviceTimeZoneId(),
+            });
             await this.ftueController.loadRounds().catch(() => {});
             router.replace('/ftue');
         } catch (e) {

@@ -8,7 +8,37 @@ private enum WidgetData {
     static let artistNameKey = "widgetArtistName"
     static let imageFileNameKey = "widgetImageFileName"
     static let imageDateISOKey = "widgetImageDateISO"
+    static let deliveryHourKey = "widgetDeliveryHour"
+    static let deliveryMinuteKey = "widgetDeliveryMinute"
+    static let syncedAtISOKey = "widgetSyncedAtISO"
     static let deepLink = URL(string: "artoftheday:///")
+}
+
+private enum DeliverySchedule {
+    static let defaultHour = 9
+    static let defaultMinute = 0
+    static let syncGrace: TimeInterval = 90
+
+    static func isNewImageReady(now: Date, latestImageDate: Date?, syncedAt: Date?, hour: Int, minute: Int, calendar: Calendar = .current) -> Bool {
+        guard let latestSlot = latestDeliverySlot(onOrBefore: now, hour: hour, minute: minute, calendar: calendar) else { return false }
+        if let latestImageDate, latestImageDate >= latestSlot { return false }
+        if let syncedAt, syncedAt >= latestSlot.addingTimeInterval(syncGrace) { return false }
+        return true
+    }
+
+    static func latestDeliverySlot(onOrBefore now: Date, hour: Int, minute: Int, calendar: Calendar = .current) -> Date? {
+        guard let today = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: now) else { return nil }
+        if today <= now { return today }
+        return calendar.date(byAdding: .day, value: -1, to: today)
+    }
+
+    static func nextDelivery(after now: Date, hour: Int, minute: Int, calendar: Calendar = .current) -> Date {
+        calendar.nextDate(
+            after: now,
+            matching: DateComponents(hour: hour, minute: minute, second: 0),
+            matchingPolicy: .nextTime
+        ) ?? now.addingTimeInterval(24 * 60 * 60)
+    }
 }
 
 struct ArtEntry: TimelineEntry {
@@ -30,15 +60,18 @@ struct ArtProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<ArtEntry>) -> Void) {
         let now = Date()
-        let calendar = Calendar.current
-        let nextMidnight = calendar.nextDate(
-            after: now,
-            matching: DateComponents(hour: 0, minute: 0, second: 0),
-            matchingPolicy: .nextTime
-        ) ?? calendar.startOfDay(for: now).addingTimeInterval(24 * 60 * 60)
+        let delivery = deliveryTime()
+        let nextDelivery = DeliverySchedule.nextDelivery(after: now, hour: delivery.hour, minute: delivery.minute)
 
-        let entries = [readEntry(for: now), readEntry(for: nextMidnight)]
-        completion(Timeline(entries: entries, policy: .after(nextMidnight)))
+        let entries = [readEntry(for: now), readEntry(for: nextDelivery)]
+        completion(Timeline(entries: entries, policy: .after(nextDelivery)))
+    }
+
+    private func deliveryTime() -> (hour: Int, minute: Int) {
+        let defaults = UserDefaults(suiteName: WidgetData.appGroup)
+        let hour = defaults?.object(forKey: WidgetData.deliveryHourKey) as? Int ?? DeliverySchedule.defaultHour
+        let minute = defaults?.object(forKey: WidgetData.deliveryMinuteKey) as? Int ?? DeliverySchedule.defaultMinute
+        return (hour, minute)
     }
 
     private func readEntry(for date: Date) -> ArtEntry {
@@ -47,12 +80,19 @@ struct ArtProvider: TimelineProvider {
         let artistName = defaults?.string(forKey: WidgetData.artistNameKey) ?? ""
         let imageFileName = defaults?.string(forKey: WidgetData.imageFileNameKey)
         let imageDateISO = defaults?.string(forKey: WidgetData.imageDateISOKey)
+        let syncedAtISO = defaults?.string(forKey: WidgetData.syncedAtISOKey)
 
-        let storedDate = imageDateISO.flatMap(Self.parseISO)
-        let isToday = storedDate.map { Calendar.current.isDate($0, inSameDayAs: date) } ?? false
+        let delivery = deliveryTime()
+        let isReady = DeliverySchedule.isNewImageReady(
+            now: date,
+            latestImageDate: imageDateISO.flatMap(Self.parseISO),
+            syncedAt: syncedAtISO.flatMap(Self.parseISO),
+            hour: delivery.hour,
+            minute: delivery.minute
+        )
 
         var image: UIImage?
-        if isToday,
+        if !isReady,
            let imageFileName,
            let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: WidgetData.appGroup) {
             let path = containerURL.appendingPathComponent(imageFileName).path
@@ -61,7 +101,7 @@ struct ArtProvider: TimelineProvider {
 
         return ArtEntry(
             date: date,
-            isFresh: isToday && image != nil,
+            isFresh: !isReady && image != nil,
             title: title,
             artistName: artistName,
             image: image

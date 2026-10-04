@@ -7,7 +7,9 @@ import backend.nextimageservice.common.repository.UserHistoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.DateTimeException;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +32,18 @@ public class NextImageService {
         userHistoryRepository.setPreferredTimeForUser(username, timeZoneId, preferredUpdateTimeInHours, preferredUpdateTimeInMinutes);
     }
 
+    public void setTimeZoneForUser(String username, String timeZoneId) {
+        if (timeZoneId == null || timeZoneId.isBlank()) {
+            throw new IllegalArgumentException("Time zone must not be empty");
+        }
+        try {
+            ZoneId.of(timeZoneId);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("Invalid time zone: " + timeZoneId);
+        }
+        userHistoryRepository.setTimeZoneForUser(username, timeZoneId);
+    }
+
     public UserHistoryDTO getUserHistory(String username) {
         var userHistory = userHistoryRepository.getUserHistory(username);
         if (userHistory == null) {
@@ -44,16 +58,16 @@ public class NextImageService {
     }
 
     public void seedImagesAfterFtue(String username, List<Long> likedArtworkIds) {
-        if (likedArtworkIds == null || likedArtworkIds.isEmpty()) {
-            return;
+        if (likedArtworkIds != null && !likedArtworkIds.isEmpty()) {
+            long now = Instant.now().toEpochMilli();
+            long dayMillis = ChronoUnit.DAYS.getDuration().toMillis();
+            int count = likedArtworkIds.size();
+            for (int i = 0; i < count; i++) {
+                long seenAt = now - (long) (count - i) * dayMillis;
+                userHistoryRepository.addNewImageForUserHistory(username, new SeenImage(likedArtworkIds.get(i), seenAt));
+            }
         }
-        long now = Instant.now().toEpochMilli();
-        long dayMillis = ChronoUnit.DAYS.getDuration().toMillis();
-        int count = likedArtworkIds.size();
-        for (int i = 0; i < count; i++) {
-            long seenAt = now - (long) (count - i) * dayMillis;
-            userHistoryRepository.addNewImageForUserHistory(username, new SeenImage(likedArtworkIds.get(i), seenAt));
-        }
+        userHistoryRepository.enableDeliveryForUser(username);
     }
 
     private void seedImages(String username, Set<Long> seenIds, int count, ChronoUnit unit, long startOffset) {

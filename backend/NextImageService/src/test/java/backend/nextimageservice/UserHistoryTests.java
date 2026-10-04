@@ -2,6 +2,7 @@ package backend.nextimageservice;
 
 import backend.nextimageservice.common.model.SeenImage;
 import backend.nextimageservice.common.model.UserHistory;
+import backend.nextimageservice.infra.mongo.entity.UserHistoryMongoEntity;
 import jakarta.validation.constraints.AssertFalse;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,6 +58,26 @@ public class UserHistoryTests {
         userHistory.setSeenArtworks(seenArtworks);
         assertTrue(userHistory.hasUpdateTimePassed());
         assertFalse(userHistory.hasAlreadyReceivedImageForToday());
+    }
+
+    @Test
+    public void ExistingAccountsWithoutTheFlagKeepReceivingImagesTest() {
+        var entity = UserHistoryMongoEntity.builder().username("legacy-user").timeZoneId("Europe/Belgrade").build();
+        assertTrue(new UserHistory(entity).isDeliveryEnabled());
+    }
+
+    @Test
+    public void NewAccountsDoNotReceiveImagesBeforeFtueCompletesTest() {
+        var entity = UserHistoryMongoEntity.builder().username("new-user").timeZoneId("Europe/Belgrade")
+                .deliveryEnabled(false).build();
+        assertFalse(new UserHistory(entity).isDeliveryEnabled());
+    }
+
+    @Test
+    public void AccountsWithDeliveryEnabledReceiveImagesTest() {
+        var entity = UserHistoryMongoEntity.builder().username("ftue-done-user").timeZoneId("Europe/Belgrade")
+                .deliveryEnabled(true).build();
+        assertTrue(new UserHistory(entity).isDeliveryEnabled());
     }
 
 }

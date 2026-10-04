@@ -23,6 +23,7 @@ type Mutation {
         confirmPassword: String!
         firstName: String!
         lastName: String!
+        timeZoneId: String
     ): AuthPayload!
     refresh(refreshToken: String!): AuthPayload!
     ftueComplete(artworkIds: [Int!]!, genreIds: [ID!]!, artistIds: [Int!]!): Boolean!

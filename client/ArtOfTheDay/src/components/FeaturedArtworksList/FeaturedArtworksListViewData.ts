@@ -8,6 +8,7 @@ export default class FeaturedArtworksListViewData {
     scrollX: Animated.Value;
     onSeeMore: (artwork: FeaturedArtworkViewData) => void;
     onPreferenceIntent: (intent: ArtworkPreferenceIntent) => void;
+    jumpToLatestRequest?: number;
 
     constructor(
         artworkViews: FeaturedArtworkViewData[],

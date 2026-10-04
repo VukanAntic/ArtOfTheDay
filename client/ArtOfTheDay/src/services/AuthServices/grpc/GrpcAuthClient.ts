@@ -21,6 +21,7 @@ export class GrpcAuthClient implements IAuthClient {
             confirmPassword: command.confirmPassword,
             firstName: command.firstName,
             lastName: command.lastName,
+            timeZoneId: command.timeZoneId,
         });
         return new AuthTokens(res.accessToken, res.refreshToken);
     }

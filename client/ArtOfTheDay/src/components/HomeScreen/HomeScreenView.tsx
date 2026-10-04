@@ -70,6 +70,7 @@ export default function HomeScreenView({viewData, send}: ViewProps<HomeScreenVie
                     scrollX={scrollX}
                     onSeeMore={handleSeeMore}
                     onPreferenceIntent={onPreferenceIntent}
+                    jumpToLatestRequest={viewData.jumpToLatestRequest}
                 />
             </Reanimated.View>
 

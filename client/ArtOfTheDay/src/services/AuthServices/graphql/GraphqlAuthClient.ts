@@ -23,8 +23,8 @@ export class GraphqlAuthClient implements IAuthClient {
     async register(command: RegisterCommand): Promise<AuthTokens> {
         const data = await graphqlRequest<{register: AuthResponse}>(
             ENDPOINT,
-            `mutation($username: String!, $email: String!, $password: String!, $confirmPassword: String!, $firstName: String!, $lastName: String!) {
-                register(username: $username, email: $email, password: $password, confirmPassword: $confirmPassword, firstName: $firstName, lastName: $lastName) {
+            `mutation($username: String!, $email: String!, $password: String!, $confirmPassword: String!, $firstName: String!, $lastName: String!, $timeZoneId: String) {
+                register(username: $username, email: $email, password: $password, confirmPassword: $confirmPassword, firstName: $firstName, lastName: $lastName, timeZoneId: $timeZoneId) {
                     accessToken refreshToken
                 }
             }`,
@@ -35,6 +35,7 @@ export class GraphqlAuthClient implements IAuthClient {
                 confirmPassword: command.confirmPassword,
                 firstName: command.firstName,
                 lastName: command.lastName,
+                timeZoneId: command.timeZoneId,
             },
         );
         return new AuthTokens(data.register.accessToken, data.register.refreshToken);

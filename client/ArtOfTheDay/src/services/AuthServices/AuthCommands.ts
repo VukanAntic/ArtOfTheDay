@@ -10,4 +10,5 @@ export interface RegisterCommand {
     confirmPassword: string;
     firstName: string;
     lastName: string;
+    timeZoneId: string;
 }

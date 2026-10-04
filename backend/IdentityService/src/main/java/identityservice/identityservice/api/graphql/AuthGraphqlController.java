@@ -11,8 +11,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.stereotype.Controller;
 
-import java.util.TimeZone;
-
 @Controller
 @AllArgsConstructor
 public class AuthGraphqlController {
@@ -38,10 +36,10 @@ public class AuthGraphqlController {
                                       @Argument String password,
                                       @Argument String confirmPassword,
                                       @Argument String firstName,
-                                      @Argument String lastName) {
+                                      @Argument String lastName,
+                                      @Argument String timeZoneId) {
         var user = identityService.registerUser(
-                new UserRegisterDTO(username, email, password, confirmPassword, firstName, lastName),
-                TimeZone.getDefault().getID());
+                new UserRegisterDTO(username, email, password, confirmPassword, firstName, lastName, timeZoneId));
         if (user.isEmpty()) {
             throw new IllegalArgumentException("Something is incorrect");
         }

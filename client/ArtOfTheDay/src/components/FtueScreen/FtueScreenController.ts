@@ -6,6 +6,7 @@ import {SeenImageData} from '@/src/domain/SeenImageData';
 import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {UserPreferencesData} from '@/src/domain/UserPreferencesData';
 import {ViewController} from '@/src/mvc/ViewController';
+import {getDeviceTimeZoneId} from '@/src/utils/deviceTimeZone';
 import {GetRandomArtworksCommandHandler} from '@/src/services/ImageServices/commandHandlers/GetRandomArtworksCommandHandler';
 import {SetPreferredTimeCommandHandler} from '@/src/services/NextImageServices/commandHandlers/SetPreferredTimeCommandHandler';
 import {FtueCompleteCommandHandler} from '@/src/services/TutorialServices/commandHandlers/FtueCompleteCommandHandler';
@@ -120,7 +121,7 @@ export class FtueScreenController extends ViewController<FtueScreenViewData, Ftu
 
         const picks = this.selected.filter((a): a is ArtworkData => a !== null);
         const {hours24, minutes} = this.time.to24Hour();
-        const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const timeZoneId = getDeviceTimeZoneId();
 
         try {
             await this.setPreferredTimeHandler.handle({

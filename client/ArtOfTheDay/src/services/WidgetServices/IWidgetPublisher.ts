@@ -9,4 +9,6 @@ export interface IWidgetPublisher {
     isSupported(): boolean;
 
     publish(input: WidgetPublishInput): Promise<void>;
+
+    publishSchedule(hours: number, minutes: number, syncedAt: Date): Promise<void>;
 }

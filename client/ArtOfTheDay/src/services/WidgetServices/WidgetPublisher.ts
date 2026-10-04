@@ -1,5 +1,5 @@
 import {File, Paths} from 'expo-file-system';
-import {isWidgetBridgeAvailable, publishLatestImage} from '@/modules/widget-bridge';
+import {isWidgetBridgeAvailable, publishLatestImage, publishSchedule} from '@/modules/widget-bridge';
 import {WIDGET_APP_GROUP, WIDGET_IMAGE_JPEG_QUALITY, WIDGET_IMAGE_MAX_PIXELS} from '@/src/config/widgetConfig';
 import {IWidgetPublisher, WidgetPublishInput} from '@/src/services/WidgetServices/IWidgetPublisher';
 
@@ -33,5 +33,9 @@ export class WidgetPublisher implements IWidgetPublisher {
                 staging.delete();
             }
         }
+    }
+
+    async publishSchedule(hours: number, minutes: number, syncedAt: Date): Promise<void> {
+        await publishSchedule(WIDGET_APP_GROUP, hours, minutes, syncedAt.toISOString());
     }
 }

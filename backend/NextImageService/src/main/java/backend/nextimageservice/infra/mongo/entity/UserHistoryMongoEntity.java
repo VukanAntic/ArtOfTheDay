@@ -25,4 +25,5 @@ public class UserHistoryMongoEntity {
     @Builder.Default
     private int preferredTimeForUpdateInHours = 9;
     private String timeZoneId;
+    private Boolean deliveryEnabled;
 }

@@ -7,6 +7,8 @@ import backend.nextimageservice.grpc.NextImageGrpcServiceGrpc;
 import backend.nextimageservice.grpc.SeenImage;
 import backend.nextimageservice.grpc.SetPreferredTimeRequest;
 import backend.nextimageservice.grpc.SetPreferredTimeResponse;
+import backend.nextimageservice.grpc.SetTimeZoneRequest;
+import backend.nextimageservice.grpc.SetTimeZoneResponse;
 import common.common.authentication.AuthenticatedUser;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -57,6 +59,25 @@ public class NextImageGrpcController extends NextImageGrpcServiceGrpc.NextImageG
         nextImageService.SetPreferredTimeForUser(
                 username, timeZoneId, request.getPreferredTimeInHours(), request.getPreferredTimeInMinutes());
         responseObserver.onNext(SetPreferredTimeResponse.newBuilder().setSuccess(true).build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void setTimeZone(SetTimeZoneRequest request, StreamObserver<SetTimeZoneResponse> responseObserver) {
+        var username = AuthenticatedUser.getUsername();
+        if (username == null) {
+            responseObserver.onError(Status.UNAUTHENTICATED
+                    .withDescription("No authenticated user").asRuntimeException());
+            return;
+        }
+        try {
+            nextImageService.setTimeZoneForUser(username, request.getTimeZoneId());
+        } catch (IllegalArgumentException e) {
+            responseObserver.onError(Status.INVALID_ARGUMENT
+                    .withDescription(e.getMessage()).asRuntimeException());
+            return;
+        }
+        responseObserver.onNext(SetTimeZoneResponse.newBuilder().setSuccess(true).build());
         responseObserver.onCompleted();
     }
 }

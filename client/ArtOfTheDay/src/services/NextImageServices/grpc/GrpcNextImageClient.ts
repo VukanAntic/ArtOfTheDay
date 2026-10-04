@@ -2,7 +2,7 @@ import {createClient} from '@connectrpc/connect';
 import {SeenImageData} from '@/src/domain/SeenImageData';
 import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {INextImageClient} from '@/src/services/NextImageServices/INextImageClient';
-import {SetPreferredTimeCommand} from '@/src/services/NextImageServices/NextImageCommands';
+import {SetPreferredTimeCommand, SetTimeZoneCommand} from '@/src/services/NextImageServices/NextImageCommands';
 import {NextImageGrpcService} from '@/src/services/grpc/gen/next_image_pb';
 import {grpcTransport} from '@/src/services/grpc/grpcTransport';
 
@@ -24,5 +24,9 @@ export class GrpcNextImageClient implements INextImageClient {
             preferredTimeInMinutes: command.preferredTimeInMinutes,
             timeZoneId: command.timeZoneId,
         });
+    }
+
+    async setTimeZone(command: SetTimeZoneCommand): Promise<void> {
+        await this.client.setTimeZone({timeZoneId: command.timeZoneId});
     }
 }

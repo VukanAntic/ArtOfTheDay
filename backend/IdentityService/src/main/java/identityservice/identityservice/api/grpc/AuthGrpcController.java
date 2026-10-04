@@ -16,8 +16,6 @@ import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import org.springframework.grpc.server.service.GrpcService;
 
-import java.util.TimeZone;
-
 @GrpcService
 @AllArgsConstructor
 public class AuthGrpcController extends AuthGrpcServiceGrpc.AuthGrpcServiceImplBase {
@@ -51,8 +49,8 @@ public class AuthGrpcController extends AuthGrpcServiceGrpc.AuthGrpcServiceImplB
     public void register(RegisterRequest request, StreamObserver<AuthPayload> obs) {
         var user = identityService.registerUser(
                 new UserRegisterDTO(request.getUsername(), request.getEmail(), request.getPassword(),
-                        request.getConfirmPassword(), request.getFirstName(), request.getLastName()),
-                TimeZone.getDefault().getID());
+                        request.getConfirmPassword(), request.getFirstName(), request.getLastName(),
+                        request.getTimeZoneId()));
         if (user.isEmpty()) {
             obs.onError(Status.INVALID_ARGUMENT.withDescription("Something is incorrect").asRuntimeException());
             return;

@@ -1,7 +1,7 @@
 import {SeenImageData} from '@/src/domain/SeenImageData';
 import {UserHistoryData} from '@/src/domain/UserHistoryData';
 import {INextImageClient} from '@/src/services/NextImageServices/INextImageClient';
-import {SetPreferredTimeCommand} from '@/src/services/NextImageServices/NextImageCommands';
+import {SetPreferredTimeCommand, SetTimeZoneCommand} from '@/src/services/NextImageServices/NextImageCommands';
 import {API_CONFIG} from '@/src/config/apiConfig';
 import {graphqlRequest} from '@/src/services/graphql/graphqlFetch';
 
@@ -46,6 +46,14 @@ export class GraphqlNextImageClient implements INextImageClient {
                 preferredTimeInMinutes: command.preferredTimeInMinutes,
                 timeZoneId: command.timeZoneId,
             },
+        );
+    }
+
+    async setTimeZone(command: SetTimeZoneCommand): Promise<void> {
+        await graphqlRequest(
+            ENDPOINT,
+            `mutation($timeZoneId: String!) { setTimeZone(timeZoneId: $timeZoneId) }`,
+            {timeZoneId: command.timeZoneId},
         );
     }
 }
