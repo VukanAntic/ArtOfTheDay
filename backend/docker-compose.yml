@@ -44,7 +44,10 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_started
+      user-preferences-db:
+        condition: service_healthy
 
   next-image-service:
     image: ${DOCKER_REGISTRY-}next_image_service
@@ -59,7 +62,10 @@ services:
     ports:
       - "8084:8084"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_started
+      next-image-db:
+        condition: service_healthy
 
   envoy:
     image: envoyproxy/envoy:v1.31-latest
@@ -104,6 +110,32 @@ services:
       timeout: 5s
       retries: 12
 
+  next-image-db:
+    image: mongo:8
+    env_file: NextImageService/db.env
+    volumes:
+      - next-image-db-data:/data/db
+    ports:
+      - "127.0.0.1:27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  user-preferences-db:
+    image: mongo:8
+    env_file: UserPreferenceService/db.env
+    volumes:
+      - user-preferences-db-data:/data/db
+    ports:
+      - "127.0.0.1:27018:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -117,3 +149,5 @@ services:
 volumes:
   image-db-data:
   identity-db-data:
+  next-image-db-data:
+  user-preferences-db-data:
