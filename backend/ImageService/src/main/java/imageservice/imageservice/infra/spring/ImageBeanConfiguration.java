@@ -1,5 +1,9 @@
 package imageservice.imageservice.infra.spring;
 
+import imageservice.imageservice.common.DTOs.Artwork.ArtworkDTO;
+import imageservice.imageservice.common.DTOs.Artwork.IdentityArtworkDTO;
+import imageservice.imageservice.infra.enitites.Artwork;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +22,29 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 public class ImageBeanConfiguration {
 
+    @Value("${artwork.images.base.url}")
+    private String artworkImagesBaseUrl;
+
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
+        Converter<String, String> toPublicImageUrl = context -> publicImageUrl(context.getSource());
+
+        mapper.emptyTypeMap(Artwork.class, ArtworkDTO.class)
+                .addMappings(m -> m.using(toPublicImageUrl).map(Artwork::getImageUrl, ArtworkDTO::setImageUrl))
+                .implicitMappings();
+        mapper.emptyTypeMap(Artwork.class, IdentityArtworkDTO.class)
+                .addMappings(m -> m.using(toPublicImageUrl).map(Artwork::getImageUrl, IdentityArtworkDTO::setImageUrl))
+                .implicitMappings();
+
+        return mapper;
+    }
+
+    private String publicImageUrl(String stored) {
+        if (stored == null || stored.startsWith("http://") || stored.startsWith("https://")) {
+            return stored;
+        }
+        return artworkImagesBaseUrl.replaceAll("/+$", "") + "/" + stored;
     }
 
     @Value("${jwt.secret}")
