@@ -12,6 +12,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.artoftheday",
       "appleTeamId": "3C5RFR93JB",
+      "infoPlist": {
+        "CFBundleDisplayName": "Inspira Daily"
+      },
       "entitlements": {
         "com.apple.security.application-groups": [
           "group.com.artoftheday.widget"
