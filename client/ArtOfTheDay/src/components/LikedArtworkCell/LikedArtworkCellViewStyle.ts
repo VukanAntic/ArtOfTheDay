@@ -27,7 +27,7 @@ export default StyleSheet.create({
         marginTop: 4,
         marginBottom: 2,
         fontSize: 11,
-        color: '#000000',
+        color: '#ffffff',
         fontFamily: 'Lato-Regular',
         textAlign: 'center',
     },

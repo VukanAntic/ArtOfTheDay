@@ -60,7 +60,7 @@ export default StyleSheet.create({
         marginTop: 3,
         fontSize: 11,
         fontFamily: 'Lato-Bold',
-        color: '#000000',
+        color: '#ffffff',
         letterSpacing: 0.2,
     },
 });

@@ -7,7 +7,7 @@ export default StyleSheet.create({
     title: {
         fontSize: 20,
         fontFamily: 'Lato-Bold',
-        color: '#1a1a1a',
+        color: '#ffffff',
     },
 
     chipsWrap: {
